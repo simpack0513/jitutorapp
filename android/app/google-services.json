@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "125108668086",
+    "project_id": "jitutor",
+    "storage_bucket": "jitutor.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:125108668086:android:aea3dbc23e20a10f3b0817",
+        "android_client_info": {
+          "package_name": "com.jitutor.jitutorapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "125108668086-b0uehtbha0s0ff8cnnro6mfsmmteind6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAOJhJ7d0tEMcP63fteFKYIrTIYF1kORHI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "125108668086-b0uehtbha0s0ff8cnnro6mfsmmteind6.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "125108668086-o2166f0iavi29igcbquutvnem9qmd49a.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.jitutor.jitutorapp"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
