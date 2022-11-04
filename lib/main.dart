@@ -15,7 +15,11 @@ void main() async{
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(const MyApp());
+  runApp(
+      MaterialApp(
+          home : MyApp()
+      )
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -24,8 +28,6 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: signUp(),
-    );
+    return signUp();
   }
 }
