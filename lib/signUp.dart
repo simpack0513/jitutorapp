@@ -1,11 +1,16 @@
 import 'dart:io';
-
+//여기는 일반 파일 import 하는 곳
+import 'InfoStore.dart';
+//
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 final auth = FirebaseAuth.instance;
+
+//전역변수 - phone credential 이유 : 이메일과 연동하고 싶어서
+var authCredential;
 
 var InfoPagetheme = ThemeData(
   fontFamily: 'Pretendard',
@@ -18,34 +23,6 @@ var InfoPagetheme = ThemeData(
   ),
 
 );
-
-class InfoStore extends ChangeNotifier {
-  var type = '';
-  var name = '';
-  var phone = '';
-  popType() {
-    type = '';
-  }
-  popName() {
-    name = '';
-  }
-  popPhone() {
-    phone = '';
-  }
-  changeType(String s) {
-    type = s;
-    notifyListeners();
-    print(type);
-  }
-  changeName(String s) {
-    name = s;
-    notifyListeners();
-  }
-  changePhone(String s){
-    phone = s;
-    notifyListeners();
-  }
-}
 
 //회원가입 메인 페이지
 class signUp extends StatelessWidget {
@@ -137,7 +114,7 @@ class _NameInfoPageState extends State<NameInfoPage> {
               var str = context.read<InfoStore>().name.toString();
               if(str != '') {
                 Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => PhoneInfoPage()));
+                    MaterialPageRoute(builder: (context) => EmailInfoPage()));
                 print(str);
               }
               else {}
@@ -187,7 +164,7 @@ class _PhoneInfoPageState extends State<PhoneInfoPage> {
           Fluttertoast.showToast(
             msg: context.read<InfoStore>().phone+' 로 인증코드를 발송하였습니다.',
             toastLength: Toast.LENGTH_SHORT,
-            timeInSecForIosWeb: 1,
+            timeInSecForIosWeb: 2,
             backgroundColor: Colors.green,
             fontSize: 12
           );
@@ -201,6 +178,43 @@ class _PhoneInfoPageState extends State<PhoneInfoPage> {
     );
   }
 
+  Future<dynamic> signWithPhoneLinkEmail(PhoneAuthCredential phoneAuthCredential) async{
+    try {
+      final userCredential = await FirebaseAuth.instance.currentUser
+          ?.linkWithCredential(phoneAuthCredential);
+      Fluttertoast.showToast(
+          msg: '회원가입이 정상적으로 완료되었습니다',
+          toastLength: Toast.LENGTH_SHORT,
+          timeInSecForIosWeb: 2,
+          backgroundColor: Colors.green,
+          fontSize: 12
+      );
+    } on FirebaseAuthException catch (e) {
+      setState(() {
+        context.read<InfoStore>().popSmsCode();
+      });
+      print(e);
+      if(e.code == 'invalid-verification-code') {
+        Fluttertoast.showToast(
+            msg: '인증번호가 올바르지 않습니다',
+            toastLength: Toast.LENGTH_SHORT,
+            timeInSecForIosWeb: 2,
+            backgroundColor: Colors.red,
+            fontSize: 12
+        );
+      } else {
+        Fluttertoast.showToast(
+            msg: e.code,
+            toastLength: Toast.LENGTH_SHORT,
+            timeInSecForIosWeb: 2,
+            backgroundColor: Colors.red,
+            fontSize: 12
+        );
+      }
+
+    }
+
+}
 
   @override
   Widget build(BuildContext context) {
@@ -253,7 +267,11 @@ class _PhoneInfoPageState extends State<PhoneInfoPage> {
                 child: Text('인증번호를 입력하세요', style: TextStyle(fontSize: 30, fontFamily: 'Pretedard'),)):Container(),
             IsClickButton? Padding(
               padding: const EdgeInsets.all(5),
-              child: TextField(),
+              child: TextField(
+                onChanged: (text){
+                  context.read<InfoStore>().changeSmsCode(text);
+                },
+              ),
             ):Container(),
             IsClickButton? Container(
               height: 50,
@@ -268,7 +286,14 @@ class _PhoneInfoPageState extends State<PhoneInfoPage> {
                     fontSize: 17,
                     color: Colors.white,
                 )),
-                onPressed: (){
+                onPressed: () async{
+
+                  PhoneAuthCredential phoneAuthCredential =
+                  PhoneAuthProvider.credential(
+                      verificationId: verificationId, smsCode: context.read<InfoStore>().smsCode);
+                  await signWithPhoneLinkEmail(phoneAuthCredential); //폰으로 회원가입과 동시에 이메일과 연결
+                  //다음 페이지로 이동
+
                 },
               ),
             ):Container(),
@@ -280,4 +305,97 @@ class _PhoneInfoPageState extends State<PhoneInfoPage> {
     );
   }
 }
+
+// 이메일 및 비밀번호 회원가입 페이지
+class EmailInfoPage extends StatefulWidget {
+  const EmailInfoPage({Key? key}) : super(key: key);
+
+  @override
+  State<EmailInfoPage> createState() => _EmailInfoPageState();
+}
+
+class _EmailInfoPageState extends State<EmailInfoPage> {
+  //변수, 함수 공간
+  final phonecredential = PhoneAuthProvider();
+
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      theme: InfoPagetheme,
+      home: Scaffold(
+        appBar: AppBar(
+          elevation: 0,
+          backgroundColor: Colors.transparent,
+          leading: IconButton(onPressed: (){context.read<InfoStore>().popPhone(); Navigator.pop(context);}, icon: Icon(Icons.arrow_back, color: Colors.black,)),
+        ),
+
+          body: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(5),
+                  child: Text('이메일(아이디)을 입력하세요', style: TextStyle(fontSize: 30, fontFamily: 'Pretedard'),)),
+                 Padding(
+                  padding: const EdgeInsets.all(5),
+                   child: TextField(
+                     onChanged: (text){context.read<InfoStore>().changeEmail(text);},
+                    ),
+                  ),
+
+                Padding(
+                    padding: const EdgeInsets.all(5),
+                    child: Text('비밀번호를 입력하세요', style: TextStyle(fontSize: 30, fontFamily: 'Pretedard'),)),
+                Padding(
+                  padding: const EdgeInsets.all(5),
+                  child: TextField(
+                    onChanged: (text){context.read<InfoStore>().changePassword(text);},
+                    obscureText: true,
+                  ),
+                ),
+
+            ]
+          ),
+        bottomSheet: Container(
+          padding: EdgeInsets.fromLTRB(5, 5, 5, 30),
+          width: double.infinity,
+          height: 90,
+          child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blue,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15))
+            ),
+            onPressed: () async{
+              try {
+                final credential = await auth.createUserWithEmailAndPassword(
+                email: context.read<InfoStore>().email, password: context.read<InfoStore>().password);
+                print(credential.user);
+
+                Navigator.push(context, MaterialPageRoute(builder: (context)=>PhoneInfoPage()));
+
+              } on FirebaseAuthException catch(e) {
+                Fluttertoast.showToast(
+                    msg: e.code,
+                    toastLength: Toast.LENGTH_SHORT,
+                    timeInSecForIosWeb: 2,
+                    backgroundColor: Colors.red,
+                    fontSize: 12
+                );
+              }
+
+            },
+            child: Text('다음으로', style: TextStyle(
+              fontFamily: 'Pretendard',
+              fontSize: 20,
+              color: Colors.white,
+            ),),
+          ),
+        ),
+
+
+      ),
+    );
+  }
+}
+
 

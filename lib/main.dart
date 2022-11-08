@@ -1,6 +1,7 @@
 import 'dart:convert';
 // 여기는 연동 페이지 import
 import 'signUp.dart';
+import 'InfoStore.dart';
 
 //
 import 'package:provider/provider.dart';
