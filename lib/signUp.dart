@@ -1,6 +1,7 @@
 import 'dart:io';
 //여기는 일반 파일 import 하는 곳
 import 'InfoStore.dart';
+import './teacherPage/mainPage.dart';
 //
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -189,6 +190,9 @@ class _PhoneInfoPageState extends State<PhoneInfoPage> {
           backgroundColor: Colors.green,
           fontSize: 12
       );
+      //메인 페이지로 이동
+      Navigator.pushAndRemoveUntil(context,
+          MaterialPageRoute(builder: (context) => mainPage()), (route) => false);
     } on FirebaseAuthException catch (e) {
       setState(() {
         context.read<InfoStore>().popSmsCode();
@@ -215,7 +219,7 @@ class _PhoneInfoPageState extends State<PhoneInfoPage> {
     }
 
 }
-
+//변수, 함수 끝
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -292,7 +296,7 @@ class _PhoneInfoPageState extends State<PhoneInfoPage> {
                   PhoneAuthProvider.credential(
                       verificationId: verificationId, smsCode: context.read<InfoStore>().smsCode);
                   await signWithPhoneLinkEmail(phoneAuthCredential); //폰으로 회원가입과 동시에 이메일과 연결
-                  //다음 페이지로 이동
+
 
                 },
               ),

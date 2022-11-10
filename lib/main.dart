@@ -1,5 +1,7 @@
 import 'dart:convert';
 // 여기는 연동 페이지 import
+import 'package:jitutorapp/teacherPage/mainPage.dart';
+
 import 'signUp.dart';
 import 'InfoStore.dart';
 
@@ -34,6 +36,7 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return signUp();
+    return mainPage();
+    //return signUp();
   }
 }
