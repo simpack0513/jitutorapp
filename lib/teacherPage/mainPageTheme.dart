@@ -19,12 +19,17 @@ var mainTheme = ThemeData(
       )
   ),
   bottomNavigationBarTheme: BottomNavigationBarThemeData(
-    showUnselectedLabels: false,
-    showSelectedLabels: false,
+    showUnselectedLabels: true,
+    showSelectedLabels: true,
     elevation: 3.0,
     backgroundColor: Colors.white,
     selectedItemColor: Colors.black,
     unselectedItemColor: Colors.grey,
+    unselectedLabelStyle: TextStyle(
+      fontFamily: 'Pretendard',
+      color: Colors.black
+    ),
+
   ),
 
 );

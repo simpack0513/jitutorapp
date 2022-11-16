@@ -10,21 +10,27 @@ class InfoStore extends ChangeNotifier {
   var password = '';
   popType() {
     type = '';
+    notifyListeners();
   }
   popName() {
     name = '';
+    notifyListeners();
   }
   popPhone() {
     phone = '';
+    notifyListeners();
   }
   popSmsCode() {
     smsCode = '';
+    notifyListeners();
   }
   popEmail() {
     email = '';
+    notifyListeners();
   }
   popPassword() {
     password = '';
+    notifyListeners();
   }
   changeType(String s) {
     type = s;

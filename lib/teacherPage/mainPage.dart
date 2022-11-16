@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-
+import 'package:provider/provider.dart';
 
 //여기는 파일 import
+import '../DataStore/UserStore.dart';
 import 'home.dart';
 import 'calendar.dart';
 import 'photo.dart';
@@ -29,7 +30,7 @@ class _mainPageState extends State<mainPage> {
       theme: mainTheme,
       home: Scaffold(
         appBar: AppBar(
-          title: Text('OOO 선생님', style: mainTheme.textTheme.headline1,),
+          title: Text(context.read<UserStore>().name+' 선생님' , style: mainTheme.textTheme.headline1,),
           actions: [
             IconButton(onPressed: (){}, icon: Icon(Icons.people_alt)),
           ],
@@ -44,10 +45,10 @@ class _mainPageState extends State<mainPage> {
             });
           },
           items: [
-            BottomNavigationBarItem(icon: Icon(Icons.home), label: 'home'),
-            BottomNavigationBarItem(icon: Icon(Icons.motion_photos_on), label: 'photo'),
-            BottomNavigationBarItem(icon: Icon(Icons.calendar_month), label: 'calendar'),
-            BottomNavigationBarItem(icon: Icon(Icons.chat), label: 'messenger'),
+            BottomNavigationBarItem(icon: Icon(Icons.home), label: '홈'),
+            BottomNavigationBarItem(icon: Icon(Icons.collections), label: '갤러리'),
+            BottomNavigationBarItem(icon: Icon(Icons.calendar_month), label: '캘린더'),
+            BottomNavigationBarItem(icon: Icon(Icons.chat), label: '메신저'),
           ],
         ),
 

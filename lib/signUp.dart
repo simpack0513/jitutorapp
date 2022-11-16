@@ -1,17 +1,20 @@
 import 'dart:io';
 //여기는 일반 파일 import 하는 곳
-import 'InfoStore.dart';
+import 'DataStore/InfoStore.dart';
 import './teacherPage/mainPage.dart';
+import 'DataStore/UserStore.dart';
 //
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-final auth = FirebaseAuth.instance;
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 //전역변수 - phone credential 이유 : 이메일과 연동하고 싶어서
 var authCredential;
+final firestore = FirebaseFirestore.instance;
+final auth = FirebaseAuth.instance;
 
 var InfoPagetheme = ThemeData(
   fontFamily: 'Pretendard',
@@ -178,7 +181,23 @@ class _PhoneInfoPageState extends State<PhoneInfoPage> {
       }
     );
   }
+  // 파이어베이스에 이름, type 등 저장
+  Future<dynamic> StoreAtFireStore() async{
+    try {
+      final user = await FirebaseAuth.instance.currentUser;
+      await firestore.collection('Person').doc(user?.uid).
+      set({'name' : context.read<InfoStore>().name, 'type' : context.read<InfoStore>().type,});
+      // 유저스토어에 사용자 정보 저장 = 바로 데이터 꺼내쓸 수 있게
+      context.read<UserStore>().setName(context.read<InfoStore>().name);
+      context.read<UserStore>().setType(context.read<InfoStore>().type);
 
+    } catch (e) {
+      print(e);
+    }
+
+  }
+
+  // 이메일과 휴대폰 계정 연결
   Future<dynamic> signWithPhoneLinkEmail(PhoneAuthCredential phoneAuthCredential) async{
     try {
       final userCredential = await FirebaseAuth.instance.currentUser
@@ -190,6 +209,8 @@ class _PhoneInfoPageState extends State<PhoneInfoPage> {
           backgroundColor: Colors.green,
           fontSize: 12
       );
+      //파이어스토어에 사용자 정보 등록
+      await StoreAtFireStore();
       //메인 페이지로 이동
       Navigator.pushAndRemoveUntil(context,
           MaterialPageRoute(builder: (context) => mainPage()), (route) => false);

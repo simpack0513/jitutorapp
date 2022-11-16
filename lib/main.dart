@@ -1,9 +1,10 @@
 import 'dart:convert';
 // 여기는 연동 페이지 import
+import 'package:jitutorapp/DataStore/UserStore.dart';
 import 'package:jitutorapp/teacherPage/mainPage.dart';
 
 import 'signUp.dart';
-import 'InfoStore.dart';
+import 'DataStore/InfoStore.dart';
 
 //
 import 'package:provider/provider.dart';
@@ -22,6 +23,7 @@ void main() async{
       MultiProvider(
         providers: [
           ChangeNotifierProvider(create: (c) => InfoStore()),
+          ChangeNotifierProvider(create: (c) => UserStore()),
         ],
         child: MaterialApp(
             home : MyApp()
@@ -36,7 +38,7 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return mainPage();
+    return signUp();
     //return signUp();
   }
 }
