@@ -1,4 +1,10 @@
+//여기는 외부파일 import
+import 'photoUpload.dart';
+//
+
 import 'package:flutter/material.dart';
+
+
 
 //스타일
 var textTheme = TextStyle(
@@ -64,7 +70,9 @@ class _PhotoState extends State<Photo> {
         elevation: 0.0,
         backgroundColor: Colors.indigoAccent,
         child: Icon(Icons.add_a_photo),
-        onPressed: (){},
+        onPressed: (){
+          Navigator.push(context, MaterialPageRoute(builder: (context) => PhotoUpload()));
+        },
       ),
     );
   }

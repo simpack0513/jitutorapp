@@ -7,6 +7,7 @@ import 'signUp.dart';
 import 'DataStore/InfoStore.dart';
 
 //
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -26,7 +27,14 @@ void main() async{
           ChangeNotifierProvider(create: (c) => UserStore()),
         ],
         child: MaterialApp(
-            home : MyApp()
+          localizationsDelegates: [
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+          ],
+          supportedLocales: [
+            const Locale('ko', 'KR'),
+          ],
+          home : MyApp(),
         ),
       )
   );
