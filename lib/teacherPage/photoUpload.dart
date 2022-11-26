@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:jitutorapp/DataStore/ClassStore.dart';
 import 'dart:io';
+import 'package:provider/provider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+final firestore = FirebaseFirestore.instance;
 
 
 class PhotoUpload extends StatefulWidget {
@@ -12,8 +16,7 @@ class PhotoUpload extends StatefulWidget {
 
 class _PhotoUploadState extends State<PhotoUpload> {
   //여기는 변수, 함수
-  var classList = ['황인규 영어 수업 - 신지호 선생님', '이승재 수학 수업 - 신지호 선생님', '신채현 수학 수업 - 신지호 선생님'];
-  late var selectedClass = classList[0];
+  late var selectedClass = context.read<ClassStore>().userClassNameList[0];
   DateTime date = DateTime.now();
 
   String userImage = '';
@@ -61,6 +64,17 @@ class _PhotoUploadState extends State<PhotoUpload> {
     });});
   }
 
+  // 여기는 게시글을 파이어베이스에 업로드하는 코드
+  void uploadPost() {
+    var classUID = context.read<ClassStore>().getClassUID(selectedClass);
+    firestore.collection('Post').add({
+      'comment' : comment,
+      'classUID' : classUID,
+      'date' : date.toString().split(' ')[0],
+      'heart' : false,
+    });
+  }
+
 
   // 변수, 함수 끝
 
@@ -85,7 +99,7 @@ class _PhotoUploadState extends State<PhotoUpload> {
           fontSize: 25,
         ),
         actions: [
-          Padding(padding: EdgeInsets.fromLTRB(0, 0, 5, 0), child: IconButton(onPressed: (){}, icon: Icon(Icons.done, color: Colors.blue,)))
+          Padding(padding: EdgeInsets.fromLTRB(0, 0, 5, 0), child: IconButton(onPressed: (){uploadPost(); Navigator.pop(context);}, icon: Icon(Icons.done, color: Colors.blue,)))
         ],
       ),
       body: userImage.isNotEmpty ? Column(
@@ -127,7 +141,7 @@ class _PhotoUploadState extends State<PhotoUpload> {
                 Text('수업명', style: TextStyle(fontSize: 15),),
                 DropdownButton(
                   value: selectedClass,
-                    items: classList.map((value) {
+                    items: context.read<ClassStore>().userClassNameList.map((value) {
                       return DropdownMenuItem(
                           value: value,
                           child: Text(value),);

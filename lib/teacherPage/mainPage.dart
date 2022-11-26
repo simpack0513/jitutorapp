@@ -8,6 +8,7 @@ import 'calendar.dart';
 import 'photo.dart';
 import 'messenger.dart';
 import 'mainPageTheme.dart';
+import '../DataStore/ClassStore.dart';
 
 
 //위젯 시작
@@ -23,6 +24,13 @@ class _mainPageState extends State<mainPage> {
   var tap = 0;
   var bodyList = [Home(), Photo(), Calendar(), Messenger()];
   // 변수, 함수 끝
+
+  @override
+  void initState() {
+   // 메인 페이지 초기 설정 : 유저의 Class 정보 가져오기
+    context.read<ClassStore>().teacherGetClassFromFirebase(context.read<UserStore>().userUID);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {

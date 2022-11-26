@@ -4,6 +4,13 @@ import 'package:flutter/material.dart';
 class UserStore extends ChangeNotifier {
   String name = '';
   String type = '';
+  String userUID = '';
+
+
+  void setUserUID(String s) {
+    userUID = s;
+    notifyListeners();
+  }
 
   void setName(String s) {
     name = s;

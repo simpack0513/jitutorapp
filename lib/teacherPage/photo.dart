@@ -1,8 +1,11 @@
 //여기는 외부파일 import
+import 'package:jitutorapp/DataStore/ClassStore.dart';
+import 'package:jitutorapp/DataStore/UserStore.dart';
 import 'photoUpload.dart';
 //
-
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 
 
@@ -22,6 +25,21 @@ class Photo extends StatefulWidget {
 }
 
 class _PhotoState extends State<Photo> {
+  //변수, 함수
+  // 새 게시물 창 띄우기
+  void showPhotoUpload() {
+    if(context.read<ClassStore>().userClassList[0]=='NULL') {
+      Fluttertoast.showToast(
+          msg: '현재 배정받은 수업이 없어 새 게시글을 작성할 수 없습니다.',
+          toastLength: Toast.LENGTH_SHORT,
+          timeInSecForIosWeb: 2,
+          backgroundColor: Colors.grey,
+          fontSize: 12
+      );
+    }
+    else Navigator.push(context, MaterialPageRoute(builder: (context) => PhotoUpload()));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -71,7 +89,7 @@ class _PhotoState extends State<Photo> {
         backgroundColor: Colors.indigoAccent,
         child: Icon(Icons.add_a_photo),
         onPressed: (){
-          Navigator.push(context, MaterialPageRoute(builder: (context) => PhotoUpload()));
+          showPhotoUpload();
         },
       ),
     );

@@ -1,5 +1,6 @@
 import 'dart:io';
 //여기는 일반 파일 import 하는 곳
+import 'package:jitutorapp/login.dart';
 import 'DataStore/InfoStore.dart';
 import './teacherPage/mainPage.dart';
 import 'DataStore/UserStore.dart';
@@ -8,7 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 //전역변수 - phone credential 이유 : 이메일과 연동하고 싶어서
@@ -59,7 +59,8 @@ class signUp extends StatelessWidget {
                   Flexible(child: TextButton(onPressed: (){context.read<InfoStore>().changeType('parent'); nextPage(context); }, child: Image.asset('assets/parentButtonIcon.png', fit: BoxFit.fill,)), flex: 1, ),
 
                 ],),
-              TextButton(onPressed: (){context.read<InfoStore>().changeType('teacher'); nextPage(context); }, child: Image.asset('assets/teacherButtonIcon.png')),
+                TextButton(onPressed: (){context.read<InfoStore>().changeType('teacher'); nextPage(context); }, child: Image.asset('assets/teacherButtonIcon.png')),
+                TextButton(onPressed: (){Navigator.push(context, MaterialPageRoute(builder: (c) => Login()));}, child: Text('회원가입을 하셨나요? 이 곳을 클릭해 로그인하세요', style: TextStyle(fontSize: 15, color: Colors.black),)),
 
               ],
             ),
@@ -190,6 +191,7 @@ class _PhoneInfoPageState extends State<PhoneInfoPage> {
       // 유저스토어에 사용자 정보 저장 = 바로 데이터 꺼내쓸 수 있게
       context.read<UserStore>().setName(context.read<InfoStore>().name);
       context.read<UserStore>().setType(context.read<InfoStore>().type);
+      context.read<UserStore>().setUserUID(user!.uid);
 
     } catch (e) {
       print(e);
