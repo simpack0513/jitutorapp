@@ -2,6 +2,7 @@ import 'dart:convert';
 // 여기는 연동 페이지 import
 import 'package:jitutorapp/DataStore/ClassStore.dart';
 import 'package:jitutorapp/DataStore/UserStore.dart';
+import 'package:jitutorapp/DataStore/PostStore.dart';
 import 'package:jitutorapp/teacherPage/mainPage.dart';
 import 'signUp.dart';
 import 'DataStore/InfoStore.dart';
@@ -26,6 +27,7 @@ void main() async{
           ChangeNotifierProvider(create: (c) => InfoStore()),
           ChangeNotifierProvider(create: (c) => UserStore()),
           ChangeNotifierProvider(create: (c) => ClassStore()),
+          ChangeNotifierProvider(create: (c) => PostStore()),
         ],
         child: MaterialApp(
           localizationsDelegates: [

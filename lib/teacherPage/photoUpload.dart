@@ -4,7 +4,9 @@ import 'package:jitutorapp/DataStore/ClassStore.dart';
 import 'dart:io';
 import 'package:provider/provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 final firestore = FirebaseFirestore.instance;
+final storage = FirebaseStorage.instance;
 
 
 class PhotoUpload extends StatefulWidget {
@@ -21,6 +23,13 @@ class _PhotoUploadState extends State<PhotoUpload> {
 
   String userImage = '';
   String comment = '';
+  String postImageDownloadUrl = '';
+
+  void setpostImageDownloadUrl(String s) {
+    setState(() {
+      postImageDownloadUrl = s;
+    });
+  }
   void changeComment(String text) {
     setState(() {
       comment = text;
@@ -64,14 +73,33 @@ class _PhotoUploadState extends State<PhotoUpload> {
     });});
   }
 
+  // 파이어베이스에 이미지 업로드 하는 코드
   // 여기는 게시글을 파이어베이스에 업로드하는 코드
-  void uploadPost() {
+  Future uploadPost() async{
+    File userphoto = File(userImage);
+    if (userphoto == null) return;
+    final filename = userImage.substring(userImage.lastIndexOf("/")+1);
+    try {
+      final ref = storage
+          .ref()
+          .child('postImage/$filename');
+      await ref.putFile(userphoto);
+      var url = await ref.getDownloadURL();
+      setState(() {
+        postImageDownloadUrl = url;
+      });
+      print(postImageDownloadUrl);
+    } catch (e) {
+      print(e);
+    }
     var classUID = context.read<ClassStore>().getClassUID(selectedClass);
     firestore.collection('Post').add({
       'comment' : comment,
       'classUID' : classUID,
       'date' : date.toString().split(' ')[0],
       'heart' : false,
+      'image' : postImageDownloadUrl,
+      'className' : selectedClass,
     });
   }
 
@@ -99,7 +127,7 @@ class _PhotoUploadState extends State<PhotoUpload> {
           fontSize: 25,
         ),
         actions: [
-          Padding(padding: EdgeInsets.fromLTRB(0, 0, 5, 0), child: IconButton(onPressed: (){uploadPost(); Navigator.pop(context);}, icon: Icon(Icons.done, color: Colors.blue,)))
+          Padding(padding: EdgeInsets.fromLTRB(0, 0, 5, 0), child: IconButton(onPressed: ()async{await uploadPost(); Navigator.pop(context);}, icon: Icon(Icons.done, color: Colors.blue,)))
         ],
       ),
       body: userImage.isNotEmpty ? Column(

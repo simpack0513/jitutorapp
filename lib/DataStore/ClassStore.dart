@@ -6,16 +6,19 @@ final firestore = FirebaseFirestore.instance;
 class ClassStore extends ChangeNotifier{
   var userClassList = [];
   var userClassNameList = [];
+  var userClassUIDList = [];
 
   // 선생님 사용자의 UID에 맞는 클래스 정보만 받아와 userClassList에 저장
   void teacherGetClassFromFirebase(String UID) async{
     userClassList = [];
     userClassNameList = [];
+    userClassUIDList = [];
     var result = await firestore.collection('Class').get();
     for (var doc in result.docs) {
       if(doc['teacherUID'] == UID) {
         userClassList.add(doc);
         userClassNameList.add(doc['classname']);
+        userClassUIDList.add(doc.id.toString());
       }
     }
     if(userClassList.isEmpty) {
