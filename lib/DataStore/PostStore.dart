@@ -5,18 +5,34 @@ final firestore = FirebaseFirestore.instance;
 
 class PostStore extends ChangeNotifier{
   var postDocList = [];
+  // 마지막으로 로드된 게시글 번호
+  var lastVisible;
 
   // 클래스 UID에 맞는 포스트 문서를 받는 함수
   void initgetPostDoc(List ClassUIDList) async{
-    postDocList = [];
-    var result = await firestore.collection('Post').where("classUID", whereIn: ClassUIDList).orderBy("date", descending: true).get();
+    if(postDocList.length >= 2) return;
+    var result = await firestore.collection('Post').where("classUID", whereIn: ClassUIDList).orderBy("date", descending: true).limit(2).get();
     for (var doc in result.docs) {
       postDocList.add(doc);
       print(doc['date']);
     }
+    lastVisible = postDocList[postDocList.length-1];
     print(postDocList);
     notifyListeners();
   } //
+
+  // 클래스에 UID에 맞는 포스트 more get 함수
+  void moregetPostDoc(List ClassUIDList) async{
+    var result = await firestore.collection('Post').where("classUID", whereIn: ClassUIDList).orderBy("date", descending: true).startAfterDocument(lastVisible).limit(2).get();
+    lastVisible = result.docs[result.size-1];
+    for (var doc in result.docs) {
+      postDocList.add(doc);
+      print(doc['date']);
+    }
+    lastVisible = postDocList[postDocList.length-1];
+    print(postDocList);
+    notifyListeners();
+  }
 
   //해당 doc에 하트 on/off 함수
   void changeHeart(QueryDocumentSnapshot doc) async{

@@ -28,6 +28,7 @@ environment:
 # versions available, run `flutter pub outdated`.
 
 dependencies:
+  extended_image: ^6.3.2
   syncfusion_flutter_datepicker: ^20.3.58
   firebase_storage: ^11.0.5
   image_picker: ^0.8.6
