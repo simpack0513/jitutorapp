@@ -34,12 +34,24 @@ class PostStore extends ChangeNotifier{
     notifyListeners();
   }
 
-  //해당 doc에 하트 on/off 함수
-  void changeHeart(QueryDocumentSnapshot doc) async{
-    var result = await firestore.collection('Post').doc(doc.id);
-    if(doc['heart'] == true) result.update({'heart' : false});
-    else result.update({'heart' : true});
-    notifyListeners();
+  // 화면 새로고침 시 함수
+  Future<void> refreshPost(List ClassUIDList) async{
+    postDocList = [];
+    initgetPostDoc(ClassUIDList);
   }
 
-}
+  //해당 doc에 하트 on/off 함수
+  void changeHeart(DocumentSnapshot doc) async{
+    var result = await firestore.collection('Post').doc(doc.id);
+    if(doc['heart'] == true) {
+      result.update({'heart' : false});
+      doc.reference.update({'heart' : false});
+    }
+    else {
+      result.update({'heart': true});
+      doc.reference.update({'heart' : true});
+    }
+    notifyListeners();
+    }
+
+  }

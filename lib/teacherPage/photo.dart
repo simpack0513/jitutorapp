@@ -13,7 +13,7 @@ import 'package:extended_image/extended_image.dart';
 //스타일
 var textTheme = TextStyle(
   fontFamily: 'Pretendard',
-  fontSize: 15,
+  fontSize: 13,
 );
 
 //
@@ -66,53 +66,60 @@ class _PhotoState extends State<Photo> {
     return Scaffold(
       body: SizedBox(
         height: MediaQuery.of(context).size.height,
-        child: ListView.builder(
-              itemCount: context.watch<PostStore>().postDocList.length,
-              controller: scroll,
-              scrollDirection: Axis.vertical,
-              itemBuilder: (context, i) {
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                        padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
-                        height: MediaQuery.of(context).size.width/7,
+        child: RefreshIndicator(
+          onRefresh: ()async{context.read<PostStore>().refreshPost(context.read<ClassStore>().userClassUIDList);},
+          child: ListView.builder(
+                itemCount: context.watch<PostStore>().postDocList.length,
+                controller: scroll,
+                scrollDirection: Axis.vertical,
+                itemBuilder: (context, i) {
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                          padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
+                          height: MediaQuery.of(context).size.width/8,
+                          width: MediaQuery.of(context).size.width,
+                          alignment: Alignment.centerLeft,
+                          child: Row(
+                            children: [
+                              Padding(padding: EdgeInsets.all(7) ,child: Icon(Icons.account_circle, size: 30,)),
+                              Text(context.read<PostStore>().postDocList[i]['className'], style: textTheme,),
+                            ],
+                          )),
+                      Container(
                         width: MediaQuery.of(context).size.width,
-                        alignment: Alignment.centerLeft,
-                        child: Row(
-                          children: [
-                            Padding(padding: EdgeInsets.all(7) ,child: Icon(Icons.account_circle, size: 40,)),
-                            Text(context.read<PostStore>().postDocList[i]['className'], style: textTheme,),
-                          ],
-                        )),
-                    Container(
-                      width: MediaQuery.of(context).size.width,
-                      height: MediaQuery.of(context).size.width,
-                      color: Colors.lightBlueAccent,
-                      child: ExtendedImage.network(
-                          context.read<PostStore>().postDocList[i]['image'],
-                          fit: BoxFit.fill)
-                    ),
-                    Container(
-                        padding: EdgeInsets.all(13),
-                        child: Row(
-                          children: [
-                            context.watch<PostStore>().postDocList[i]['heart'] == false ? IconButton(icon:  Icon(Icons.favorite_border, size: 30,),padding: EdgeInsets.zero, onPressed: (){context.read<PostStore>().changeHeart(context.read<PostStore>().postDocList[i]);},constraints: BoxConstraints(),) : IconButton(icon:  Icon(Icons.favorite, size: 30, color: Colors.red,), padding: EdgeInsets.zero, onPressed: (){context.read<PostStore>().changeHeart(context.read<PostStore>().postDocList[i]);},constraints: BoxConstraints(),),
-                            Padding(padding: EdgeInsets.fromLTRB(10, 0, 0, 0), child: IconButton(icon: Icon(Icons.bookmark_border_rounded, size: 30), onPressed: (){}, constraints: BoxConstraints(), padding: EdgeInsets.zero,),),
-                          ],
-                        )
-                    ),
-                    Padding(padding: EdgeInsets.fromLTRB(13, 0, 0, 5), child: Text(context.read<PostStore>().postDocList[i]['date'], style: TextStyle(
-                      fontFamily: 'Pretendard',
-                      fontWeight: FontWeight.bold,
-                    ),)),
-                    Container(
-                      padding: EdgeInsets.fromLTRB(13, 0, 15, 10),
-                      child: Text(context.read<PostStore>().postDocList[i]['comment'], style: textTheme,),
-                    )
-                  ],
-                );
-              },
+                        height: MediaQuery.of(context).size.width,
+                        color: Colors.lightBlueAccent,
+                        child: ExtendedImage.network(
+                            context.read<PostStore>().postDocList[i]['image'],
+                            fit: BoxFit.fill)
+                      ),
+                      Container(
+                          padding: EdgeInsets.all(13),
+                          child: Row(
+                            children: [
+                              context.watch<PostStore>().postDocList[i]['heart'] == false ? IconButton(icon:  Icon(Icons.favorite_border, size: 30,),padding: EdgeInsets.zero, onPressed: (){context.read<PostStore>().changeHeart(context.read<PostStore>().postDocList[i]);},constraints: BoxConstraints(),) : IconButton(icon:  Icon(Icons.favorite, size: 30, color: Colors.red,), padding: EdgeInsets.zero, onPressed: (){context.read<PostStore>().changeHeart(context.read<PostStore>().postDocList[i]);},constraints: BoxConstraints(),),
+                              Padding(padding: EdgeInsets.fromLTRB(10, 0, 0, 0), child: IconButton(icon: Icon(Icons.bookmark_border_rounded, size: 30), onPressed: (){}, constraints: BoxConstraints(), padding: EdgeInsets.zero,),),
+                            ],
+                          )
+                      ),
+                      Padding(padding: EdgeInsets.fromLTRB(13, 0, 0, 5), child: Text(context.read<PostStore>().postDocList[i]['date'], style: TextStyle(
+                        fontFamily: 'Pretendard',
+                        fontWeight: FontWeight.bold,
+                        fontSize: 13,
+                      ),)),
+                      Container(
+                        padding: EdgeInsets.fromLTRB(13, 0, 15, 10),
+                        child: Text(context.read<PostStore>().postDocList[i]['comment'], style: TextStyle(
+                          fontFamily: 'Pretendard',
+                          fontSize: 13,
+                        ),),
+                      )
+                    ],
+                  );
+                },
+          ),
         ),
       ),
       floatingActionButton: FloatingActionButton(

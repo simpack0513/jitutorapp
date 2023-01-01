@@ -15,7 +15,7 @@ var mainTheme = ThemeData(
       headline1 : TextStyle(
         fontFamily: 'Pretendard',
         color: Colors.black,
-        fontSize: 25,
+        fontSize: 20,
       )
   ),
   bottomNavigationBarTheme: BottomNavigationBarThemeData(
