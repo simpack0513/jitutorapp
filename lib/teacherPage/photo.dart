@@ -1,7 +1,6 @@
 //여기는 외부파일 import
 import 'package:jitutorapp/DataStore/ClassStore.dart';
 import 'package:jitutorapp/DataStore/PostStore.dart';
-import 'package:jitutorapp/DataStore/UserStore.dart';
 import 'photoUpload.dart';
 //
 import 'package:fluttertoast/fluttertoast.dart';
@@ -41,8 +40,6 @@ class _PhotoState extends State<Photo> {
   //변수, 함수
   // 리스트뷰 빌러 스크롤 바
   var scroll = ScrollController();
-  // 게시글 하트 state 변수
-  bool heart = false;
   // 새 게시물 창 띄우기
   void showPhotoUpload() {
     if(context.read<ClassStore>().userClassList[0]=='NULL') {
@@ -90,7 +87,7 @@ class _PhotoState extends State<Photo> {
                       Container(
                         width: MediaQuery.of(context).size.width,
                         height: MediaQuery.of(context).size.width,
-                        color: Colors.lightBlueAccent,
+                        color: Colors.white,
                         child: ExtendedImage.network(
                             context.read<PostStore>().postDocList[i]['image'],
                             fit: BoxFit.fill)
@@ -99,7 +96,9 @@ class _PhotoState extends State<Photo> {
                           padding: EdgeInsets.all(13),
                           child: Row(
                             children: [
-                              context.watch<PostStore>().postDocList[i]['heart'] == false ? IconButton(icon:  Icon(Icons.favorite_border, size: 30,),padding: EdgeInsets.zero, onPressed: (){context.read<PostStore>().changeHeart(context.read<PostStore>().postDocList[i]);},constraints: BoxConstraints(),) : IconButton(icon:  Icon(Icons.favorite, size: 30, color: Colors.red,), padding: EdgeInsets.zero, onPressed: (){context.read<PostStore>().changeHeart(context.read<PostStore>().postDocList[i]);},constraints: BoxConstraints(),),
+                              context.watch<PostStore>().postDocList[i]['heart'] == false
+                                  ? IconButton(icon:  Icon(Icons.favorite_border, size: 30,),padding: EdgeInsets.zero, onPressed: (){context.read<PostStore>().changeHeart(i);},constraints: BoxConstraints(),)
+                                  : IconButton(icon:  Icon(Icons.favorite, size: 30, color: Colors.red,), padding: EdgeInsets.zero, onPressed: (){context.read<PostStore>().changeHeart(i);},constraints: BoxConstraints(),),
                               Padding(padding: EdgeInsets.fromLTRB(10, 0, 0, 0), child: IconButton(icon: Icon(Icons.bookmark_border_rounded, size: 30), onPressed: (){}, constraints: BoxConstraints(), padding: EdgeInsets.zero,),),
                             ],
                           )

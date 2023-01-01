@@ -1,4 +1,5 @@
 // 게시글 정보 저장하는 곳
+
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 final firestore = FirebaseFirestore.instance;
@@ -41,15 +42,16 @@ class PostStore extends ChangeNotifier{
   }
 
   //해당 doc에 하트 on/off 함수
-  void changeHeart(DocumentSnapshot doc) async{
-    var result = await firestore.collection('Post').doc(doc.id);
-    if(doc['heart'] == true) {
+  void changeHeart(int i) async{
+    var result = await firestore.collection('Post').doc(postDocList[i].id);
+    if(postDocList[i]['heart'] == true) {
       result.update({'heart' : false});
-      doc.reference.update({'heart' : false});
+      await result.get().then((value) => postDocList[i] = value);
     }
     else {
       result.update({'heart': true});
-      doc.reference.update({'heart' : true});
+      postDocList[i] = result.snapshots();
+      await result.get().then((value) => postDocList[i] = value);
     }
     notifyListeners();
     }
