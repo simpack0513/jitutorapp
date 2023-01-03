@@ -28,6 +28,7 @@ environment:
 # versions available, run `flutter pub outdated`.
 
 dependencies:
+  table_calendar: ^3.0.8
   extended_image: ^6.3.2
   syncfusion_flutter_datepicker: ^20.3.58
   firebase_storage: ^11.0.5
