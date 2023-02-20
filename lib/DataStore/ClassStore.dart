@@ -29,15 +29,15 @@ class ClassStore extends ChangeNotifier{
     print(userClassList);
     print(userClassNameList);
   }
-// 클래스 이름과 똑같은 클래스 문서 ID 반환
-String getClassUID(String classname) {
-    for (var doc in userClassList) {
-      if(doc['classname'] == classname) {
-        return doc.id.toString();
+  // 클래스 이름과 똑같은 클래스 문서 ID 반환
+  String getClassUID(String classname) {
+      for (var doc in userClassList) {
+        if(doc['classname'] == classname) {
+          return doc.id.toString();
+        }
       }
-    }
-    return 'null';
-}
+      return 'null';
+  }
 
 
 

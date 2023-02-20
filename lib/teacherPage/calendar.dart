@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:jitutorapp/DataStore/ClasschildStore.dart';
+import 'package:jitutorapp/DataStore/ClassStore.dart';
+import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart'; // 캘린더 패키지
 
 class Calendar extends StatefulWidget {
@@ -40,6 +43,13 @@ class _CalendarState extends State<Calendar> {
 
   // 변수 끝
 
+  @override
+  void initState() {
+    super.initState();
+    context.read<ClasschildStore>().getDateClassList(context.read<ClassStore>().userClassUIDList, selectedDay.toString().split(' ')[0]);
+
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -59,10 +69,11 @@ class _CalendarState extends State<Calendar> {
                 focusedDay: selectedDay,
                 locale: 'ko-KR',
                 headerStyle: calendarHeaderStyle,
-                onDaySelected: (DateTime selectedDay, DateTime focusedDay) {
+                onDaySelected: (DateTime selectedDay, DateTime focusedDay) { // 날짜 선택시 실행되는 함수
                   setState(() {
                     this.selectedDay = selectedDay;
                   });
+                  context.read<ClasschildStore>().getDateClassList(context.read<ClassStore>().userClassUIDList, selectedDay.toString().split(' ')[0]);
                 },
                 selectedDayPredicate: (DateTime day) {
                   return isSameDay(selectedDay, day);
@@ -82,20 +93,24 @@ class _CalendarState extends State<Calendar> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(selectedDay.month.toString()+'월 '+selectedDay.day.toString()+'일 수업', style: headtextStyle),
-                  ListView.builder(
+                  (context.watch<ClasschildStore>().dateClassList.isNotEmpty) ? ListView.builder(
                       physics: const NeverScrollableScrollPhysics(),
                       shrinkWrap: true,
-                      itemCount: 3,
+                      itemCount: context.watch<ClasschildStore>().dateClassList.length,
                       itemBuilder: (context, i) {
                         return Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text('황인규(영어)  16:00 ~ 18:00', style: bodytextStyle,),
+                            Text(context.watch<ClasschildStore>().dateClassList[i]['name']
+                                +'  '+context.watch<ClasschildStore>().dateClassList[i]['startTime']
+                              +' ~ '+context.watch<ClasschildStore>().dateClassList[i]['endTime'], style: bodytextStyle,),
+                           // Text('황인규(영어)  16:00 ~ 18:00', style: bodytextStyle,),
                             TextButton(onPressed: (){}, child: Text('일정변경')),
                           ],
                         );
                       }
-                  ),
+                  )
+                  : Text('\n해당 날짜에 수업이 없습니다.', style: bodytextStyle),
 
                 ],
               ),
