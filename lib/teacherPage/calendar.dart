@@ -47,8 +47,17 @@ class _CalendarState extends State<Calendar> {
   void initState() {
     super.initState();
     context.read<ClasschildStore>().getDateClassList(context.read<ClassStore>().userClassUIDList, selectedDay.toString().split(' ')[0]);
-
+    context.read<ClasschildStore>().getEventAllday(context.read<ClassStore>().userClassUIDList);
+    context.read<ClasschildStore>().getComingClassList(context.read<ClassStore>().userClassUIDList);
   }
+
+  // 함수 시작
+  // 달력 해당 날짜에 이벤트 반환(개수를 취하는듯..)
+  List<Event> _getEventsForDay(DateTime day) {
+    return context.watch<ClasschildStore>().events[day] ?? [];
+  }
+
+  //
 
 
   @override
@@ -69,6 +78,13 @@ class _CalendarState extends State<Calendar> {
                 focusedDay: selectedDay,
                 locale: 'ko-KR',
                 headerStyle: calendarHeaderStyle,
+                calendarStyle: CalendarStyle(
+                  markerSize: 10.0,
+                  markerDecoration: BoxDecoration(
+                    color: Colors.red,
+                    shape: BoxShape.circle,
+                  )
+                ),
                 onDaySelected: (DateTime selectedDay, DateTime focusedDay) { // 날짜 선택시 실행되는 함수
                   setState(() {
                     this.selectedDay = selectedDay;
@@ -78,6 +94,7 @@ class _CalendarState extends State<Calendar> {
                 selectedDayPredicate: (DateTime day) {
                   return isSameDay(selectedDay, day);
                 },
+                eventLoader: _getEventsForDay,
               ),
             ),
             Container( // 위에서 두번째 박스 - 선택한 날짜의 수업
@@ -128,21 +145,23 @@ class _CalendarState extends State<Calendar> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text('다가오는 수업', style: headtextStyle),
-                  ListView.builder(
+                  (context.watch<ClasschildStore>().comingClassList.isNotEmpty) ? ListView.builder(
                       physics: const NeverScrollableScrollPhysics(),
                       shrinkWrap: true,
-                      itemCount: 2,
+                      itemCount: context.watch<ClasschildStore>().comingClassList.length,
                       itemBuilder: (context, i) {
                         return Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text('2 일후', style: bodyBoldtextStyle),
-                            Text('황인규(영어)  16:00 ~ 18:00', style: bodytextStyle),
+                            Text(context.watch<ClasschildStore>().comingClassList[i]["comingDay"]+' 일후', style: bodyBoldtextStyle),
+                            Text(context.watch<ClasschildStore>().comingClassList[i]['name']
+                                +'  '+context.watch<ClasschildStore>().comingClassList[i]['startTime']
+                                +' ~ '+context.watch<ClasschildStore>().comingClassList[i]['endTime'], style: bodytextStyle,),
                             TextButton(onPressed: (){}, child: Text('일정변경')),
                           ],
                         );
                       }
-                  ),
+                  ) : Text('\n다가오는 수업이 없습니다.', style: bodytextStyle),
 
                 ],
               ),
