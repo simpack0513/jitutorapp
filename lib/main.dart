@@ -1,9 +1,16 @@
 import 'dart:convert';
 // 여기는 연동 페이지 import
+import 'package:jitutorapp/DataStore/ClassStore.dart';
+import 'package:jitutorapp/DataStore/ClasschildStore.dart';
+import 'package:jitutorapp/DataStore/UserStore.dart';
+import 'package:jitutorapp/DataStore/PostStore.dart';
+import 'package:jitutorapp/teacherPage/mainPage.dart';
 import 'signUp.dart';
+import 'DataStore/InfoStore.dart';
 
 //
-
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
@@ -16,8 +23,24 @@ void main() async{
     options: DefaultFirebaseOptions.currentPlatform,
   );
   runApp(
-      MaterialApp(
-          home : MyApp()
+      MultiProvider(
+        providers: [
+          ChangeNotifierProvider(create: (c) => InfoStore()),
+          ChangeNotifierProvider(create: (c) => UserStore()),
+          ChangeNotifierProvider(create: (c) => ClassStore()),
+          ChangeNotifierProvider(create: (c) => PostStore()),
+          ChangeNotifierProvider(create: (c) => ClasschildStore()),
+        ],
+        child: MaterialApp(
+          localizationsDelegates: [
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+          ],
+          supportedLocales: [
+            const Locale('ko', 'KR'),
+          ],
+          home : MyApp(),
+        ),
       )
   );
 }
@@ -29,5 +52,6 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return signUp();
+    //return signUp();
   }
 }
