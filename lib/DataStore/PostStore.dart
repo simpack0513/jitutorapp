@@ -113,6 +113,24 @@ class PostStore extends ChangeNotifier {
     refreshPost(ClassUIDList);
   }
 
+  //데이터 수정하기
+  void updatePost(String comment, List ClassUIDList) async{
+    try {
+      await postDocList[listNum].reference.update(
+          {'comment' : comment}
+      );
+    } catch(e) {
+      Fluttertoast.showToast(
+          msg: '게시글 수정 도중 오류가 발생했습니다. 다시 시도해주세요.',
+          toastLength: Toast.LENGTH_SHORT,
+          timeInSecForIosWeb: 2,
+          backgroundColor: Colors.red,
+          fontSize: 12
+      );
+    }
+    refreshPost(ClassUIDList);
+  }
+
 
 
 }// 클래스 끝

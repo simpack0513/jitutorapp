@@ -1,6 +1,7 @@
 //여기는 외부파일 import
 import 'package:jitutorapp/DataStore/ClassStore.dart';
 import 'package:jitutorapp/DataStore/PostStore.dart';
+import 'photoUpdate.dart';
 import 'photoUpload.dart';
 //
 import 'package:fluttertoast/fluttertoast.dart';
@@ -8,8 +9,6 @@ import 'package:flutter/material.dart' hide ModalBottomSheetRoute;
 import 'package:provider/provider.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
-import 'package:sheet/sheet.dart';
-
 
 //스타일
 var textTheme = TextStyle(
@@ -165,7 +164,10 @@ class ModalFit extends StatelessWidget {
             ListTile(
               title: const Text('수정하기'),
               leading: const Icon(Icons.edit),
-              onTap: (){Navigator.of(context).pop();},
+              onTap: (){
+                Navigator.of(context).pop();
+                Navigator.push(context, MaterialPageRoute(builder: (context) => PhotoUpdate()));
+              },
             ),
             ListTile(
               title: const Text('삭제하기'),
