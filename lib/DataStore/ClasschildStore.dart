@@ -71,6 +71,9 @@ class ClasschildStore extends ChangeNotifier{
         map.putIfAbsent("comingDay", () => i.toString());
         comingClassList.add(map);
       }
+      if (comingClassList.length > 5) {
+        break;
+      }
     }
     notifyListeners();
   } //

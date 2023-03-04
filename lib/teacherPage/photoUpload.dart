@@ -64,7 +64,7 @@ class _PhotoUploadState extends State<PhotoUpload> {
       context: context,
       initialDate: DateTime.now(), //초기값
       firstDate: DateTime(2020), //시작일
-      lastDate: DateTime(2023), //마지막일
+      lastDate: DateTime.now(), //마지막일
     );
     selectedDate.then((value) {
       if(value == null) value = date;
@@ -100,6 +100,7 @@ class _PhotoUploadState extends State<PhotoUpload> {
       'heart' : false,
       'image' : postImageDownloadUrl,
       'className' : selectedClass,
+      'filename' : filename,
     });
   }
 

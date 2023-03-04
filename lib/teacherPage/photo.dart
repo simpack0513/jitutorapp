@@ -4,9 +4,11 @@ import 'package:jitutorapp/DataStore/PostStore.dart';
 import 'photoUpload.dart';
 //
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide ModalBottomSheetRoute;
 import 'package:provider/provider.dart';
 import 'package:extended_image/extended_image.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:sheet/sheet.dart';
 
 
 //스타일
@@ -63,7 +65,7 @@ class _PhotoState extends State<Photo> {
     return Scaffold(
       body: SizedBox(
         height: MediaQuery.of(context).size.height,
-        child: RefreshIndicator(
+        child: context.watch<PostStore>().postDocList.isNotEmpty ? RefreshIndicator(
           onRefresh: ()async{context.read<PostStore>().refreshPost(context.read<ClassStore>().userClassUIDList);},
           child: ListView.builder(
                 itemCount: context.watch<PostStore>().postDocList.length,
@@ -79,9 +81,21 @@ class _PhotoState extends State<Photo> {
                           width: MediaQuery.of(context).size.width,
                           alignment: Alignment.centerLeft,
                           child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Padding(padding: EdgeInsets.all(7) ,child: Icon(Icons.account_circle, size: 30,)),
-                              Text(context.read<PostStore>().postDocList[i]['className'], style: textTheme,),
+                              Row(
+                                children: [
+                                  Padding(padding: EdgeInsets.all(7) ,child: Icon(Icons.account_circle, size: 30,)),
+                                  Text(context.read<PostStore>().postDocList[i]['className'], style: textTheme,),
+                                ],
+                              ),
+                              IconButton(onPressed: (){
+                                context.read<PostStore>().setlistNum(i);
+                                showMaterialModalBottomSheet(
+                                    context: context,
+                                    builder: (context) => ModalFit()
+                                );}
+                              , icon: Icon(Icons.more_vert)),
                             ],
                           )),
                       Container(
@@ -118,8 +132,8 @@ class _PhotoState extends State<Photo> {
                     ],
                   );
                 },
-          ),
-        ),
+          ) ,
+        ) : Text('게시글이 없습니다.'),
       ),
       floatingActionButton: FloatingActionButton(
         elevation: 0.0,
@@ -131,5 +145,39 @@ class _PhotoState extends State<Photo> {
       ),
     );
   } //else문 끝
+  }
+}
+
+
+// 삭제하기 버튼 다이로그 위젯
+class ModalFit extends StatelessWidget {
+  const ModalFit({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.transparent,
+      child: Container(
+        margin: EdgeInsets.fromLTRB(10, 10, 10, 40),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            ListTile(
+              title: const Text('수정하기'),
+              leading: const Icon(Icons.edit),
+              onTap: (){Navigator.of(context).pop();},
+            ),
+            ListTile(
+              title: const Text('삭제하기'),
+              leading: const Icon(Icons.delete),
+              onTap: (){
+                  context.read<PostStore>().deletePost(context.read<ClassStore>().userClassUIDList);
+                  Navigator.of(context).pop();
+                },
+            )
+          ],
+        ),
+      ),
+    );
   }
 }

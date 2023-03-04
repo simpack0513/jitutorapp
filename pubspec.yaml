@@ -28,6 +28,8 @@ environment:
 # versions available, run `flutter pub outdated`.
 
 dependencies:
+  modal_bottom_sheet: ^2.1.2
+  sheet: ^1.0.0-pre
   table_calendar: ^3.0.8
   extended_image: ^6.3.2
   syncfusion_flutter_datepicker: ^20.3.58
