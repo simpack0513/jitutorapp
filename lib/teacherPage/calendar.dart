@@ -44,8 +44,9 @@ class _CalendarState extends State<Calendar> {
   // 변수 끝
 
   @override
-  void initState() {
+  void initState(){
     super.initState();
+    // context.read<ClasschildStore>().delete();
     context.read<ClasschildStore>().getDateClassList(context.read<ClassStore>().userClassUIDList, selectedDay.toString().split(' ')[0]);
     context.read<ClasschildStore>().getEventAllday(context.read<ClassStore>().userClassUIDList);
     context.read<ClasschildStore>().getComingClassList(context.read<ClassStore>().userClassUIDList);

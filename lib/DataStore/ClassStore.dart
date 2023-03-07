@@ -9,7 +9,7 @@ class ClassStore extends ChangeNotifier{
   var userClassUIDList = [];
 
   // 선생님 사용자의 UID에 맞는 클래스 정보만 받아와 userClassList에 저장
-  void teacherGetClassFromFirebase(String UID) async{
+  Future<void> teacherGetClassFromFirebase(String UID) async{
     userClassList = [];
     userClassNameList = [];
     userClassUIDList = [];
@@ -37,6 +37,11 @@ class ClassStore extends ChangeNotifier{
         }
       }
       return 'null';
+  }
+
+  // 클래스 특정 인덱스만 데이터베이스에서 다시 get하기
+  void teacherGetClassWithIndex(DocumentReference docRef, int idx) async{
+    await docRef.get().then((value) => userClassList[idx] = value);
   }
 
 

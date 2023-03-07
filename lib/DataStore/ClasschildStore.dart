@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:jitutorapp/DataStore/ClassStore.dart';
 final firestore = FirebaseFirestore.instance;
 
 
@@ -78,4 +79,46 @@ class ClasschildStore extends ChangeNotifier{
     notifyListeners();
   } //
 
-}
+  // 현재 날짜가 기준날짜(dates) 한 달 이내일 경우 ClassChild 새로 생성
+  Future<void> generateClassChild(var userClassList) async{
+    CollectionReference Classchild = FirebaseFirestore.instance.collection('Classchild');
+    DateTime oneMonthAfter = DateTime.now().add(Duration(days : 30));
+    int i = 0;
+    print(userClassList);
+    for (var Class in userClassList) {
+      List dates = [];
+      for(int i=0; i<Class['number']; i++) {
+        DateTime ClassDate = DateTime.parse(Class['dates'][i]);
+        if (oneMonthAfter.compareTo(ClassDate) >= 0) {
+          DateTime twoMonthAfter = oneMonthAfter.add(Duration(days: 30));
+          while (twoMonthAfter.compareTo(ClassDate) > 0) {
+            String name = Class['classname'].split(' ')[0] + '(' + Class['classname'].split(' ')[1] + ')';
+            Classchild.add({
+              'classUID' :  Class.id.toString(),
+              'date' : ClassDate.toString().split(' ')[0],
+              'startTime' : Class['time'][i].split('~')[0],
+              'endTime' : Class['time'][i].split('~')[1],
+              'name' : name
+            });
+            ClassDate = ClassDate.add(Duration(days: 7));
+          } //while 문 끝
+        } // if 문 끝
+        dates.add(ClassDate.toString().split(' ')[0]);
+      } //for문 끝
+      Class.reference.update(
+        {'dates' : dates}
+      );
+    }
+  } // Classchild generate 함수 끝
+
+
+
+
+  void delete() async{
+    var result = await firestore.collection('Classchild').where("startTime", isEqualTo: "16:30").get();
+    for (var doc in result.docs) {
+      doc.reference.delete();
+    }
+  }
+
+} // Class 끝
