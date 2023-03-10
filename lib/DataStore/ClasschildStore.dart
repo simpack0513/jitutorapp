@@ -1,10 +1,6 @@
 // 캘린더 내 수업 관리
-import 'dart:convert';
-
-import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:jitutorapp/DataStore/ClassStore.dart';
 final firestore = FirebaseFirestore.instance;
 
 
@@ -83,7 +79,6 @@ class ClasschildStore extends ChangeNotifier{
   Future<void> generateClassChild(var userClassList) async{
     CollectionReference Classchild = FirebaseFirestore.instance.collection('Classchild');
     DateTime oneMonthAfter = DateTime.now().add(Duration(days : 30));
-    int i = 0;
     print(userClassList);
     for (var Class in userClassList) {
       List dates = [];
@@ -110,9 +105,6 @@ class ClasschildStore extends ChangeNotifier{
       );
     }
   } // Classchild generate 함수 끝
-
-
-
 
   void delete() async{
     var result = await firestore.collection('Classchild').where("startTime", isEqualTo: "16:30").get();

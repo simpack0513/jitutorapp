@@ -7,6 +7,7 @@ import 'package:jitutorapp/DataStore/PostStore.dart';
 import 'package:jitutorapp/teacherPage/mainPage.dart';
 import 'signUp.dart';
 import 'DataStore/InfoStore.dart';
+import 'DataStore/scheduleStore.dart';
 
 //
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -30,6 +31,7 @@ void main() async{
           ChangeNotifierProvider(create: (c) => ClassStore()),
           ChangeNotifierProvider(create: (c) => PostStore()),
           ChangeNotifierProvider(create: (c) => ClasschildStore()),
+          ChangeNotifierProvider(create: (c) => ScheduleStore()),
         ],
         child: MaterialApp(
           localizationsDelegates: [
