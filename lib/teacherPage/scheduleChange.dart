@@ -45,6 +45,22 @@ class _ScheduleChangeState extends State<ScheduleChange> {
 
   //
 
+  // 날짜 고르기 함수
+  void showDatePickerPop(int i) async {
+    Future<DateTime?> selectedDate = showDatePicker(
+      context: context,
+      initialDate: DateTime.parse(context.read<ScheduleStore>().listDate[i]), //초기값
+      firstDate: DateTime.now().add(Duration(days: 1)), //시작일
+      lastDate: DateTime(2025), //마지막일
+    );
+    selectedDate.then((value) {
+      if(value != null) {
+        context.read<ScheduleStore>().changeDate(i, value.toString().split(' ')[0]);
+      }
+    });
+  }
+  //
+
 
   @override
   Widget build(BuildContext context) {
@@ -132,7 +148,9 @@ class _ScheduleChangeState extends State<ScheduleChange> {
                               backgroundColor: Colors.white,
                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5))
                           ),
-                          onPressed: (){},
+                          onPressed: (){
+                            showDatePickerPop(i);
+                          },
                           child: Row(children: [
                             Text(context.watch<ScheduleStore>().listDate[i], style: bodytextStyle2, ),
                             Icon(Icons.event, size: 20, color: Colors.black,),
@@ -216,7 +234,9 @@ class _ScheduleChangeState extends State<ScheduleChange> {
                   backgroundColor: Color(0xff698abe),
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5))
               ),
-              onPressed: (){},
+              onPressed: (){
+                FlutterDialog();
+              },
               child: Text('변경 요청하기', style: TextStyle(
                 fontFamily: 'Pretendard',
                 fontSize: 15,
@@ -225,6 +245,87 @@ class _ScheduleChangeState extends State<ScheduleChange> {
         ],),
       ),
     );
+  }
+
+  // 예 아니로 다이얼로그 함수
+  void FlutterDialog() {
+    showDialog(
+        context: context,
+        //barrierDismissible - Dialog를 제외한 다른 화면 터치 x
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            // RoundedRectangleBorder - Dialog 화면 모서리 둥글게 조절
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10.0)),
+            contentPadding: EdgeInsets.zero,
+            titlePadding: EdgeInsets.zero,
+            //Dialog Main Title
+            title: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Container(
+                  height: MediaQuery.of(context).size.height/15,
+                  alignment: Alignment.center,
+                  child: Text("이 내용으로 일정변경 요청을 하시겠습니까?", style : TextStyle(
+                    fontFamily: 'Pretendard',
+                    color: Colors.black,
+                    fontSize: 14,
+                  )),
+                ),
+                Container(
+                  color: Colors.grey,
+                  height: 0.5,
+                  width: double.infinity,
+                )
+              ],
+            ),
+            //
+            content: Row(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Expanded(
+                  flex: 1,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.white,
+                        elevation: 0,
+                    ),
+                    onPressed: (){
+                      Navigator.pop(context);
+                    },
+                    child: Text('아니오', style: TextStyle(
+                      fontFamily: 'Pretendard',
+                      fontSize: 15,
+                      color: Colors.black,)),
+                  ),
+                ),
+                Container(
+                  color: Colors.grey,
+                  width: 0.5,
+                  height: MediaQuery.of(context).size.height/20,
+                ),
+                Expanded(
+                  flex: 1,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      elevation: 0,
+                    ),
+                    onPressed: (){
+                      Navigator.pop(context);
+                    },
+                    child: Text('네', style: TextStyle(
+                      fontFamily: 'Pretendard',
+                      fontSize: 15,
+                      color: Colors.black,)),
+                  ),
+                ),
+              ]
+            ),
+          );
+        });
   }
 }
 
