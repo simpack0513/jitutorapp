@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:jitutorapp/DataStore/scheduleStore.dart';
+import 'package:jitutorapp/teacherPage/mainPage.dart';
 import 'package:provider/provider.dart';
+
+import '../DataStore/ClasschildStore.dart';
 
 class ScheduleChange extends StatefulWidget {
   const ScheduleChange({Key? key}) : super(key: key);
@@ -35,6 +38,7 @@ class _ScheduleChangeState extends State<ScheduleChange> {
   );
 
   bool checkBoxBool = false;
+  var homeContext; // schedulechage 위젯의 context를 보관
 
   List timeList = ['00:00', '00:30', '01:00','01:30','02:00','02:30','03:00','03:30','04:00','04:30',
     '05:00','05:30','06:00','06:30','07:00','07:30','08:00','08:30','09:00','09:30','10:00','10:30',
@@ -60,6 +64,14 @@ class _ScheduleChangeState extends State<ScheduleChange> {
     });
   }
   //
+
+  @override
+  void initState() {
+    setState(() {
+      homeContext = context;
+    });
+    super.initState();
+  }
 
 
   @override
@@ -249,6 +261,13 @@ class _ScheduleChangeState extends State<ScheduleChange> {
 
   // 예 아니로 다이얼로그 함수
   void FlutterDialog() {
+    String titleStr = '';
+    if (checkBoxBool == true) {
+      titleStr = "앞으로 모든 일정에 대하여 변경하는게 맞으신가요?";
+    }
+    else {
+      titleStr = "이 내용으로 일정변경 요청을 하시겠습니까?";
+    }
     showDialog(
         context: context,
         //barrierDismissible - Dialog를 제외한 다른 화면 터치 x
@@ -265,9 +284,10 @@ class _ScheduleChangeState extends State<ScheduleChange> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Container(
+                  padding: EdgeInsets.all(10),
                   height: MediaQuery.of(context).size.height/15,
                   alignment: Alignment.center,
-                  child: Text("이 내용으로 일정변경 요청을 하시겠습니까?", style : TextStyle(
+                  child: Text(titleStr, style : TextStyle(
                     fontFamily: 'Pretendard',
                     color: Colors.black,
                     fontSize: 14,
@@ -313,8 +333,11 @@ class _ScheduleChangeState extends State<ScheduleChange> {
                       backgroundColor: Colors.white,
                       elevation: 0,
                     ),
-                    onPressed: (){
-                      Navigator.pop(context);
+                    onPressed: () async{
+                      await context.read<ScheduleStore>().uploadData(checkBoxBool);
+                      context.read<ClasschildStore>().refreshClasschild();
+                      Navigator.of(context).pop();
+                      Navigator.of(homeContext).pop();
                     },
                     child: Text('네', style: TextStyle(
                       fontFamily: 'Pretendard',

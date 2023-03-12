@@ -12,16 +12,25 @@ class Event{
 class ClasschildStore extends ChangeNotifier{
   var dateClassList= []; // 달력에 선택할 날짜에 수업
   List<Map> comingClassList = [];
-
+  var comingClassListDoc = [];
+  List classUIDList = [];
+  String date = '';
+  int idx = 0; // 특정 classChild 인덱스
   Map<DateTime, List<Event>> events = {}; // 달력에 마커 표시할 map 자료형
 
   // 클래스 UID에 맞는 포스트 문서를 받는 함수
-  void getDateClassList(List ClassUIDList, String date) async{
-    var result = await firestore.collection('Classchild').where("classUID", whereIn: ClassUIDList).where("date", isEqualTo: date).orderBy("startTime", descending: false).get();
+  void getDateClassList(List ClassUIDList, String _date) async{
+    var result = await firestore.collection('Classchild').where("classUID", whereIn: ClassUIDList).where("date", isEqualTo: _date).orderBy("startTime", descending: false).get();
     dateClassList = [];
     for (var doc in result.docs) {
       dateClassList.add(doc);
     }
+    if (classUIDList.isEmpty) {
+      for (var value in ClassUIDList) {
+        classUIDList.add(value);
+      }
+    }
+    date = _date;
     notifyListeners();
   } //
 
@@ -59,6 +68,7 @@ class ClasschildStore extends ChangeNotifier{
     String date;
     DateTime today = DateTime.now();
     comingClassList = [];
+    comingClassListDoc = [];
     for(int i=1; i<=3; i++) {
       date = today.add(Duration(days: i)).toString().split(' ')[0];
       var result = await firestore.collection('Classchild').where("classUID", whereIn: ClassUIDList).where("date", isEqualTo: date).orderBy("startTime", descending: false).get();
@@ -66,7 +76,9 @@ class ClasschildStore extends ChangeNotifier{
         Map map = {};
         map.addAll(doc.data());
         map.putIfAbsent("comingDay", () => i.toString());
+        map.putIfAbsent("id", () => doc.id.toString());
         comingClassList.add(map);
+        comingClassListDoc.add(doc);
       }
       if (comingClassList.length > 5) {
         break;
@@ -111,6 +123,40 @@ class ClasschildStore extends ChangeNotifier{
     for (var doc in result.docs) {
       doc.reference.delete();
     }
+  }
+
+  // 리프레쉬 함수
+  void refreshClasschild() {
+    getDateClassList(classUIDList, date);
+    getEventAllday(classUIDList);
+    getComingClassList(classUIDList);
+  }
+
+  // 일정 변경 한 것 지우는 작업 - date일정 버전
+  Future<void> scheduleDelete() async{
+    var result = await firestore.collection('Schedule').where("classChildUID", isEqualTo: dateClassList[idx].id).get();
+    for (var doc in result.docs) {
+      doc.reference.delete();
+    }
+    dateClassList[idx].reference.update({
+      'underChange' : false,
+    });
+  }
+  // 일정 변경 한 것 지우는 작업 - 다가오는 일정 버전
+  Future<void> scheduleDelete2() async{
+    var result = await firestore.collection('Schedule').where("classChildUID", isEqualTo: comingClassListDoc[idx].id).get();
+    for (var doc in result.docs) {
+      doc.reference.delete();
+    }
+    comingClassListDoc[idx].reference.update({
+      'underChange' : false,
+    });
+  }
+
+  // idx 변수 지정 함수
+  void setIdx(int i) {
+    idx = i;
+    notifyListeners();
   }
 
 } // Class 끝
