@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jitutorapp/teacherPage/setting.dart';
 import 'package:provider/provider.dart';
 
 //여기는 파일 import
@@ -46,7 +47,9 @@ class _mainPageState extends State<mainPage> {
         appBar: AppBar(
           title: Text(context.read<UserStore>().name+' 선생님' , style: mainTheme.textTheme.headline1,),
           actions: [
-            IconButton(onPressed: (){}, icon: Icon(Icons.people_alt)),
+            IconButton(onPressed: (){
+              Navigator.push(context, MaterialPageRoute(builder: (context) => SettingPage()));
+            }, icon: Icon(Icons.people_alt)),
           ],
         ),
 

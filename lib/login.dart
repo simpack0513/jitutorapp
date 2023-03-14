@@ -88,6 +88,7 @@ class _LoginState extends State<Login> {
                 }
                 context.read<UserStore>().setUserUID(credential.user!.uid);
                 context.read<UserStore>().setName(userdoc['name']);
+                context.read<UserStore>().setPoint(userdoc['point']);
                 //메인 페이지로 이동
                 Navigator.pushAndRemoveUntil(context,
                     MaterialPageRoute(builder: (context) => mainPage()), (route) => false);

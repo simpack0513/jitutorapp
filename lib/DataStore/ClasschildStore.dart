@@ -128,7 +128,6 @@ class ClasschildStore extends ChangeNotifier{
   // 리프레쉬 함수
   void refreshClasschild() {
     getDateClassList(classUIDList, date);
-    getEventAllday(classUIDList);
     getComingClassList(classUIDList);
   }
 
