@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:jitutorapp/DataStore/ClassStore.dart';
 import 'dart:io';
@@ -50,12 +51,17 @@ class _PhotoUploadState extends State<PhotoUpload> {
         setUserImage(image.path);
         print(userImage);
       }
-      else {
+      else
         Navigator.pop(context);
-        print('NULL Image');
-      }
     } catch (e) {
-      print(e);
+      Fluttertoast.showToast(
+          msg: '이미지를 불러오는 중에 오류가 발생했습니다.',
+          toastLength: Toast.LENGTH_SHORT,
+          timeInSecForIosWeb: 2,
+          backgroundColor: Colors.red,
+          fontSize: 12
+      );
+      Navigator.pop(context);
     }
   }
   //여기는 날짜 고르기 함수
@@ -64,7 +70,7 @@ class _PhotoUploadState extends State<PhotoUpload> {
       context: context,
       initialDate: DateTime.now(), //초기값
       firstDate: DateTime(2020), //시작일
-      lastDate: DateTime(2023), //마지막일
+      lastDate: DateTime.now(), //마지막일
     );
     selectedDate.then((value) {
       if(value == null) value = date;
@@ -100,6 +106,7 @@ class _PhotoUploadState extends State<PhotoUpload> {
       'heart' : false,
       'image' : postImageDownloadUrl,
       'className' : selectedClass,
+      'filename' : filename,
     });
   }
 
@@ -124,7 +131,7 @@ class _PhotoUploadState extends State<PhotoUpload> {
         titleTextStyle: TextStyle(
           color: Colors.black,
           fontFamily: 'Pretendard',
-          fontSize: 25,
+          fontSize: 20,
         ),
         actions: [
           Padding(padding: EdgeInsets.fromLTRB(0, 0, 5, 0), child: IconButton(onPressed: ()async{await uploadPost(); Navigator.pop(context);}, icon: Icon(Icons.done, color: Colors.blue,)))

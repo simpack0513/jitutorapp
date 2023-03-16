@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jitutorapp/teacherPage/setting.dart';
 import 'package:provider/provider.dart';
 
 //여기는 파일 import
@@ -9,6 +10,7 @@ import 'photo.dart';
 import 'messenger.dart';
 import 'mainPageTheme.dart';
 import '../DataStore/ClassStore.dart';
+import '../DataStore/ClasschildStore.dart';
 
 
 //위젯 시작
@@ -28,8 +30,13 @@ class _mainPageState extends State<mainPage> {
   @override
   void initState() {
    // 메인 페이지 초기 설정 : 유저의 Class 정보 가져오기
-    context.read<ClassStore>().teacherGetClassFromFirebase(context.read<UserStore>().userUID);
+    init();
     super.initState();
+  }
+  // 초기함수 따로 빼둠(async를 써야해서..)
+  void init() async{
+    await context.read<ClassStore>().teacherGetClassFromFirebase(context.read<UserStore>().userUID);
+    context.read<ClasschildStore>().generateClassChild(context.read<ClassStore>().userClassList);
   }
 
   @override
@@ -40,7 +47,9 @@ class _mainPageState extends State<mainPage> {
         appBar: AppBar(
           title: Text(context.read<UserStore>().name+' 선생님' , style: mainTheme.textTheme.headline1,),
           actions: [
-            IconButton(onPressed: (){}, icon: Icon(Icons.people_alt)),
+            IconButton(onPressed: (){
+              Navigator.push(context, MaterialPageRoute(builder: (context) => SettingPage()));
+            }, icon: Icon(Icons.people_alt)),
           ],
         ),
 

@@ -5,6 +5,7 @@ class UserStore extends ChangeNotifier {
   String name = '';
   String type = '';
   String userUID = '';
+  int point = 0;
 
 
   void setUserUID(String s) {
@@ -19,6 +20,17 @@ class UserStore extends ChangeNotifier {
 
   void setType(String s) {
     type = s;
+    notifyListeners();
+  }
+
+  void setPoint(int num) {
+    point = num;
+    notifyListeners();
+  }
+
+  // 포인트 부여 해서 계산
+  void givePoint(int num) {
+    point -= num;
     notifyListeners();
   }
 
