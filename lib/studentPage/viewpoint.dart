@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:jitutorapp/DataStore/ClassStore.dart';
-import 'package:jitutorapp/DataStore/PointStore.dart';
 import 'package:jitutorapp/DataStore/UserStore.dart';
 import 'package:provider/provider.dart';
 
@@ -51,7 +49,7 @@ class _ViewPointState extends State<ViewPoint> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(Icons.attach_money),
-              Text('현재 잔여 포인트 : 100', style: headTextStyle,),
+              Text('현재 잔여 포인트 : ' + context.read<UserStore>().point.toString(), style: headTextStyle,),
             ],
           ),
         ),

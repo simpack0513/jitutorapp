@@ -22,7 +22,7 @@ class PostStore extends ChangeNotifier {
         .get();
     for (var doc in result.docs) {
       postDocList.add(doc);
-      print(doc['date']);
+      print(doc['image']);
     }
     if (postDocList.isNotEmpty) {
       lastVisible = postDocList[postDocList.length - 1];

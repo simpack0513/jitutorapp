@@ -26,65 +26,68 @@ class _MarketState extends State<Market> {
 
   @override
   Widget build(BuildContext context) {
-    return GridView.builder(
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        childAspectRatio: 1/1.4,
+    return Material(
+      color: Colors.white,
+      child: GridView.builder(
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          childAspectRatio: 1/1.4,
+        ),
+        itemCount: 5,
+        itemBuilder: (context, index) {
+          return ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.white,
+              padding: EdgeInsets.zero,
+              elevation: 0,
+            ),
+            onPressed: (){
+              showBarModalBottomSheet(
+                  context: context,
+                  builder: (context) => Product()
+              );
+            },
+            child: Container(
+              alignment: Alignment.center,
+              padding: EdgeInsets.all(10),
+              child: Column(children: [
+                Container(
+                    width: MediaQuery.of(context).size.width/2.1 - 20,
+                    height: MediaQuery.of(context).size.width/2.1 - 20,
+                    color: Colors.white,
+                    child: ExtendedImage.network(
+                        'https://recipe1.ezmember.co.kr/cache/recipe/2020/04/01/dcb9435f57d6504bf6c27313871b6ac01.jpg',
+                        fit: BoxFit.fill,
+                      shape: BoxShape.rectangle,
+                      borderRadius: BorderRadius.all(Radius.circular(15)),
+                    ),
+                ),
+                Container(
+                    margin: EdgeInsets.fromLTRB(5, 10, 5, 0),
+                    width: double.infinity,
+                    child: Text('황금올리브치킨', style: headTextStyle,)
+                ),
+                Container(
+                    margin: EdgeInsets.fromLTRB(5, 5, 5, 0),
+                    width: double.infinity,
+                    child: Text('2000포인트', style: bodyTextStyle,)
+                ),
+                Container(
+                    margin: EdgeInsets.fromLTRB(5, 5, 5, 0),
+                    padding: EdgeInsets.zero,
+                    width: double.infinity,
+                    child: Row(children: [
+                      Icon(Icons.favorite, color: Colors.grey, size: 12,),
+                      Text(' 134', style: TextStyle(color: Colors.grey, fontSize: 12),),
+                    ])
+                ),
+
+              ],),
+            ),
+          );
+        },
+
       ),
-      itemCount: 6,
-      itemBuilder: (context, index) {
-        return ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.white,
-            padding: EdgeInsets.zero,
-            elevation: 0,
-          ),
-          onPressed: (){
-            showBarModalBottomSheet(
-                context: context,
-                builder: (context) => Product()
-            );
-          },
-          child: Container(
-            alignment: Alignment.center,
-            padding: EdgeInsets.all(10),
-            child: Column(children: [
-              Container(
-                  width: MediaQuery.of(context).size.width/2.1 - 20,
-                  height: MediaQuery.of(context).size.width/2.1 - 20,
-                  color: Colors.white,
-                  child: ExtendedImage.network(
-                      'https://recipe1.ezmember.co.kr/cache/recipe/2020/04/01/dcb9435f57d6504bf6c27313871b6ac01.jpg',
-                      fit: BoxFit.fill,
-                    shape: BoxShape.rectangle,
-                    borderRadius: BorderRadius.all(Radius.circular(15)),
-                  ),
-              ),
-              Container(
-                  margin: EdgeInsets.fromLTRB(5, 10, 5, 0),
-                  width: double.infinity,
-                  child: Text('황금올리브치킨', style: headTextStyle,)
-              ),
-              Container(
-                  margin: EdgeInsets.fromLTRB(5, 5, 5, 0),
-                  width: double.infinity,
-                  child: Text('2000포인트', style: bodyTextStyle,)
-              ),
-              Container(
-                  margin: EdgeInsets.fromLTRB(5, 5, 5, 0),
-                  padding: EdgeInsets.zero,
-                  width: double.infinity,
-                  child: Row(children: [
-                    Icon(Icons.favorite, color: Colors.grey, size: 12,),
-                    Text(' 134', style: TextStyle(color: Colors.grey, fontSize: 12),),
-                  ])
-              ),
-
-            ],),
-          ),
-        );
-      },
-
     );
   }
 }

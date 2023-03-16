@@ -207,7 +207,7 @@ class _CalendarState extends State<Calendar> {
                             children: [
                               Expanded(flex : 1, child: SizedBox(child: Text(context.watch<ClasschildStore>().comingClassList[i]["comingDay"]+' 일후', style: bodyBoldtextStyle))),
                               Expanded(
-                                flex : 4,
+                                flex : 5,
                                 child: SizedBox(
                                   child: Text(context.watch<ClasschildStore>().comingClassList[i]['name']
                                       +'  '+context.watch<ClasschildStore>().comingClassList[i]['startTime']
@@ -215,7 +215,7 @@ class _CalendarState extends State<Calendar> {
                                 ),
                               ),
                               Expanded(
-                                flex : 3,
+                                flex : 2,
                                 child: Container(alignment: Alignment.centerRight, child : (context.watch<ClasschildStore>().comingClassList[i]['underChange'] == false) ? TextButton(onPressed: (){
                                   changeDate2(i);
                                 }, child: Text('일정변경'),) :  TextButton(onPressed: (){
