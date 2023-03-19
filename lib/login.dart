@@ -4,6 +4,7 @@ import 'package:jitutorapp/signUp.dart';
 
 //
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:jitutorapp/studentPage/mainPage.dart';
@@ -91,6 +92,11 @@ class _LoginState extends State<Login> {
                 context.read<UserStore>().setName(userdoc['name']);
                 context.read<UserStore>().setPoint(userdoc['point']);
                 context.read<UserStore>().setType(userdoc['type']);
+                // 휴대폰 내부 저장소에 아이디, 비번 기록
+                final storage = new FlutterSecureStorage();
+                await storage.write(key: 'id', value: useremail);
+                await storage.write(key: 'password', value: userpassword);
+
                 //메인 페이지로 이동
                 if (context.read<UserStore>().type.compareTo('teacher') == 0) {
                   Navigator.pushAndRemoveUntil(context,

@@ -7,6 +7,7 @@ import 'package:jitutorapp/DataStore/OrderStore.dart';
 import 'package:jitutorapp/DataStore/PointStore.dart';
 import 'package:jitutorapp/DataStore/UserStore.dart';
 import 'package:jitutorapp/DataStore/PostStore.dart';
+import 'package:jitutorapp/mainLodding.dart';
 import 'package:jitutorapp/teacherPage/mainPage.dart';
 import 'signUp.dart';
 import 'DataStore/InfoStore.dart';
@@ -60,7 +61,7 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return signUp();
+    return LoadingPage();
     //return signUp();
   }
 }

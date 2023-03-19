@@ -105,7 +105,8 @@ class ClasschildStore extends ChangeNotifier{
               'date' : ClassDate.toString().split(' ')[0],
               'startTime' : Class['time'][i].split('~')[0],
               'endTime' : Class['time'][i].split('~')[1],
-              'name' : name
+              'name' : name,
+              'underChange' : false,
             });
             ClassDate = ClassDate.add(Duration(days: 7));
           } //while 문 끝

@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:jitutorapp/DataStore/InfoStore.dart';
 import 'package:jitutorapp/MasterPage/marketItemUpload.dart';
 import 'package:jitutorapp/MasterPage/orderManage.dart';
+import 'package:jitutorapp/signUp.dart';
 import 'package:jitutorapp/teacherPage/studentManage.dart';
+import 'package:provider/provider.dart';
+import '../DataStore/UserStore.dart';
 
 
 
@@ -35,6 +40,37 @@ class _SettingPageState extends State<SettingPage> {
       alignment: Alignment.topLeft,
   );
 
+  // 관리자 여부 확인 변수
+  bool isManager = false;
+
+
+  // 관리자 여부 확인 함수
+  void checkManager() {
+    if(context.read<UserStore>().userUID == 'joRg8Xj56MUAU7u1BrV4BpWZ4Gw2') {
+      setState(() {
+        isManager = true;
+      });
+    }
+    else {
+      setState(() {
+        isManager = false;
+      });
+    }
+  }
+
+  // 로그아웃 함수 따로 만듦
+  void logout() async{
+    context.read<InfoStore>().allPop();
+    final storage = new FlutterSecureStorage();
+    await storage.deleteAll();
+  }
+
+
+  @override
+  void initState() {
+    checkManager();
+    super.initState();
+  }
 
 
   @override
@@ -112,7 +148,7 @@ class _SettingPageState extends State<SettingPage> {
             height: 0.5,
             width: double.infinity,
           ),
-          Container( // 4
+          (isManager) ? Container( // 4
             color: Colors.amber,
             width: double.infinity,
             height: MediaQuery.of(context).size.height/8,
@@ -126,13 +162,13 @@ class _SettingPageState extends State<SettingPage> {
                 Expanded(flex: 1, child: Text('학생이 구매할 상품을 마켓에 등록할 수 있습니다.', style: bodytextStyle,))
               ],),
             ),
-          ),
-          Container(
+          ) : SizedBox(width: 0, height: 0,),
+          (isManager) ? Container(
             color: Colors.grey,
             height: 0.5,
             width: double.infinity,
-          ),
-          Container( // 5
+          ) : SizedBox(width: 0, height: 0,),
+          (isManager) ? Container( // 5
             color: Colors.amber,
             width: double.infinity,
             height: MediaQuery.of(context).size.height/8,
@@ -144,6 +180,28 @@ class _SettingPageState extends State<SettingPage> {
               child: Column(crossAxisAlignment : CrossAxisAlignment.start, mainAxisAlignment : MainAxisAlignment.center, children: [
                 Expanded(flex: 1, child: Text('학생 주문 내역 확인', style: headtextStyle,)),
                 Expanded(flex: 1, child: Text('학생들이 주문한 내역을 확인하고 기프티콘을 업로드 할 수 있습니다.', style: bodytextStyle,))
+              ],),
+            ),
+          ) : SizedBox(width: 0, height: 0,),
+          (isManager) ? Container(
+            color: Colors.grey,
+            height: 0.5,
+            width: double.infinity,
+          ) : SizedBox(width: 0, height: 0,),
+          Container( // 6
+            color: Colors.amber,
+            width: double.infinity,
+            height: MediaQuery.of(context).size.height/8,
+            child: ElevatedButton(
+              onPressed: (){
+                Navigator.pushAndRemoveUntil(context,
+                    MaterialPageRoute(builder: (context) => signUp()), (route) => false);
+                logout();
+              },
+              style: elevatedButtonStyle,
+              child: Column(crossAxisAlignment : CrossAxisAlignment.start, mainAxisAlignment : MainAxisAlignment.center, children: [
+                Expanded(flex: 1, child: Text('로그아웃 하기', style: headtextStyle,)),
+                Expanded(flex: 1, child: Text('로그아웃을 합니다.', style: bodytextStyle,))
               ],),
             ),
           ),

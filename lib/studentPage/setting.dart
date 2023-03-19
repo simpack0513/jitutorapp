@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:jitutorapp/studentPage/viewpoint.dart';
+import 'package:provider/provider.dart';
 
+import '../DataStore/InfoStore.dart';
+import '../signUp.dart';
 import 'order.dart';
 
 
@@ -34,6 +38,13 @@ class _SettingPageState extends State<SettingPage> {
       padding: EdgeInsets.all(20),
       alignment: Alignment.topLeft,
   );
+
+  // 로그아웃 함수 따로 만듦
+  void logout() async{
+    context.read<InfoStore>().allPop();
+    final storage = new FlutterSecureStorage();
+    await storage.deleteAll();
+  }
 
 
 
@@ -101,11 +112,15 @@ class _SettingPageState extends State<SettingPage> {
             width: double.infinity,
             height: MediaQuery.of(context).size.height/8,
             child: ElevatedButton(
-              onPressed: (){},
+              onPressed: (){
+                Navigator.pushAndRemoveUntil(context,
+                    MaterialPageRoute(builder: (context) => signUp()), (route) => false);
+                logout();
+              },
               style: elevatedButtonStyle,
               child: Column(crossAxisAlignment : CrossAxisAlignment.start, mainAxisAlignment : MainAxisAlignment.center, children: [
-                Expanded(flex: 1, child: Text('내 정보 관리', style: headtextStyle,)),
-                Expanded(flex: 1, child: Text('비밀번호 재설정 등 ', style: bodytextStyle,))
+                Expanded(flex: 1, child: Text('로그아웃 하기', style: headtextStyle,)),
+                Expanded(flex: 1, child: Text('로그아웃을 바로 합니다.', style: bodytextStyle,))
               ],),
             ),
           ),

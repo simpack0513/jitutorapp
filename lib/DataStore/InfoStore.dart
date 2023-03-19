@@ -32,6 +32,15 @@ class InfoStore extends ChangeNotifier {
     password = '';
     notifyListeners();
   }
+  void allPop() {
+    type = '';
+    name = '';
+    smsCode = '';
+    email = '';
+    password = '';
+    phone = '';
+    notifyListeners();
+  }
   changeType(String s) {
     type = s;
     notifyListeners();

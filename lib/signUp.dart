@@ -1,5 +1,6 @@
 import 'dart:io';
 //여기는 일반 파일 import 하는 곳
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:jitutorapp/login.dart';
 import 'package:jitutorapp/studentPage/mainPage.dart';
 import 'DataStore/InfoStore.dart';
@@ -188,7 +189,7 @@ class _PhoneInfoPageState extends State<PhoneInfoPage> {
     try {
       final user = await FirebaseAuth.instance.currentUser;
       await firestore.collection('Person').doc(user?.uid).
-      set({'name' : context.read<InfoStore>().name, 'type' : context.read<InfoStore>().type, 'point' : 500});
+      set({'name' : context.read<InfoStore>().name, 'type' : context.read<InfoStore>().type, 'point' : 50});
       // 유저스토어에 사용자 정보 저장 = 바로 데이터 꺼내쓸 수 있게
       context.read<UserStore>().setName(context.read<InfoStore>().name);
       context.read<UserStore>().setType(context.read<InfoStore>().type);
@@ -215,6 +216,12 @@ class _PhoneInfoPageState extends State<PhoneInfoPage> {
       );
       //파이어스토어에 사용자 정보 등록
       await StoreAtFireStore();
+
+      // 자동 로그인을 위한 사용자 계정 휴대폰 내부에 암호화 저장
+      final storage = new FlutterSecureStorage();
+      await storage.write(key: 'id', value: context.read<InfoStore>().email);
+      await storage.write(key: 'password', value: context.read<InfoStore>().password);
+
       //메인 페이지로 이동
       if (context.read<UserStore>().type.compareTo('teacher') == 0) {
         Navigator.pushAndRemoveUntil(context,

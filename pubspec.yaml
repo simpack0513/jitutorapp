@@ -28,6 +28,7 @@ environment:
 # versions available, run `flutter pub outdated`.
 
 dependencies:
+  flutter_secure_storage: ^8.0.0
   modal_bottom_sheet: ^2.1.2
   sheet: ^1.0.0-pre
   table_calendar: ^3.0.8
