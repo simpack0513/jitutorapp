@@ -1,6 +1,10 @@
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
+import 'package:jitutorapp/DataStore/MarketStore.dart';
+import 'package:jitutorapp/DataStore/PointStore.dart';
+import 'package:jitutorapp/DataStore/UserStore.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:provider/provider.dart';
 
 class Market extends StatefulWidget {
   const Market({Key? key}) : super(key: key);
@@ -33,8 +37,8 @@ class _MarketState extends State<Market> {
           crossAxisCount: 2,
           childAspectRatio: 1/1.4,
         ),
-        itemCount: 5,
-        itemBuilder: (context, index) {
+        itemCount: context.watch<MarketStore>().marketItem.length,
+        itemBuilder: (context, i) {
           return ElevatedButton(
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.white,
@@ -44,7 +48,7 @@ class _MarketState extends State<Market> {
             onPressed: (){
               showBarModalBottomSheet(
                   context: context,
-                  builder: (context) => Product()
+                  builder: (context) => Product(index : i)
               );
             },
             child: Container(
@@ -56,7 +60,7 @@ class _MarketState extends State<Market> {
                     height: MediaQuery.of(context).size.width/2.1 - 20,
                     color: Colors.white,
                     child: ExtendedImage.network(
-                        'https://recipe1.ezmember.co.kr/cache/recipe/2020/04/01/dcb9435f57d6504bf6c27313871b6ac01.jpg',
+                        context.watch<MarketStore>().marketItem[i]['image'],
                         fit: BoxFit.fill,
                       shape: BoxShape.rectangle,
                       borderRadius: BorderRadius.all(Radius.circular(15)),
@@ -65,12 +69,12 @@ class _MarketState extends State<Market> {
                 Container(
                     margin: EdgeInsets.fromLTRB(5, 10, 5, 0),
                     width: double.infinity,
-                    child: Text('황금올리브치킨', style: headTextStyle,)
+                    child: Text(context.watch<MarketStore>().marketItem[i]['name'], style: headTextStyle,)
                 ),
                 Container(
                     margin: EdgeInsets.fromLTRB(5, 5, 5, 0),
                     width: double.infinity,
-                    child: Text('2000포인트', style: bodyTextStyle,)
+                    child: Text(context.watch<MarketStore>().marketItem[i]['price'].toString() + '포인트', style: bodyTextStyle,)
                 ),
                 Container(
                     margin: EdgeInsets.fromLTRB(5, 5, 5, 0),
@@ -94,7 +98,9 @@ class _MarketState extends State<Market> {
 
 // 구매하기
 class Product extends StatelessWidget {
-  const Product({super.key});
+  const Product({super.key, required this.index});
+
+  final index;
 
   @override
   Widget build(BuildContext context) {
@@ -116,6 +122,8 @@ class Product extends StatelessWidget {
     );
     double siedMargin = MediaQuery.of(context).size.width/10;
 
+    bool isCanBuy = context.read<MarketStore>().checkPointBeforeBuy(context.read<UserStore>().point, index);
+
     return Material(
       color: Colors.transparent,
       child: Container(
@@ -129,7 +137,7 @@ class Product extends StatelessWidget {
               height: MediaQuery.of(context).size.width/2.3,
               color: Colors.white,
               child: ExtendedImage.network(
-                'https://recipe1.ezmember.co.kr/cache/recipe/2020/04/01/dcb9435f57d6504bf6c27313871b6ac01.jpg',
+                context.read<MarketStore>().marketItem[index]['image'],
                 fit: BoxFit.fill,
                 shape: BoxShape.rectangle,
                 borderRadius: BorderRadius.all(Radius.circular(15)),
@@ -138,12 +146,12 @@ class Product extends StatelessWidget {
             Container(
               margin: EdgeInsets.fromLTRB(0, 20, 0, 10),
               width: double.infinity,
-              child: Text('BBQ 황금올리브', style: headTextStyle,),
+              child: Text(context.read<MarketStore>().marketItem[index]['name'], style: headTextStyle,),
             ),
             Container(
               margin: EdgeInsets.fromLTRB(0, 0, 0, 10),
               width: double.infinity,
-              child: Text('2000포인트', style: bodyTextStyle,),
+              child: Text(context.read<MarketStore>().marketItem[index]['price'].toString() +'포인트', style: bodyTextStyle,),
             ),
             Container(
               padding: EdgeInsets.all(10),
@@ -174,9 +182,9 @@ class Product extends StatelessWidget {
             Container(
               width: double.infinity,
               margin: EdgeInsets.fromLTRB(0, 0, 0, 10),
-              child: Text('현재 남은 포인트 : 3000', style: bodyTextStyle,),
+              child: Text('현재 남은 포인트 : ' + context.read<UserStore>().point.toString(), style: bodyTextStyle,),
             ),
-            (true) ? ElevatedButton(
+            (isCanBuy) ? ElevatedButton(
                 style: ElevatedButton.styleFrom(
                     backgroundColor: Color(0xff0067a3),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5))
@@ -209,6 +217,7 @@ class Product extends StatelessWidget {
 
   // 예 아니로 다이얼로그 함수
   void FlutterDialog(var context) {
+    var parrentContext = context;
     showDialog(
         context: context,
         //barrierDismissible - Dialog를 제외한 다른 화면 터치 x
@@ -275,7 +284,11 @@ class Product extends StatelessWidget {
                         elevation: 0,
                       ),
                       onPressed: () async{
+                        context.read<UserStore>().givePoint(context.read<MarketStore>().marketItem[index]['price']);
+                        context.read<PointStore>().calOrderPoint(context.read<UserStore>().userUID, context.read<MarketStore>().marketItem[index]['price']);
+                        context.read<MarketStore>().postNewOrder(index, context.read<UserStore>().name, context.read<UserStore>().userUID);
                         Navigator.of(context).pop();
+                        Navigator.pop(parrentContext);
                       },
                       child: Text('네', style: TextStyle(
                         fontFamily: 'Pretendard',

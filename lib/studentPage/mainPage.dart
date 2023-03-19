@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:jitutorapp/DataStore/MarketStore.dart';
+import 'package:jitutorapp/DataStore/OrderStore.dart';
 import 'package:jitutorapp/studentPage/market.dart';
 import 'package:jitutorapp/studentPage/setting.dart';
 import 'package:provider/provider.dart';
@@ -37,6 +39,8 @@ class _mainPageSState extends State<mainPageS> {
   void init() async{
     await context.read<ClassStore>().teacherGetClassFromFirebase(context.read<UserStore>().userUID);
     context.read<ClasschildStore>().generateClassChild(context.read<ClassStore>().userClassList);
+    context.read<MarketStore>().getMarketItem();
+    context.read<OrderStore>().initOrderList(context.read<UserStore>().userUID);
   }
 
   @override

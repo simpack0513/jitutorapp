@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:jitutorapp/DataStore/ClassStore.dart';
 import 'dart:io';
-import 'package:provider/provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 final firestore = FirebaseFirestore.instance;
@@ -68,7 +66,7 @@ class _MarketItemUploadState extends State<MarketItemUpload> {
     try {
       final ref = storage
           .ref()
-          .child('postImage/$filename');
+          .child('marketItem/$filename');
       await ref.putFile(userphoto);
       var url = await ref.getDownloadURL();
       setState(() {

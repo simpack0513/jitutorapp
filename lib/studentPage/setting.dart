@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:jitutorapp/studentPage/viewpoint.dart';
 
+import 'order.dart';
+
 
 
 class SettingPage extends StatefulWidget {
@@ -79,13 +81,20 @@ class _SettingPageState extends State<SettingPage> {
             width: double.infinity,
             height: MediaQuery.of(context).size.height/8,
             child: ElevatedButton(
-              onPressed: (){},
+              onPressed: (){
+                Navigator.push(context, MaterialPageRoute(builder: (context) => Order()));
+              },
               style: elevatedButtonStyle,
               child: Column(crossAxisAlignment : CrossAxisAlignment.start, mainAxisAlignment : MainAxisAlignment.center, children: [
                 Expanded(flex: 1, child: Text('보관함', style: headtextStyle,)),
                 Expanded(flex: 1, child: Text('구매한 기프티콘을 확인할 수 있습니다.', style: bodytextStyle,))
               ],),
             ),
+          ),
+          Container(
+            color: Colors.grey,
+            height: 0.5,
+            width: double.infinity,
           ),
           Container( // 3
             color: Colors.amber,
