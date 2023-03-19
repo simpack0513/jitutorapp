@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:jitutorapp/MasterPage/marketItemUpload.dart';
-import 'package:jitutorapp/MasterPage/orderManage.dart';
-import 'package:jitutorapp/teacherPage/studentManage.dart';
+import 'package:jitutorapp/studentPage/viewpoint.dart';
+
+import 'order.dart';
 
 
 
@@ -62,12 +62,12 @@ class _SettingPageState extends State<SettingPage> {
             height: MediaQuery.of(context).size.height/8,
             child: ElevatedButton(
               onPressed: (){
-                Navigator.push(context, MaterialPageRoute(builder: (context) => StudentManage()));
+                Navigator.push(context, MaterialPageRoute(builder: (context) => ViewPoint()));
               },
               style: elevatedButtonStyle,
               child: Column(crossAxisAlignment : CrossAxisAlignment.start, mainAxisAlignment : MainAxisAlignment.center, children: [
-                Expanded(flex: 1, child: Text('학생 관리', style: headtextStyle,)),
-                Expanded(flex: 1, child: Text('현재 선생님께서 수업 중인 학생들을 보거나, 포인트를 부여할 수 있습니다.', style: bodytextStyle,))
+                Expanded(flex: 1, child: Text('내 포인트 보기', style: headtextStyle,)),
+                Expanded(flex: 1, child: Text('현재 남은 포인트를 볼 수 있습니다.', style: bodytextStyle,))
               ],),
             ),
           ),
@@ -81,11 +81,13 @@ class _SettingPageState extends State<SettingPage> {
             width: double.infinity,
             height: MediaQuery.of(context).size.height/8,
             child: ElevatedButton(
-              onPressed: (){},
+              onPressed: (){
+                Navigator.push(context, MaterialPageRoute(builder: (context) => Order()));
+              },
               style: elevatedButtonStyle,
               child: Column(crossAxisAlignment : CrossAxisAlignment.start, mainAxisAlignment : MainAxisAlignment.center, children: [
-                Expanded(flex: 1, child: Text('수업 관리', style: headtextStyle,)),
-                Expanded(flex: 1, child: Text('새로운 수업을 추가하거나 수업 종료를 설정할 수 있습니다.', style: bodytextStyle,))
+                Expanded(flex: 1, child: Text('보관함', style: headtextStyle,)),
+                Expanded(flex: 1, child: Text('구매한 기프티콘을 확인할 수 있습니다.', style: bodytextStyle,))
               ],),
             ),
           ),
@@ -104,46 +106,6 @@ class _SettingPageState extends State<SettingPage> {
               child: Column(crossAxisAlignment : CrossAxisAlignment.start, mainAxisAlignment : MainAxisAlignment.center, children: [
                 Expanded(flex: 1, child: Text('내 정보 관리', style: headtextStyle,)),
                 Expanded(flex: 1, child: Text('비밀번호 재설정 등 ', style: bodytextStyle,))
-              ],),
-            ),
-          ),
-          Container(
-            color: Colors.grey,
-            height: 0.5,
-            width: double.infinity,
-          ),
-          Container( // 4
-            color: Colors.amber,
-            width: double.infinity,
-            height: MediaQuery.of(context).size.height/8,
-            child: ElevatedButton(
-              onPressed: (){
-                Navigator.push(context, MaterialPageRoute(builder: (context) => MarketItemUpload()));
-              },
-              style: elevatedButtonStyle,
-              child: Column(crossAxisAlignment : CrossAxisAlignment.start, mainAxisAlignment : MainAxisAlignment.center, children: [
-                Expanded(flex: 1, child: Text('마켓 상품 등록', style: headtextStyle,)),
-                Expanded(flex: 1, child: Text('학생이 구매할 상품을 마켓에 등록할 수 있습니다.', style: bodytextStyle,))
-              ],),
-            ),
-          ),
-          Container(
-            color: Colors.grey,
-            height: 0.5,
-            width: double.infinity,
-          ),
-          Container( // 5
-            color: Colors.amber,
-            width: double.infinity,
-            height: MediaQuery.of(context).size.height/8,
-            child: ElevatedButton(
-              onPressed: (){
-                Navigator.push(context, MaterialPageRoute(builder: (context) => OrderManage()));
-              },
-              style: elevatedButtonStyle,
-              child: Column(crossAxisAlignment : CrossAxisAlignment.start, mainAxisAlignment : MainAxisAlignment.center, children: [
-                Expanded(flex: 1, child: Text('학생 주문 내역 확인', style: headtextStyle,)),
-                Expanded(flex: 1, child: Text('학생들이 주문한 내역을 확인하고 기프티콘을 업로드 할 수 있습니다.', style: bodytextStyle,))
               ],),
             ),
           ),

@@ -41,4 +41,12 @@ class PointStore extends ChangeNotifier {
       fontSize: 12,
     );
   }
+
+  void calOrderPoint(String studentUID, int usePoint) async{ // 주문하고 포인트 계산
+    var result = await firestore.collection('Person').doc(studentUID).get();
+    int remainPoint = result['point'] - usePoint;
+    result.reference.update({
+      'point' : remainPoint,
+    });
+  }
 }

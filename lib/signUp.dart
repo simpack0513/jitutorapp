@@ -1,6 +1,7 @@
 import 'dart:io';
 //여기는 일반 파일 import 하는 곳
 import 'package:jitutorapp/login.dart';
+import 'package:jitutorapp/studentPage/mainPage.dart';
 import 'DataStore/InfoStore.dart';
 import './teacherPage/mainPage.dart';
 import 'DataStore/UserStore.dart';
@@ -192,7 +193,7 @@ class _PhoneInfoPageState extends State<PhoneInfoPage> {
       context.read<UserStore>().setName(context.read<InfoStore>().name);
       context.read<UserStore>().setType(context.read<InfoStore>().type);
       context.read<UserStore>().setUserUID(user!.uid);
-      context.read<UserStore>().setPoint(500);
+      context.read<UserStore>().setPoint(50);
 
     } catch (e) {
       print(e);
@@ -215,8 +216,15 @@ class _PhoneInfoPageState extends State<PhoneInfoPage> {
       //파이어스토어에 사용자 정보 등록
       await StoreAtFireStore();
       //메인 페이지로 이동
-      Navigator.pushAndRemoveUntil(context,
-          MaterialPageRoute(builder: (context) => mainPage()), (route) => false);
+      if (context.read<UserStore>().type.compareTo('teacher') == 0) {
+        Navigator.pushAndRemoveUntil(context,
+            MaterialPageRoute(builder: (context) => mainPage()), (route) => false);
+      }
+      else if (context.read<UserStore>().type.compareTo('student') == 0) {
+        Navigator.pushAndRemoveUntil(context,
+            MaterialPageRoute(builder: (context) => mainPageS()), (route) => false);
+      }
+
     } on FirebaseAuthException catch (e) {
       setState(() {
         context.read<InfoStore>().popSmsCode();
