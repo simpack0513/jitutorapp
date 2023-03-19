@@ -64,9 +64,7 @@ class _MarketItemUploadState extends State<MarketItemUpload> {
     if (userphoto == null) return;
     final filename = userImage.substring(userImage.lastIndexOf("/")+1);
     try {
-      final ref = storage
-          .ref()
-          .child('marketItem/$filename');
+      final ref = storage.ref().child('marketItem/$filename');
       await ref.putFile(userphoto);
       var url = await ref.getDownloadURL();
       setState(() {

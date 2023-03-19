@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:jitutorapp/teacherPage/marketItemUpload.dart';
+import 'package:jitutorapp/MasterPage/marketItemUpload.dart';
+import 'package:jitutorapp/MasterPage/orderManage.dart';
 import 'package:jitutorapp/teacherPage/studentManage.dart';
 
 
@@ -123,6 +124,26 @@ class _SettingPageState extends State<SettingPage> {
               child: Column(crossAxisAlignment : CrossAxisAlignment.start, mainAxisAlignment : MainAxisAlignment.center, children: [
                 Expanded(flex: 1, child: Text('마켓 상품 등록', style: headtextStyle,)),
                 Expanded(flex: 1, child: Text('학생이 구매할 상품을 마켓에 등록할 수 있습니다.', style: bodytextStyle,))
+              ],),
+            ),
+          ),
+          Container(
+            color: Colors.grey,
+            height: 0.5,
+            width: double.infinity,
+          ),
+          Container( // 5
+            color: Colors.amber,
+            width: double.infinity,
+            height: MediaQuery.of(context).size.height/8,
+            child: ElevatedButton(
+              onPressed: (){
+                Navigator.push(context, MaterialPageRoute(builder: (context) => OrderManage()));
+              },
+              style: elevatedButtonStyle,
+              child: Column(crossAxisAlignment : CrossAxisAlignment.start, mainAxisAlignment : MainAxisAlignment.center, children: [
+                Expanded(flex: 1, child: Text('학생 주문 내역 확인', style: headtextStyle,)),
+                Expanded(flex: 1, child: Text('학생들이 주문한 내역을 확인하고 기프티콘을 업로드 할 수 있습니다.', style: bodytextStyle,))
               ],),
             ),
           ),

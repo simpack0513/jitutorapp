@@ -1,6 +1,7 @@
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:jitutorapp/DataStore/MarketStore.dart';
+import 'package:jitutorapp/DataStore/OrderStore.dart';
 import 'package:jitutorapp/DataStore/PointStore.dart';
 import 'package:jitutorapp/DataStore/UserStore.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
@@ -287,6 +288,7 @@ class Product extends StatelessWidget {
                         context.read<UserStore>().givePoint(context.read<MarketStore>().marketItem[index]['price']);
                         context.read<PointStore>().calOrderPoint(context.read<UserStore>().userUID, context.read<MarketStore>().marketItem[index]['price']);
                         context.read<MarketStore>().postNewOrder(index, context.read<UserStore>().name, context.read<UserStore>().userUID);
+                        context.read<OrderStore>().setRefreshTrue();
                         Navigator.of(context).pop();
                         Navigator.pop(parrentContext);
                       },

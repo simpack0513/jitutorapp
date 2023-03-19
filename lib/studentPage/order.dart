@@ -29,6 +29,14 @@ class _OrderState extends State<Order> {
   );
   //
 
+  @override
+  void initState() {
+   if (context.read<OrderStore>().needRefresh) {
+     context.read<OrderStore>().initOrderList(context.read<UserStore>().userUID);
+     context.read<OrderStore>().setRefreshFalse();
+   }
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -172,7 +180,7 @@ class Product extends StatelessWidget {
                             borderRadius: BorderRadius.circular(5))
                     ),
                     onPressed: () {
-                      FlutterDialog(context);
+                      FlutterDialog(context, index);
                     },
                     child: Container(
                       alignment: Alignment.center,
@@ -189,7 +197,7 @@ class Product extends StatelessWidget {
 
 
   // 예 아니로 다이얼로그 함수
-  void FlutterDialog(var context) {
+  void FlutterDialog(var context, int index) {
     var parrentContext = context;
     showDialog(
         context: context,
@@ -257,6 +265,7 @@ class Product extends StatelessWidget {
                         elevation: 0,
                       ),
                       onPressed: () async {
+                        context.read<OrderStore>().deleteOrder(index);
                         Navigator.of(context).pop();
                         Navigator.pop(parrentContext);
                       },
