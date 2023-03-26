@@ -69,13 +69,39 @@ class ClasschildStore extends ChangeNotifier{
     DateTime today = DateTime.now();
     comingClassList = [];
     comingClassListDoc = [];
-    for(int i=1; i<=3; i++) {
+    date = today.toString().split(' ')[0];
+    // 오늘 일정 중 아직 시간이 안 지난 수업만 출력
+    var result = await firestore.collection('Classchild').where("classUID", whereIn: ClassUIDList).where("date", isEqualTo: date).orderBy("startTime", descending: false).get();
+    for(var doc in result.docs) {
+      String hour = doc['startTime'].split(':')[0];
+      String min = doc['startTime'].split(':')[1];
+      String classTimeString = doc['date'] + ' ' + hour + ':' + min + ':00';
+      DateTime time = DateTime.parse(classTimeString);
+      if (today.compareTo(time) < 0) {
+        Duration dateDiff = time.difference(today);
+        String comingDayString;
+        if (dateDiff.inMinutes < 60) {
+          comingDayString = dateDiff.inMinutes.toString() + ' 분후';
+        }
+        else {
+          comingDayString = dateDiff.inHours.toString() + ' 시간후';
+        }
+        Map map = {};
+        map.addAll(doc.data());
+        map.putIfAbsent("comingDay", () => comingDayString);
+        map.putIfAbsent("id", () => doc.id.toString());
+        comingClassList.add(map);
+        comingClassListDoc.add(doc);
+      }
+    }
+
+    for(int i=1; i<=3; i++) { // 1일후, 2일후, 3일후 일정까지 받는 함수
       date = today.add(Duration(days: i)).toString().split(' ')[0];
       var result = await firestore.collection('Classchild').where("classUID", whereIn: ClassUIDList).where("date", isEqualTo: date).orderBy("startTime", descending: false).get();
       for(var doc in result.docs) {
         Map map = {};
         map.addAll(doc.data());
-        map.putIfAbsent("comingDay", () => i.toString());
+        map.putIfAbsent("comingDay", () => i.toString() + ' 일후');
         map.putIfAbsent("id", () => doc.id.toString());
         comingClassList.add(map);
         comingClassListDoc.add(doc);

@@ -39,6 +39,7 @@ class _CalendarState extends State<Calendar> {
       color: Colors.black,
       fontSize: 14,
       fontWeight: FontWeight.bold,
+      height: 2,
   );
 
   DateTime selectedDay = DateTime(
@@ -197,7 +198,7 @@ class _CalendarState extends State<Calendar> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Expanded(flex : 1, child: SizedBox(child: Text(context.watch<ClasschildStore>().comingClassList[i]["comingDay"]+' 일후', style: bodyBoldtextStyle))),
+                              Expanded(flex : 1, child: SizedBox(child: Text(context.watch<ClasschildStore>().comingClassList[i]["comingDay"], style: bodyBoldtextStyle))),
                               Expanded(
                                 flex : 5,
                                 child: SizedBox(
