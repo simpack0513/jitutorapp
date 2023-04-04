@@ -1,4 +1,6 @@
 // 캘린더 내 수업 관리
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 final firestore = FirebaseFirestore.instance;
@@ -17,6 +19,8 @@ class ClasschildStore extends ChangeNotifier{
   String date = '';
   int idx = 0; // 특정 classChild 인덱스
   Map<DateTime, List<Event>> events = {}; // 달력에 마커 표시할 map 자료형
+  var allClasschild = []; // 현재 수업에 속해 있는 모든 Classchild
+  List<Map> payList = [];
 
   // 클래스 UID에 맞는 포스트 문서를 받는 함수
   void getDateClassList(List ClassUIDList, String _date) async{
@@ -39,8 +43,10 @@ class ClasschildStore extends ChangeNotifier{
     events = {};
     String date = "";
     List<Event> list = [];
+    allClasschild = [];
     var result = await firestore.collection('Classchild').where("classUID", whereIn: ClassUIDList).orderBy("date", descending: false).get();
     for (var doc in result.docs) {
+      allClasschild.add(doc);
       if (doc["date"] != date) {
         if (list.isNotEmpty) {
           int year = int.parse(date.split('-')[0]);
@@ -60,6 +66,7 @@ class ClasschildStore extends ChangeNotifier{
       events[DateTime.utc(year,month,day)] = list;
     }
     notifyListeners();
+    classPay(ClassUIDList);
   } //
 
 
@@ -182,6 +189,51 @@ class ClasschildStore extends ChangeNotifier{
   // idx 변수 지정 함수
   void setIdx(int i) {
     idx = i;
+    notifyListeners();
+  }
+
+  // 수업료 계산 함수
+  void classPay(List ClassUIDList) async{
+    payList = [];
+    for (String ClassUID in classUIDList) {
+      bool pay_delay = false;
+      String next_paydate = "";
+      String persent_string = "";
+      int count = 0;
+      int count_next = 0;
+      var result = await firestore.collection('Class').doc(ClassUID).get();
+      int pay_times = result["pay_times"];
+      String className = result["classname"].toString().split(' ')[0] + "(" + result["classname"].toString().split(' ')[1] + ")";
+      String payed_date = result["payed_date"];
+      String today = DateTime.now().toString().split(' ')[0];
+      for (var doc in allClasschild) {
+        if (count_next == pay_times - 1) {
+          next_paydate = DateTime.parse(doc["date"]).add(Duration(days: 1)).toString().split(' ')[0];
+          next_paydate = next_paydate.split('-')[1] + "/" + next_paydate.split('-')[2];
+        }
+        if (doc["classUID"].toString().compareTo(ClassUID) == 0 && doc["date"].toString().compareTo(payed_date) >= 0 && doc["date"].toString().compareTo(today) <= 0) {
+          count++;
+        }
+        if (doc["classUID"].toString().compareTo(ClassUID) == 0 && doc["date"].toString().compareTo(payed_date) >= 0) {
+          count_next++;
+        }
+      }
+      double persent = count / pay_times;
+      persent_string = (persent * 100).toStringAsFixed(1) + "%";
+      if (persent > 1) {
+        pay_delay = true;
+        persent = 1;
+      }
+      payList.add({
+        "className" : className,
+        "persent" : persent,
+        "persent_string" : persent_string,
+        "pay_delay" : pay_delay,
+        "next_paydate" : next_paydate,
+        "count" : count,
+        "pay_times" : pay_times,
+      });
+    }
     notifyListeners();
   }
 

@@ -21,7 +21,10 @@ class LoadingPage extends StatefulWidget {
 class _LoadingPageState extends State<LoadingPage> {
   void checkLoginInfo() async{
     sleep(Duration(seconds: 1));
-    final storage = new FlutterSecureStorage();
+    AndroidOptions _getAndroidOptions() => const AndroidOptions(
+      encryptedSharedPreferences: true,
+    );
+    final storage = FlutterSecureStorage(aOptions: _getAndroidOptions());
 
     String? idValue = await storage.read(key: 'id');
     String? passwordValue = await storage.read(key: 'password');
@@ -54,6 +57,17 @@ class _LoadingPageState extends State<LoadingPage> {
         else if (context.read<UserStore>().type.compareTo('student') == 0) {
           Navigator.pushAndRemoveUntil(context,
               MaterialPageRoute(builder: (context) => mainPageS()), (route) => false);
+        }
+        else {
+          Fluttertoast.showToast(
+              msg: '자동 로그인에 실패하였습니다. 다시 로그인을 진행해주세요.',
+              toastLength: Toast.LENGTH_SHORT,
+              timeInSecForIosWeb: 2,
+              backgroundColor: Colors.red,
+              fontSize: 12
+          );
+          Navigator.pop(context);
+          Navigator.push(context, MaterialPageRoute(builder: (context) => signUp()));
         }
 
       } on FirebaseAuthException catch(e) {
