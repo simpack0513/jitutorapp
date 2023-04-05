@@ -130,7 +130,7 @@ class _PhotoUploadState extends State<PhotoUpload> {
         title: Text('새 게시물'),
         titleTextStyle: TextStyle(
           color: Colors.black,
-          fontFamily: 'Pretendard',
+          fontFamily: 'LINESeedKR',
           fontSize: 20,
         ),
         actions: [

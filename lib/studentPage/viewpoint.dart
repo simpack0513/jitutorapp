@@ -14,7 +14,7 @@ class _ViewPointState extends State<ViewPoint> {
   // 변수
   var headTextStyle = TextStyle(
     color: Colors.black,
-    fontFamily: 'Pretendard',
+    fontFamily: 'LINESeedKR',
     fontSize: 20,
   );
   //
@@ -35,7 +35,7 @@ class _ViewPointState extends State<ViewPoint> {
           centerTitle: true,
           titleTextStyle: TextStyle(
             color: Colors.black,
-            fontFamily: 'Pretendard',
+            fontFamily: 'LINESeedKR',
             fontSize: 20,
           ),
           systemOverlayStyle: SystemUiOverlayStyle.dark,

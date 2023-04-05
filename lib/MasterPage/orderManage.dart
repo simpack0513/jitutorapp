@@ -18,13 +18,13 @@ class _OrderManageState extends State<OrderManage> {
   // 변수
   var bodyTextStyle = TextStyle(
     color: Colors.black,
-    fontFamily: 'Pretendard',
+    fontFamily: 'LINESeedKR',
     fontSize: 14,
     fontWeight: FontWeight.w500,
   );
   var headTextStyle = TextStyle(
     color: Colors.black,
-    fontFamily: 'Pretendard',
+    fontFamily: 'LINESeedKR',
     fontSize: 16,
   );
   //
@@ -51,7 +51,7 @@ class _OrderManageState extends State<OrderManage> {
         centerTitle: true,
         titleTextStyle: TextStyle(
           color: Colors.black,
-          fontFamily: 'Pretendard',
+          fontFamily: 'LINESeedKR',
           fontSize: 20,
         ),
         systemOverlayStyle: SystemUiOverlayStyle.dark,

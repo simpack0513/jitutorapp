@@ -20,18 +20,18 @@ class _ScheduleChangeState extends State<ScheduleChange> {
     borderRadius: BorderRadius.circular(20),
   );
   var bodytextStyle = TextStyle(
-    fontFamily: 'Pretendard',
+    fontFamily: 'LINESeedKR',
     color: Colors.black,
     fontSize: 14,
     height: 2,
   );
   var bodytextStyle2 = TextStyle(
-    fontFamily: 'Pretendard',
+    fontFamily: 'LINESeedKR',
     color: Colors.black,
     fontSize: 14,
   );
   var headtextStyle = TextStyle(
-    fontFamily: 'Pretendard',
+    fontFamily: 'LINESeedKR',
     color: Colors.black,
     fontSize: 20,
     fontWeight: FontWeight.w500,
@@ -86,7 +86,7 @@ class _ScheduleChangeState extends State<ScheduleChange> {
         centerTitle: true,
         titleTextStyle: TextStyle(
           color: Colors.black,
-          fontFamily: 'Pretendard',
+          fontFamily: 'LINESeedKR',
           fontSize: 20,
         ),
         systemOverlayStyle: SystemUiOverlayStyle.dark,
@@ -237,7 +237,7 @@ class _ScheduleChangeState extends State<ScheduleChange> {
                 }
             ),
             Text('앞으로 모든 일정 변경하기', style: TextStyle(
-              fontFamily: 'Pretendard',
+              fontFamily: 'LINESeedKR',
               fontSize: 13,
               color: Colors.black,)),
           ],),
@@ -250,7 +250,7 @@ class _ScheduleChangeState extends State<ScheduleChange> {
                 FlutterDialog();
               },
               child: Text('변경 요청하기', style: TextStyle(
-                fontFamily: 'Pretendard',
+                fontFamily: 'LINESeedKR',
                 fontSize: 15,
                 color: Colors.white,)),
           ),
@@ -288,7 +288,7 @@ class _ScheduleChangeState extends State<ScheduleChange> {
                   height: MediaQuery.of(context).size.height/15,
                   alignment: Alignment.center,
                   child: Text(titleStr, style : TextStyle(
-                    fontFamily: 'Pretendard',
+                    fontFamily: 'LINESeedKR',
                     color: Colors.black,
                     fontSize: 14,
                   )),
@@ -316,7 +316,7 @@ class _ScheduleChangeState extends State<ScheduleChange> {
                       Navigator.pop(context);
                     },
                     child: Text('아니오', style: TextStyle(
-                      fontFamily: 'Pretendard',
+                      fontFamily: 'LINESeedKR',
                       fontSize: 15,
                       color: Colors.black,)),
                   ),
@@ -340,7 +340,7 @@ class _ScheduleChangeState extends State<ScheduleChange> {
                       Navigator.of(homeContext).pop();
                     },
                     child: Text('네', style: TextStyle(
-                      fontFamily: 'Pretendard',
+                      fontFamily: 'LINESeedKR',
                       fontSize: 15,
                       color: Colors.black,)),
                   ),

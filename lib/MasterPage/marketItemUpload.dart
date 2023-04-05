@@ -102,7 +102,7 @@ class _MarketItemUploadState extends State<MarketItemUpload> {
         title: Text('새 상품 등록'),
         titleTextStyle: TextStyle(
           color: Colors.black,
-          fontFamily: 'Pretendard',
+          fontFamily: 'LINESeedKR',
           fontSize: 20,
         ),
         actions: [

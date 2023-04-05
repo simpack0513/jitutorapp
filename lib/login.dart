@@ -43,7 +43,7 @@ class _LoginState extends State<Login> {
             children: [
               Padding(
                   padding: const EdgeInsets.all(5),
-                  child: Text('이메일(아이디)을 입력하세요', style: TextStyle(fontSize: 30, fontFamily: 'Pretedard'),)),
+                  child: Text('이메일(아이디)을 입력하세요', style: TextStyle(fontSize: 30, fontFamily: 'LINESeedKR'),)),
               Padding(
                 padding: const EdgeInsets.all(5),
                 child: TextField(
@@ -55,7 +55,7 @@ class _LoginState extends State<Login> {
 
               Padding(
                   padding: const EdgeInsets.all(5),
-                  child: Text('비밀번호를 입력하세요', style: TextStyle(fontSize: 30, fontFamily: 'Pretedard'),)),
+                  child: Text('비밀번호를 입력하세요', style: TextStyle(fontSize: 30, fontFamily: 'LINESeedKR'),)),
               Padding(
                 padding: const EdgeInsets.all(5),
                 child: TextField(
@@ -120,7 +120,7 @@ class _LoginState extends State<Login> {
 
             },
             child: Text('로그인하기', style: TextStyle(
-              fontFamily: 'Pretendard',
+              fontFamily: 'LINESeedKR',
               fontSize: 20,
               color: Colors.white,
             ),),

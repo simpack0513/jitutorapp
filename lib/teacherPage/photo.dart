@@ -12,7 +12,7 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 //스타일
 var textTheme = TextStyle(
-  fontFamily: 'Pretendard',
+  fontFamily: 'LINESeedKR',
   fontSize: 13,
 );
 
@@ -117,14 +117,14 @@ class _PhotoState extends State<Photo> {
                           )
                       ),
                       Padding(padding: EdgeInsets.fromLTRB(13, 0, 0, 5), child: Text(context.read<PostStore>().postDocList[i]['date'], style: TextStyle(
-                        fontFamily: 'Pretendard',
+                        fontFamily: 'LINESeedKR',
                         fontWeight: FontWeight.bold,
                         fontSize: 13,
                       ),)),
                       Container(
                         padding: EdgeInsets.fromLTRB(13, 0, 15, 10),
                         child: Text(context.read<PostStore>().postDocList[i]['comment'], style: TextStyle(
-                          fontFamily: 'Pretendard',
+                          fontFamily: 'LINESeedKR',
                           fontSize: 13,
                         ),),
                       )

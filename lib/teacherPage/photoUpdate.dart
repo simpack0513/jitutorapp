@@ -45,7 +45,7 @@ class _PhotoUpdateState extends State<PhotoUpdate> {
         title: Text('게시물 수정'),
         titleTextStyle: TextStyle(
           color: Colors.black,
-          fontFamily: 'Pretendard',
+          fontFamily: 'LINESeedKR',
           fontSize: 20,
         ),
         actions: [

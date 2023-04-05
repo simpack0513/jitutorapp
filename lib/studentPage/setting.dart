@@ -20,13 +20,13 @@ class SettingPage extends StatefulWidget {
 class _SettingPageState extends State<SettingPage> {
   // 변수
   var headtextStyle = TextStyle(
-    fontFamily: 'Pretendard',
+    fontFamily: 'LINESeedKR',
     color: Colors.black,
     fontSize: 20,
     fontWeight: FontWeight.w500,
   );
   var bodytextStyle = TextStyle(
-    fontFamily: 'Pretendard',
+    fontFamily: 'LINESeedKR',
     color: Colors.black,
     fontSize: 12,
     fontWeight: FontWeight.w500,
@@ -60,7 +60,7 @@ class _SettingPageState extends State<SettingPage> {
         centerTitle: true,
         titleTextStyle: TextStyle(
           color: Colors.black,
-          fontFamily: 'Pretendard',
+          fontFamily: 'LINESeedKR',
           fontSize: 20,
         ),
         systemOverlayStyle: SystemUiOverlayStyle.dark,

@@ -23,19 +23,19 @@ class _CalendarState extends State<Calendar> {
     titleCentered: true,
   );
   var headtextStyle = TextStyle(
-    fontFamily: 'Pretendard',
+    fontFamily: 'LINESeedKR',
     color: Colors.black,
     fontSize: 20,
     fontWeight: FontWeight.w500,
   );
   var bodytextStyle = TextStyle(
-    fontFamily: 'Pretendard',
+    fontFamily: 'LINESeedKR',
     color: Colors.black,
     fontSize: 14,
     height: 2,
   );
   var bodyBoldtextStyle = TextStyle(
-      fontFamily: 'Pretendard',
+      fontFamily: 'LINESeedKR',
       color: Colors.black,
       fontSize: 14,
       fontWeight: FontWeight.bold,
