@@ -1,5 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:jitutorapp/DataStore/UserStore.dart';
 import 'package:jitutorapp/teacherPage/chat.dart';
+import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
+final firestore = FirebaseFirestore.instance;
 
 class Messenger extends StatefulWidget {
   const Messenger({Key? key}) : super(key: key);
@@ -10,7 +15,6 @@ class Messenger extends StatefulWidget {
 
 class _MessengerState extends State<Messenger> {
   //변수
-  String test_img = 'https://search.pstatic.net/common/?src=http%3A%2F%2Fblogfiles.naver.net%2FMjAyMTA3MTFfMTQg%2FMDAxNjI1OTg2NTU0MTAw.pgUWeHaPctix0o_UbjNpIQGgKIxos3ZMYivmOiYvhi4g.AxnXZY_f7VXyzS6fYrdX2qzw6DbYcLFpV0I4hyaf5WUg.JPEG.chimmy1004%2FIMG_0188.JPG&type=sc960_832';
   var headtextStyle = TextStyle(
     fontFamily: 'LINESeedKR',
     color: Colors.black,
@@ -34,65 +38,106 @@ class _MessengerState extends State<Messenger> {
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
-      style: ElevatedButton.styleFrom(
+    return StreamBuilder<QuerySnapshot>(
+      stream: FirebaseFirestore.instance.collection('Chatroom').where("userUID1", isEqualTo: context.read<UserStore>().userUID).orderBy("lastDate", descending: true).snapshots(),
+      builder: (context, snapshot) {
+        return ListView.builder(
           padding: EdgeInsets.zero,
-          backgroundColor: Colors.white,
-          elevation: 0,
-      ),
-      onPressed: (){
-        Navigator.push(context, MaterialPageRoute(builder: (context) => ChatPage()));
-      },
-      child: Container(
-        width: double.infinity,
-        height: MediaQuery.of(context).size.width / 5,
-        child: Row(
-          children: [
-            Expanded(flex: 1, child: Container(
-              padding: EdgeInsets.all(10),
-              alignment: Alignment.center,
-              child: ClipRRect(
-                  borderRadius: BorderRadius.circular(20),
-                  child: Image.network(test_img),
+          itemCount: (snapshot.hasData) ? snapshot.data?.docs.length : 0,
+          itemBuilder: (context, i) {
+            // 학생인지 학부모인지 체크
+            bool isUser2;
+            String userUID2 = snapshot.data?.docs[i]["userUID2"];
+            if (userUID2 == "") {
+              isUser2 = false;
+            }
+            else {
+              isUser2 = true;
+            }
+            // 날짜 체크 후 출력 정하기
+            DateFormat formatter = DateFormat('yyyy-MM-dd');
+            String today = formatter.format(DateTime.now());
+            String lastDate = snapshot.data!.docs[i]["lastDate"].toString();
+            DateTime lastDate_datetime = DateTime.parse(lastDate);
+            String date = "";
+            if (today == lastDate.split(' ')[0]) {
+              DateFormat formatter = DateFormat('a h:mm', 'ko');
+              date = formatter.format(lastDate_datetime);
+            }
+            else {
+              DateFormat formatter = DateFormat('M월 d일');
+              date = formatter.format(lastDate_datetime);
+            }
+
+
+            return ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                  padding: EdgeInsets.zero,
+                  backgroundColor: Colors.white,
+                  elevation: 0,
               ),
-            )),
-            Expanded(flex: 3, child: Container(
-              padding: EdgeInsets.all(5),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text('이승재 학생', style: headtextStyle,),
-                  Container(height: 5,),
-                  Text('선생님 체크체크 5페이지 ~~~ 부분이 이해가 되지 않습니다. 설명 부탁 !!ㅜ!ㅏㅣ~ㅏ~ㅣㅓㅣㅏ~ㅁ나ㅣ어ㅣㅏㅏㅁㅇㅁㄴ읍쥥ㅂㅣ', style: bodytextStyle, overflow: TextOverflow.ellipsis, maxLines: 2,),
-                ],
-              ),
-            )),
-            Expanded(flex: 1, child: Container(
-              width: double.infinity,
-              alignment: Alignment.center,
-              child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
+              onPressed: (){
+                Navigator.push(context, MaterialPageRoute(builder: (context) => ChatPage(
+                  roomDocId: snapshot.data!.docs[i].id,
+                  meImg: snapshot.data?.docs[i]["userImg1"],
+                  youImg: (isUser2) ? snapshot.data?.docs[i]["userImg2"] : snapshot.data?.docs[i]["userImg3"],
+                  youName: (isUser2) ? snapshot.data?.docs[i]["userName2"] : snapshot.data?.docs[i]["userName3"],)));
+              },
+              child: Container(
+                width: double.infinity,
+                height: MediaQuery.of(context).size.width / 5,
+                child: Row(
                   children: [
-                    SizedBox(height: 10,),
-                    Text('오전 10:50', style: bodytextStyle,),
-                    SizedBox(height: 5,),
-                    Container(
-                      width: 18,
-                      height: 18,
+                    Expanded(flex: 1, child: Container(
+                      padding: EdgeInsets.all(10),
                       alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        color: Colors.red,
-                        borderRadius: BorderRadius.circular(7),
+                      child: ClipRRect(
+                          borderRadius: BorderRadius.circular(20),
+                          child: Image.network((isUser2) ? snapshot.data?.docs[i]["userImg2"] : snapshot.data?.docs[i]["userImg3"]),
                       ),
-                      child: Text('5', style: TextStyle(color: Colors.white, fontSize: 14),),
-                    )
+                    )),
+                    Expanded(flex: 3, child: Container(
+                      padding: EdgeInsets.all(5),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          SizedBox(height: 5,),
+                          Text((isUser2) ? snapshot.data?.docs[i]["userName2"] : snapshot.data?.docs[i]["userName3"], style: headtextStyle,),
+                          Container(height: 5,),
+                          Text(snapshot.data?.docs[i]["lastMsg"], style: bodytextStyle, overflow: TextOverflow.ellipsis, maxLines: 2,),
+                        ],
+                      ),
+                    )),
+                    Expanded(flex: 1, child: Container(
+                      width: double.infinity,
+                      alignment: Alignment.center,
+                      child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            SizedBox(height: 10,),
+                            Text(date, style: bodytextStyle,),
+                            SizedBox(height: 5,),
+                            Container(
+                              width: 18,
+                              height: 18,
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                color: Colors.red,
+                                borderRadius: BorderRadius.circular(7),
+                              ),
+                              child: Text(snapshot.data!.docs[i]["remainMsg1"].toString() , style: TextStyle(color: Colors.white, fontSize: 14),),
+                            )
+                          ],
+                      ),
+                    )),
                   ],
+                ),
               ),
-            )),
-          ],
-        ),
-      ),
+            );
+          }
+        );
+      }
     );
   }
 }
