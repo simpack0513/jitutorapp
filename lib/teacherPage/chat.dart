@@ -7,13 +7,20 @@ import 'package:intl/intl.dart';
 import 'dart:ui' as ui;
 final firestore = FirebaseFirestore.instance;
 
+// type 종류
+/*
+  DEF = 일반 메시지
+  DAT = 날짜 안내 메시지
+ */
+
 class ChatPage extends StatefulWidget {
-  const ChatPage({Key? key, this.roomDocId, this.meImg, this.youImg, this.youName}) : super(key: key);
+  const ChatPage({Key? key, this.roomDocId, this.meImg, this.youImg, this.youName, this.remainMsg1}) : super(key: key);
 
   final roomDocId;
   final meImg;
   final youImg;
   final youName;
+  final remainMsg1;
 
   @override
   State<ChatPage> createState() => _ChatPageState();
@@ -49,15 +56,46 @@ class _ChatPageState extends State<ChatPage> {
     color: Colors.grey,
     fontSize: 10,
   );
+  var DAT_TypeTextStyle = TextStyle(
+    fontFamily: 'LINESeedKR',
+    color: Colors.white,
+    fontSize: 11,
+  );
 
   int chatLimit = 10; // 최대 몇 개의 채팅을 가져올 지 -> 초기화는 10으로
 
   TextEditingController tec = TextEditingController();
+  ScrollController scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    scrollController.addListener(() {
+      if (scrollController.position.pixels == scrollController.position.maxScrollExtent) {
+        setState(() {
+          chatLimit += 5;
+        });
+      }
+    });
+    if (widget.remainMsg1 > 10) {
+      setState(() {
+        chatLimit = widget.remainMsg1;
+      });
+    }
+  }
 
   //
 
   @override
   Widget build(BuildContext context) {
+    // 레퍼런스 관리
+    CollectionReference chat = FirebaseFirestore.instance.collection('Chatroom').doc(widget.roomDocId).collection('Chat');
+    DocumentReference chatroom = firestore.collection('Chatroom').doc(widget.roomDocId);
+
+    chatroom.update({
+      "remainMsg1" : 0,
+    });
+
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).unfocus();
@@ -122,18 +160,41 @@ class _ChatPageState extends State<ChatPage> {
                           backgroundColor: Colors.white,
                           elevation: 0,
                         ),
-                        onPressed: (){
+                        onPressed: () async{
                           // 메시지 보내기
-                          CollectionReference chat = FirebaseFirestore.instance.collection('Chatroom').doc(widget.roomDocId).collection('Chat');
+                          if (tec.text == "") { // 빈 문장이면 바로 리턴
+                            return ;
+                          }
                           String text = tec.text;
+                          tec.clear();
+
+                          DocumentSnapshot doc = await chatroom.get();
+                          // 최근 메시지 전송 일자와 오늘의 날짜가 다르면 날씨 정보 택스트 업로드
+                          if (doc["lastDate"].toString().split(' ')[0] != DateTime.now().toString().split(' ')[0]) {
+                            String text_date = DateFormat('yyyy년 M월 d일 E요일', 'ko').format(DateTime.now());
+                            chat.add({
+                              "senderUID" : context.read<UserStore>().userUID,
+                              "text" : text_date,
+                              "time" : DateTime.now().toString(),
+                              "type" : "DAT",
+                              "read" : true,
+                            });
+                          }
+
+                          int remainMsg2 = doc["remainMsg2"]; // 현재 쌓인 안 읽음 메시지 로드
+                          String time = DateTime.now().toString();
                           chat.add({
                             "senderUID" : context.read<UserStore>().userUID,
                             "text" : text,
-                            "time" : DateTime.now().toString(),
+                            "time" : time,
                             "type" : "DEF",
                             "read" : false,
                           });
-                          tec.clear();
+                          chatroom.update({
+                            "lastMsg" : text,
+                            "lastDate" : time,
+                            "remainMsg2" : remainMsg2 + 1,
+                          });
                         },
                         child: SizedBox(
                           width: MediaQuery.of(context).size.width / 9,
@@ -155,6 +216,7 @@ class _ChatPageState extends State<ChatPage> {
                     reverse: true,
                     physics: ClampingScrollPhysics(),
                     scrollDirection: Axis.vertical,
+                    controller: scrollController,
                     itemCount: (snapshot.hasData) ? snapshot.data?.docs.length : 0,
                     itemBuilder: (context, i) {
                       bool isMe; // 메시지 Sender가 '나'인지 판단
@@ -165,61 +227,80 @@ class _ChatPageState extends State<ChatPage> {
                         isMe = false;
                       }
 
+                      if (!isMe && snapshot.data?.docs[i]["read"] == false) {
+                        snapshot.data?.docs[i].reference.update({"read" : true});
+                      }
+
                       String chatTime; // 메시지 보낸 시각 포멧으로 바꾸기
                       DateFormat formatter = DateFormat('a h:mm', 'ko');
                       chatTime = formatter.format(DateTime.parse(snapshot.data?.docs[i]["time"]));
 
-
-                      return Container(
-                        padding: EdgeInsets.all(10),
-                        child: IntrinsicHeight(
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            textDirection: (isMe) ? ui.TextDirection.rtl : ui.TextDirection.ltr,
-                            children: [
-                              Container(
-                                width: 40,
-                                height: 40,
-                                alignment: Alignment.topCenter,
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(15),
-                                  child: (isMe) ? Image.network(widget.meImg) : Image.network(widget.youImg),
-                                ),
-                              ),
-                              Container(
-                                width: 10,
-                              ),
-                              Column(
-                                crossAxisAlignment: (isMe) ? CrossAxisAlignment.end : CrossAxisAlignment.start,
-                                children: [
-                                  Text((isMe) ? '나' : widget.youName.split(' ')[0], style: bodyBoldtextStyle, textAlign: TextAlign.start,),
-                                  Container(height: 5,),
-                                  Container(
-                                    padding: EdgeInsets.all(10),
-                                    width: MediaQuery.of(context).size.width / 4 * 3 - 50,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10),
-                                      color: Colors.white,
-                                    ),
-                                    child: Text(snapshot.data?.docs[i]["text"], style: bodytextStyle,),
+                      if (snapshot.data?.docs[i]["type"] == "DEF") { // 일반 텍스트 타입 처리
+                        return Container(
+                          padding: EdgeInsets.all(10),
+                          child: IntrinsicHeight(
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              textDirection: (isMe) ? ui.TextDirection.rtl : ui.TextDirection.ltr,
+                              children: [
+                                Container(
+                                  width: 40,
+                                  height: 40,
+                                  alignment: Alignment.topCenter,
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(15),
+                                    child: (isMe) ? Image.network(widget.meImg) : Image.network(widget.youImg),
                                   ),
-                                ],
-                              ),
-                              Container(
-                                width: 5,
-                              ),
-                              Column(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                crossAxisAlignment: (isMe) ? CrossAxisAlignment.end : CrossAxisAlignment.start,
-                                children: [
-                                  (snapshot.data?.docs[i]["read"]) ? SizedBox(width: 0, height: 0,) : Icon(Icons.circle, color: Colors.red, size: 10,),
-                                  Text(chatTime, style: timeTextStyle,),
-                                ],
-                              ),
-                            ],
+                                ),
+                                Container(
+                                  width: 10,
+                                ),
+                                Column(
+                                  crossAxisAlignment: (isMe) ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+                                  children: [
+                                    Text((isMe) ? '나' : widget.youName.split(' ')[0], style: bodyBoldtextStyle, textAlign: TextAlign.start,),
+                                    Container(height: 5,),
+                                    Container(
+                                      constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width / 4 * 3 - 50,),
+                                      padding: EdgeInsets.all(10),
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10),
+                                        color: Colors.white,
+                                      ),
+                                      child: Text(snapshot.data?.docs[i]["text"], style: bodytextStyle, ),
+                                    ),
+                                  ],
+                                ),
+                                Container(
+                                  width: 5,
+                                ),
+                                Column(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  crossAxisAlignment: (isMe) ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+                                  children: [
+                                    (snapshot.data?.docs[i]["read"]) ? SizedBox(width: 0, height: 0,) : Icon(Icons.circle, color: Colors.red, size: 10,),
+                                    Text(chatTime, style: timeTextStyle,),
+                                  ],
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                      );
+                        );
+                      }
+                      else if (snapshot.data?.docs[i]["type"] == "DAT") { // 텍스트 일짜 알려주는 타입 처리
+                        return Center(
+                          child: Container(
+                            margin: EdgeInsets.all(10),
+                            padding: EdgeInsets.fromLTRB(10, 3, 10, 3),
+                            decoration: BoxDecoration(
+                              color: Colors.grey.shade400,
+                              borderRadius: BorderRadius.all(Radius.circular(20))
+                            ),
+                            child: Text(snapshot.data?.docs[i]["text"], style: DAT_TypeTextStyle,),
+                          ),
+                        );
+                      }
+
                     },
                   ),
                 );

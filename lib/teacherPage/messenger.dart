@@ -81,7 +81,9 @@ class _MessengerState extends State<Messenger> {
                   roomDocId: snapshot.data!.docs[i].id,
                   meImg: snapshot.data?.docs[i]["userImg1"],
                   youImg: (isUser2) ? snapshot.data?.docs[i]["userImg2"] : snapshot.data?.docs[i]["userImg3"],
-                  youName: (isUser2) ? snapshot.data?.docs[i]["userName2"] : snapshot.data?.docs[i]["userName3"],)));
+                  youName: (isUser2) ? snapshot.data?.docs[i]["userName2"] : snapshot.data?.docs[i]["userName3"],
+                  remainMsg1: snapshot.data?.docs[i]["remainMsg1"],
+                )));
               },
               child: Container(
                 width: double.infinity,
@@ -118,7 +120,7 @@ class _MessengerState extends State<Messenger> {
                             SizedBox(height: 10,),
                             Text(date, style: bodytextStyle,),
                             SizedBox(height: 5,),
-                            Container(
+                            (snapshot.data!.docs[i]["remainMsg1"] != 0) ? Container(
                               width: 18,
                               height: 18,
                               alignment: Alignment.center,
@@ -127,7 +129,7 @@ class _MessengerState extends State<Messenger> {
                                 borderRadius: BorderRadius.circular(7),
                               ),
                               child: Text(snapshot.data!.docs[i]["remainMsg1"].toString() , style: TextStyle(color: Colors.white, fontSize: 14),),
-                            )
+                            ) : Container(),
                           ],
                       ),
                     )),
