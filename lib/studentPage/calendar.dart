@@ -23,21 +23,23 @@ class _CalendarState extends State<Calendar> {
     titleCentered: true,
   );
   var headtextStyle = TextStyle(
-    fontFamily: 'Pretendard',
+    fontFamily: 'LINESeedKR',
     color: Colors.black,
     fontSize: 20,
     fontWeight: FontWeight.w500,
   );
   var bodytextStyle = TextStyle(
-    fontFamily: 'Pretendard',
+    fontFamily: 'LINESeedKR',
     color: Colors.black,
     fontSize: 14,
+    height: 2,
   );
   var bodyBoldtextStyle = TextStyle(
-      fontFamily: 'Pretendard',
+      fontFamily: 'LINESeedKR',
       color: Colors.black,
       fontSize: 14,
       fontWeight: FontWeight.bold,
+      height: 2,
   );
 
   DateTime selectedDay = DateTime(
@@ -164,20 +166,11 @@ class _CalendarState extends State<Calendar> {
                                 +'  '+context.watch<ClasschildStore>().dateClassList[i]['startTime']
                               +' ~ '+context.watch<ClasschildStore>().dateClassList[i]['endTime'], style: bodytextStyle,),
                            // Text('황인규(영어)  16:00 ~ 18:00', style: bodytextStyle,),
-                            (context.watch<ClasschildStore>().dateClassList[i]['underChange'] == false) ? TextButton(onPressed: (){
-                              changeDate(i);
-                            }, child: Text('일정변경')) : TextButton(onPressed: (){
-                              context.read<ClasschildStore>().setIdx(i);
-                              showMaterialModalBottomSheet(
-                                  context: context,
-                                  builder: (context) => DeleteScheduleWidget()
-                              );
-                            }, child: Text('변경 진행 중', style: TextStyle(color: Colors.grey),)),
                           ],
                         );
                       }
                   )
-                  : Text('\n해당 날짜에 수업이 없습니다.', style: bodytextStyle),
+                  : Text('해당 날짜에 수업이 없습니다.', style: bodytextStyle),
 
                 ],
               ),
@@ -205,7 +198,7 @@ class _CalendarState extends State<Calendar> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Expanded(flex : 1, child: SizedBox(child: Text(context.watch<ClasschildStore>().comingClassList[i]["comingDay"]+' 일후', style: bodyBoldtextStyle))),
+                              Expanded(flex : 1, child: SizedBox(child: Text(context.watch<ClasschildStore>().comingClassList[i]["comingDay"], style: bodyBoldtextStyle))),
                               Expanded(
                                 flex : 5,
                                 child: SizedBox(
@@ -214,23 +207,11 @@ class _CalendarState extends State<Calendar> {
                                       +' ~ '+context.watch<ClasschildStore>().comingClassList[i]['endTime'], style: bodytextStyle,),
                                 ),
                               ),
-                              Expanded(
-                                flex : 2,
-                                child: Container(alignment: Alignment.centerRight, child : (context.watch<ClasschildStore>().comingClassList[i]['underChange'] == false) ? TextButton(onPressed: (){
-                                  changeDate2(i);
-                                }, child: Text('일정변경'),) :  TextButton(onPressed: (){
-                                  context.read<ClasschildStore>().setIdx(i);
-                                  showMaterialModalBottomSheet(
-                                      context: context,
-                                      builder: (context) => DeleteScheduleWidget2()
-                                  );
-                                }, child: Text('변경 진행 중', style: TextStyle(color: Colors.grey),)),),
-                              ),
                             ],
                           ),
                         );
                       }
-                  ) : Text('\n다가오는 수업이 없습니다.', style: bodytextStyle),
+                  ) : Text('다가오는 수업이 없습니다.', style: bodytextStyle),
 
                 ],
               ),

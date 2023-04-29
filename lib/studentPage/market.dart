@@ -18,13 +18,13 @@ class _MarketState extends State<Market> {
   //변수
   var bodyTextStyle = TextStyle(
     color: Colors.black,
-    fontFamily: 'Pretendard',
+    fontFamily: 'LINESeedKR',
     fontSize: 14,
     fontWeight: FontWeight.w500,
   );
   var headTextStyle = TextStyle(
     color: Colors.black,
-    fontFamily: 'Pretendard',
+    fontFamily: 'LINESeedKR',
     fontSize: 16,
   );
 
@@ -107,18 +107,18 @@ class Product extends StatelessWidget {
   Widget build(BuildContext context) {
     var bodyTextStyle = TextStyle(
       color: Colors.black,
-      fontFamily: 'Pretendard',
+      fontFamily: 'LINESeedKR',
       fontSize: 15,
       fontWeight: FontWeight.w500,
     );
     var headTextStyle = TextStyle(
       color: Colors.black,
-      fontFamily: 'Pretendard',
+      fontFamily: 'LINESeedKR',
       fontSize: 20,
     );
     var buttonTextStyle = TextStyle(
       color: Colors.white,
-      fontFamily: 'Pretendard',
+      fontFamily: 'LINESeedKR',
       fontSize: 20,
     );
     double siedMargin = MediaQuery.of(context).size.width/10;
@@ -239,7 +239,7 @@ class Product extends StatelessWidget {
                   height: MediaQuery.of(context).size.height/15,
                   alignment: Alignment.center,
                   child: Text('취소가 불가능합니다. 그래도 구매하시겠습니까?', style : TextStyle(
-                    fontFamily: 'Pretendard',
+                    fontFamily: 'LINESeedKR',
                     color: Colors.black,
                     fontSize: 14,
                   )),
@@ -267,7 +267,7 @@ class Product extends StatelessWidget {
                         Navigator.pop(context);
                       },
                       child: Text('아니오', style: TextStyle(
-                        fontFamily: 'Pretendard',
+                        fontFamily: 'LINESeedKR',
                         fontSize: 15,
                         color: Colors.black,)),
                     ),
@@ -293,7 +293,7 @@ class Product extends StatelessWidget {
                         Navigator.pop(parrentContext);
                       },
                       child: Text('네', style: TextStyle(
-                        fontFamily: 'Pretendard',
+                        fontFamily: 'LINESeedKR',
                         fontSize: 15,
                         color: Colors.black,)),
                     ),

@@ -1,5 +1,6 @@
 import 'dart:io';
 //여기는 일반 파일 import 하는 곳
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:jitutorapp/login.dart';
 import 'package:jitutorapp/studentPage/mainPage.dart';
 import 'DataStore/InfoStore.dart';
@@ -18,10 +19,10 @@ final firestore = FirebaseFirestore.instance;
 final auth = FirebaseAuth.instance;
 
 var InfoPagetheme = ThemeData(
-  fontFamily: 'Pretendard',
+  fontFamily: 'LINESeedKR',
   inputDecorationTheme: InputDecorationTheme(
     counterStyle: TextStyle(
-      fontFamily: 'Pretendard',
+      fontFamily: 'LINESeedKR',
       fontSize: 30,
     ),
     border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10.0)))
@@ -33,7 +34,7 @@ var InfoPagetheme = ThemeData(
 class signUp extends StatelessWidget {
   signUp({Key? key}) : super(key: key);
   var mainTextStyle = TextStyle(
-    fontFamily: 'Pretendard',
+    fontFamily: 'LINESeedKR',
     fontSize: 30,
   );
 
@@ -53,7 +54,7 @@ class signUp extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text('지튜터에 오신 것을 환영합니다', style: mainTextStyle,),
-                Text('아래 버튼을 눌러 회원가입을 진행하십시오.', style: TextStyle(fontSize: 15, fontFamily: 'Pretendard')),
+                Text('아래 버튼을 눌러 회원가입을 진행하십시오.', style: TextStyle(fontSize: 15, fontFamily: 'LINESeedKR')),
                 Container(height: 50,),
                 Row(children: [
                   Flexible(child: TextButton(onPressed: (){context.read<InfoStore>().changeType('student'); nextPage(context);}, child: Image.asset('assets/studentButtonIcon.png', fit: BoxFit.fitHeight,) ), flex: 1, ),
@@ -98,7 +99,7 @@ class _NameInfoPageState extends State<NameInfoPage> {
           children: [
             Padding(
                 padding: const EdgeInsets.all(5),
-                child: Text('이름을 입력하세요', style: TextStyle(fontSize: 30, fontFamily: 'Pretedard'),)),
+                child: Text('이름을 입력하세요', style: TextStyle(fontSize: 30, fontFamily: 'LINESeedKR'),)),
             Padding(
               padding: const EdgeInsets.all(5),
               child: TextField(
@@ -126,7 +127,7 @@ class _NameInfoPageState extends State<NameInfoPage> {
               else {}
             },
             child: Text('다음', style: TextStyle(
-              fontFamily: 'Pretendard',
+              fontFamily: 'LINESeedKR',
               fontSize: 20,
               color: Colors.white,
             ),),
@@ -188,7 +189,7 @@ class _PhoneInfoPageState extends State<PhoneInfoPage> {
     try {
       final user = await FirebaseAuth.instance.currentUser;
       await firestore.collection('Person').doc(user?.uid).
-      set({'name' : context.read<InfoStore>().name, 'type' : context.read<InfoStore>().type, 'point' : 500});
+      set({'name' : context.read<InfoStore>().name, 'type' : context.read<InfoStore>().type, 'point' : 50});
       // 유저스토어에 사용자 정보 저장 = 바로 데이터 꺼내쓸 수 있게
       context.read<UserStore>().setName(context.read<InfoStore>().name);
       context.read<UserStore>().setType(context.read<InfoStore>().type);
@@ -215,6 +216,12 @@ class _PhoneInfoPageState extends State<PhoneInfoPage> {
       );
       //파이어스토어에 사용자 정보 등록
       await StoreAtFireStore();
+
+      // 자동 로그인을 위한 사용자 계정 휴대폰 내부에 암호화 저장
+      final storage = new FlutterSecureStorage();
+      await storage.write(key: 'id', value: context.read<InfoStore>().email);
+      await storage.write(key: 'password', value: context.read<InfoStore>().password);
+
       //메인 페이지로 이동
       if (context.read<UserStore>().type.compareTo('teacher') == 0) {
         Navigator.pushAndRemoveUntil(context,
@@ -267,7 +274,7 @@ class _PhoneInfoPageState extends State<PhoneInfoPage> {
           children: [
             Padding(
                 padding: const EdgeInsets.all(5),
-                child: Text('전화번호를 입력하세요', style: TextStyle(fontSize: 30, fontFamily: 'Pretedard'),)),
+                child: Text('전화번호를 입력하세요', style: TextStyle(fontSize: 30, fontFamily: 'LINESeedKR'),)),
             Padding(
               padding: const EdgeInsets.all(5),
               child: TextField(
@@ -285,7 +292,7 @@ class _PhoneInfoPageState extends State<PhoneInfoPage> {
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15))
                 ),
                 child: Text('인증하기', style: TextStyle(
-                  fontFamily: 'Pretendard',
+                  fontFamily: 'LINESeedKR',
                   fontSize: 17,
                   color: Colors.white,
                 ),),
@@ -300,7 +307,7 @@ class _PhoneInfoPageState extends State<PhoneInfoPage> {
 
             IsClickButton? Padding(
                 padding: const EdgeInsets.fromLTRB(5, 30, 5, 5),
-                child: Text('인증번호를 입력하세요', style: TextStyle(fontSize: 30, fontFamily: 'Pretedard'),)):Container(),
+                child: Text('인증번호를 입력하세요', style: TextStyle(fontSize: 30, fontFamily: 'LINESeedKR'),)):Container(),
             IsClickButton? Padding(
               padding: const EdgeInsets.all(5),
               child: TextField(
@@ -318,7 +325,7 @@ class _PhoneInfoPageState extends State<PhoneInfoPage> {
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15))
                 ),
                 child: Text('다음', style: TextStyle(
-                    fontFamily: 'Pretendard',
+                    fontFamily: 'LINESeedKR',
                     fontSize: 17,
                     color: Colors.white,
                 )),
@@ -371,7 +378,7 @@ class _EmailInfoPageState extends State<EmailInfoPage> {
               children: [
                 Padding(
                   padding: const EdgeInsets.all(5),
-                  child: Text('이메일(아이디)을 입력하세요', style: TextStyle(fontSize: 30, fontFamily: 'Pretedard'),)),
+                  child: Text('이메일(아이디)을 입력하세요', style: TextStyle(fontSize: 30, fontFamily: 'LINESeedKR'),)),
                  Padding(
                   padding: const EdgeInsets.all(5),
                    child: TextField(
@@ -381,7 +388,7 @@ class _EmailInfoPageState extends State<EmailInfoPage> {
 
                 Padding(
                     padding: const EdgeInsets.all(5),
-                    child: Text('비밀번호를 입력하세요', style: TextStyle(fontSize: 30, fontFamily: 'Pretedard'),)),
+                    child: Text('비밀번호를 입력하세요', style: TextStyle(fontSize: 30, fontFamily: 'LINESeedKR'),)),
                 Padding(
                   padding: const EdgeInsets.all(5),
                   child: TextField(
@@ -421,7 +428,7 @@ class _EmailInfoPageState extends State<EmailInfoPage> {
 
             },
             child: Text('다음으로', style: TextStyle(
-              fontFamily: 'Pretendard',
+              fontFamily: 'LINESeedKR',
               fontSize: 20,
               color: Colors.white,
             ),),

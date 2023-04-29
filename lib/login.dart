@@ -4,6 +4,7 @@ import 'package:jitutorapp/signUp.dart';
 
 //
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:jitutorapp/studentPage/mainPage.dart';
@@ -42,7 +43,7 @@ class _LoginState extends State<Login> {
             children: [
               Padding(
                   padding: const EdgeInsets.all(5),
-                  child: Text('이메일(아이디)을 입력하세요', style: TextStyle(fontSize: 30, fontFamily: 'Pretedard'),)),
+                  child: Text('이메일(아이디)을 입력하세요', style: TextStyle(fontSize: 30, fontFamily: 'LINESeedKR'),)),
               Padding(
                 padding: const EdgeInsets.all(5),
                 child: TextField(
@@ -54,7 +55,7 @@ class _LoginState extends State<Login> {
 
               Padding(
                   padding: const EdgeInsets.all(5),
-                  child: Text('비밀번호를 입력하세요', style: TextStyle(fontSize: 30, fontFamily: 'Pretedard'),)),
+                  child: Text('비밀번호를 입력하세요', style: TextStyle(fontSize: 30, fontFamily: 'LINESeedKR'),)),
               Padding(
                 padding: const EdgeInsets.all(5),
                 child: TextField(
@@ -91,6 +92,11 @@ class _LoginState extends State<Login> {
                 context.read<UserStore>().setName(userdoc['name']);
                 context.read<UserStore>().setPoint(userdoc['point']);
                 context.read<UserStore>().setType(userdoc['type']);
+                // 휴대폰 내부 저장소에 아이디, 비번 기록
+                final storage = new FlutterSecureStorage();
+                await storage.write(key: 'id', value: useremail);
+                await storage.write(key: 'password', value: userpassword);
+
                 //메인 페이지로 이동
                 if (context.read<UserStore>().type.compareTo('teacher') == 0) {
                   Navigator.pushAndRemoveUntil(context,
@@ -114,7 +120,7 @@ class _LoginState extends State<Login> {
 
             },
             child: Text('로그인하기', style: TextStyle(
-              fontFamily: 'Pretendard',
+              fontFamily: 'LINESeedKR',
               fontSize: 20,
               color: Colors.white,
             ),),

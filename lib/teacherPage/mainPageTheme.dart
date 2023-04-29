@@ -13,7 +13,7 @@ var mainTheme = ThemeData(
   ),
   textTheme: TextTheme(
       headline1 : TextStyle(
-        fontFamily: 'Pretendard',
+        fontFamily: 'LINESeedKR',
         color: Colors.black,
         fontSize: 20,
       )
@@ -26,7 +26,7 @@ var mainTheme = ThemeData(
     selectedItemColor: Colors.black,
     unselectedItemColor: Colors.grey,
     unselectedLabelStyle: TextStyle(
-      fontFamily: 'Pretendard',
+      fontFamily: 'LINESeedKR',
       color: Colors.black
     ),
 

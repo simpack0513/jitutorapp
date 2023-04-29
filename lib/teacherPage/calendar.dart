@@ -6,6 +6,7 @@ import 'package:jitutorapp/teacherPage/scheduleChange.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:percent_indicator/percent_indicator.dart';
 
 import '../DataStore/scheduleStore.dart'; // 캘린더 패키지
 
@@ -23,18 +24,18 @@ class _CalendarState extends State<Calendar> {
     titleCentered: true,
   );
   var headtextStyle = TextStyle(
-    fontFamily: 'Pretendard',
+    fontFamily: 'LINESeedKR',
     color: Colors.black,
     fontSize: 20,
     fontWeight: FontWeight.w500,
   );
   var bodytextStyle = TextStyle(
-    fontFamily: 'Pretendard',
+    fontFamily: 'LINESeedKR',
     color: Colors.black,
     fontSize: 14,
   );
   var bodyBoldtextStyle = TextStyle(
-      fontFamily: 'Pretendard',
+      fontFamily: 'LINESeedKR',
       color: Colors.black,
       fontSize: 14,
       fontWeight: FontWeight.bold,
@@ -205,7 +206,7 @@ class _CalendarState extends State<Calendar> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Expanded(flex : 1, child: SizedBox(child: Text(context.watch<ClasschildStore>().comingClassList[i]["comingDay"]+' 일후', style: bodyBoldtextStyle))),
+                              Expanded(flex : 1, child: SizedBox(child: Text(context.watch<ClasschildStore>().comingClassList[i]["comingDay"], style: bodyBoldtextStyle))),
                               Expanded(
                                 flex : 5,
                                 child: SizedBox(
@@ -238,11 +239,74 @@ class _CalendarState extends State<Calendar> {
 
             Container( // 위에서 네번째 박스 - 수업료
               width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.width/3,
+              padding: EdgeInsets.fromLTRB(20, 15, 20, 15),
               margin: EdgeInsets.all(10),
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(20),
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('수업료', style: headtextStyle),
+                  context.watch<ClasschildStore>().payList.isNotEmpty ? ListView.builder(
+                      physics: const NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      itemCount: context.watch<ClasschildStore>().payList.length,
+                      itemBuilder: (context, i) {
+                        return ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.white,
+                              elevation: 0,
+                              padding: EdgeInsets.zero,
+                          ),
+                          onPressed: (){},
+                          child: Column(
+                            children: [
+                              Container(
+                                margin: EdgeInsets.fromLTRB(0, 10, 0, 5),
+                                width: double.infinity,
+                                child: Text(context.watch<ClasschildStore>().payList[i]["className"], style: bodyBoldtextStyle,),
+                              ),
+                              SizedBox(
+                                width: MediaQuery.of(context).size.width - 50,
+                                child: LinearPercentIndicator(
+                                  animation: true,
+                                  lineHeight: 20.0,
+                                  animationDuration: 2000,
+                                  percent: context.watch<ClasschildStore>().payList[i]["persent"],
+                                  center: Text(context.watch<ClasschildStore>().payList[i]["persent_string"], style: bodytextStyle,),
+                                  barRadius: Radius.circular(10),
+                                  progressColor: context.watch<ClasschildStore>().payList[i]["pay_delay"] ? Colors.red : Colors.blue,
+                                  padding: EdgeInsets.zero,
+                                ),
+                              ),
+                              Container(
+                                padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
+                                width: double.infinity,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    context.watch<ClasschildStore>().payList[i]["pay_delay"] ?
+                                    Text('수업료가 지연되었습니다', style: bodytextStyle,)
+                                        :Text('다음 과외료 '+ context.read<ClasschildStore>().payList[i]["next_paydate"], style: bodytextStyle,),
+                                    Text(context.watch<ClasschildStore>().payList[i]["count"].toString() + " / " + context.watch<ClasschildStore>().payList[i]["pay_times"].toString(),
+                                      style: TextStyle(
+                                        fontFamily: 'LINESeedKR',
+                                        color: context.watch<ClasschildStore>().payList[i]["pay_delay"] ? Colors.red : Colors.blue,
+                                        fontSize: 14,)
+                                      ,),
+
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      }
+                  ) : Text("현재 속한 수업이 없습니다.", style: bodytextStyle,),
+                ],
               ),
             ),
           ],

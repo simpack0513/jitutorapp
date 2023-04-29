@@ -28,6 +28,9 @@ environment:
 # versions available, run `flutter pub outdated`.
 
 dependencies:
+  intl: ^0.17.0
+  percent_indicator: ^4.2.3
+  flutter_secure_storage: ^8.0.0
   modal_bottom_sheet: ^2.1.2
   sheet: ^1.0.0-pre
   table_calendar: ^3.0.8
@@ -72,6 +75,9 @@ flutter:
     - family: Pretendard
       fonts:
         - asset: assets/font/Pretendard-Regular.otf
+    - family: LINESeedKR
+      fonts:
+        - asset: assets/font/LINESeedKR-Rg.otf
   assets:
     - assets/
 

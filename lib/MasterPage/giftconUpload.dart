@@ -107,7 +107,7 @@ class _GiftconUploadState extends State<GiftconUpload> {
         title: Text('기프티콘 등록'),
         titleTextStyle: TextStyle(
           color: Colors.black,
-          fontFamily: 'Pretendard',
+          fontFamily: 'LINESeedKR',
           fontSize: 20,
         ),
         actions: [

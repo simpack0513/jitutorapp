@@ -15,13 +15,13 @@ class StudentManage extends StatefulWidget {
 class _StudentManageState extends State<StudentManage> {
   // 변수
   var headtextStyle = TextStyle(
-    fontFamily: 'Pretendard',
+    fontFamily: 'LINESeedKR',
     color: Colors.black,
     fontSize: 20,
     fontWeight: FontWeight.w500,
   );
   var bodytextStyle = TextStyle(
-    fontFamily: 'Pretendard',
+    fontFamily: 'LINESeedKR',
     color: Colors.black,
     fontSize: 12,
     fontWeight: FontWeight.w500,
@@ -49,7 +49,7 @@ class _StudentManageState extends State<StudentManage> {
         centerTitle: true,
         titleTextStyle: TextStyle(
           color: Colors.black,
-          fontFamily: 'Pretendard',
+          fontFamily: 'LINESeedKR',
           fontSize: 20,
         ),
         systemOverlayStyle: SystemUiOverlayStyle.dark,
@@ -111,13 +111,13 @@ class _StudentManageState extends State<StudentManage> {
                   alignment: Alignment.center,
                   child: Column(children: [
                     Text('현재 나의 잔여 포인트 : ' + context.read<UserStore>().point.toString(), style : TextStyle(
-                      fontFamily: 'Pretendard',
+                      fontFamily: 'LINESeedKR',
                       color: Colors.black,
                       fontSize: 14,
                     )),
                     Row(children: [
                       Text(name + '에게 부여할 포인트 : ', style : TextStyle(
-                        fontFamily: 'Pretendard',
+                        fontFamily: 'LINESeedKR',
                         color: Colors.black,
                         fontSize: 14,
                       )),
@@ -158,7 +158,7 @@ class _StudentManageState extends State<StudentManage> {
                         Navigator.pop(context);
                       },
                       child: Text('취소', style: TextStyle(
-                        fontFamily: 'Pretendard',
+                        fontFamily: 'LINESeedKR',
                         fontSize: 15,
                         color: Colors.black,)),
                     ),
@@ -181,7 +181,7 @@ class _StudentManageState extends State<StudentManage> {
                         Navigator.of(context).pop();
                       },
                       child: Text('부여하기', style: TextStyle(
-                        fontFamily: 'Pretendard',
+                        fontFamily: 'LINESeedKR',
                         fontSize: 15,
                         color: Colors.black,)),
                     ),
