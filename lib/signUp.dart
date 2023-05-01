@@ -189,7 +189,7 @@ class _PhoneInfoPageState extends State<PhoneInfoPage> {
     try {
       final user = await FirebaseAuth.instance.currentUser;
       await firestore.collection('Person').doc(user?.uid).
-      set({'name' : context.read<InfoStore>().name, 'type' : context.read<InfoStore>().type, 'point' : 50});
+      set({'name' : context.read<InfoStore>().name, 'type' : context.read<InfoStore>().type, 'point' : 50, 'FCMToken' : ""});
       // 유저스토어에 사용자 정보 저장 = 바로 데이터 꺼내쓸 수 있게
       context.read<UserStore>().setName(context.read<InfoStore>().name);
       context.read<UserStore>().setType(context.read<InfoStore>().type);

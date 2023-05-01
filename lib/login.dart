@@ -92,6 +92,7 @@ class _LoginState extends State<Login> {
                 context.read<UserStore>().setName(userdoc['name']);
                 context.read<UserStore>().setPoint(userdoc['point']);
                 context.read<UserStore>().setType(userdoc['type']);
+                context.read<UserStore>().setFCMToken(userdoc['FCMToken']);
                 // 휴대폰 내부 저장소에 아이디, 비번 기록
                 final storage = new FlutterSecureStorage();
                 await storage.write(key: 'id', value: useremail);

@@ -41,6 +41,7 @@ class _mainPageSState extends State<mainPageS> {
     context.read<ClasschildStore>().generateClassChild(context.read<ClassStore>().userClassList);
     context.read<MarketStore>().getMarketItem();
     context.read<OrderStore>().initOrderList(context.read<UserStore>().userUID);
+    context.read<UserStore>().updateDB_FCMToken();
   }
 
   @override
