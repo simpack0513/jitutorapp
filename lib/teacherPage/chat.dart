@@ -186,7 +186,6 @@ class _ChatPageState extends State<ChatPage> {
                             });
                           }
 
-                          int remainMsg2 = doc["remainMsg2"]; // 현재 쌓인 안 읽음 메시지 로드
                           String time = DateTime.now().toString();
                           chat.add({
                             "senderUID" : context.read<UserStore>().userUID,
@@ -195,11 +194,24 @@ class _ChatPageState extends State<ChatPage> {
                             "type" : "DEF",
                             "read" : false,
                           });
-                          chatroom.update({
-                            "lastMsg" : text,
-                            "lastDate" : time,
-                            "remainMsg2" : remainMsg2 + 1,
-                          });
+
+                          int _remainMsg;
+                          if (doc["type"] == "student") {
+                            _remainMsg = doc["remainMsg2"];
+                            chatroom.update({
+                              "lastMsg" : text,
+                              "lastDate" : time,
+                              "remainMsg2" : _remainMsg + 1,
+                            });
+                          }
+                          else {
+                            _remainMsg = doc["remainMsg3"];
+                            chatroom.update({
+                              "lastMsg" : text,
+                              "lastDate" : time,
+                              "remainMsg2" : _remainMsg + 1,
+                            });
+                          }
 
                           // 메시지 알림 보내기
                           DocumentSnapshot youDoc = await firestore.collection('Person').doc(widget.youUID).get();
