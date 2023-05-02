@@ -97,7 +97,7 @@ class _ChatPageState extends State<ChatPage> {
     DocumentReference chatroom = firestore.collection('Chatroom').doc(widget.roomDocId);
 
     chatroom.update({
-      "remainMsg1" : 0,
+      "remainMsg2" : 0,
     });
 
     return GestureDetector(
@@ -185,7 +185,7 @@ class _ChatPageState extends State<ChatPage> {
                             });
                           }
 
-                          int remainMsg2 = doc["remainMsg2"]; // 현재 쌓인 안 읽음 메시지 로드
+                          int remainMsg1 = doc["remainMsg1"]; // 현재 쌓인 안 읽음 메시지 로드
                           String time = DateTime.now().toString();
                           chat.add({
                             "senderUID" : context.read<UserStore>().userUID,
@@ -197,7 +197,7 @@ class _ChatPageState extends State<ChatPage> {
                           chatroom.update({
                             "lastMsg" : text,
                             "lastDate" : time,
-                            "remainMsg2" : remainMsg2 + 1,
+                            "remainMsg1" : remainMsg1 + 1,
                           });
 
                           // 메시지 알림 보내기
