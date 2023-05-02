@@ -15,13 +15,13 @@ final firestore = FirebaseFirestore.instance;
  */
 
 class ChatPage extends StatefulWidget {
-  const ChatPage({Key? key, this.roomDocId, this.meImg, this.youImg, this.youName, this.remainMsg1, this.meName, this.youUID}) : super(key: key);
+  const ChatPage({Key? key, this.roomDocId, this.meImg, this.youImg, this.youName, this.remainMsg, this.meName, this.youUID}) : super(key: key);
 
   final roomDocId;
   final meImg;
   final youImg;
   final youName;
-  final remainMsg1;
+  final remainMsg;
   final meName;
   final youUID;
 
@@ -81,9 +81,9 @@ class _ChatPageState extends State<ChatPage> {
         });
       }
     });
-    if (widget.remainMsg1 > 10) {
+    if (widget.remainMsg > 10) {
       setState(() {
-        chatLimit = widget.remainMsg1;
+        chatLimit = widget.remainMsg;
       });
     }
   }
@@ -266,7 +266,7 @@ class _ChatPageState extends State<ChatPage> {
                                 Column(
                                   crossAxisAlignment: (isMe) ? CrossAxisAlignment.end : CrossAxisAlignment.start,
                                   children: [
-                                    Text((isMe) ? '나' : widget.youName.split(' ')[0], style: bodyBoldtextStyle, textAlign: TextAlign.start,),
+                                    Text((isMe) ? '나' : widget.youName, style: bodyBoldtextStyle, textAlign: TextAlign.start,),
                                     Container(height: 5,),
                                     Container(
                                       constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width / 4 * 3 - 50,),

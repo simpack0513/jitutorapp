@@ -1,5 +1,6 @@
 // 여기는 연동 페이지
 import 'package:jitutorapp/DataStore/UserStore.dart';
+import 'package:jitutorapp/parentPage/mainPage.dart';
 import 'package:jitutorapp/signUp.dart';
 
 //
@@ -106,6 +107,10 @@ class _LoginState extends State<Login> {
                 else if (context.read<UserStore>().type.compareTo('student') == 0) {
                   Navigator.pushAndRemoveUntil(context,
                       MaterialPageRoute(builder: (context) => mainPageS()), (route) => false);
+                }
+                else if (context.read<UserStore>().type.compareTo('parent') == 0) {
+                  Navigator.pushAndRemoveUntil(context,
+                      MaterialPageRoute(builder: (context) => mainPageP()), (route) => false);
                 }
 
 

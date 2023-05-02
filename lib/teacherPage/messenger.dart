@@ -47,8 +47,8 @@ class _MessengerState extends State<Messenger> {
           itemBuilder: (context, i) {
             // 학생인지 학부모인지 체크
             bool isUser2;
-            String userUID2 = snapshot.data?.docs[i]["userUID2"];
-            if (userUID2 == "") {
+            String type = snapshot.data?.docs[i]["type"];
+            if (type == "parent") {
               isUser2 = false;
             }
             else {

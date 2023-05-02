@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:jitutorapp/DataStore/UserStore.dart';
-import 'package:jitutorapp/studentPage/chat.dart';
+import 'package:jitutorapp/parentPage/chat.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 final firestore = FirebaseFirestore.instance;
@@ -39,7 +39,7 @@ class _MessengerState extends State<Messenger> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
-      stream: FirebaseFirestore.instance.collection('Chatroom').where("userUID2", isEqualTo: context.read<UserStore>().userUID).orderBy("lastDate", descending: true).snapshots(),
+      stream: FirebaseFirestore.instance.collection('Chatroom').where("userUID3", isEqualTo: context.read<UserStore>().userUID).orderBy("lastDate", descending: true).snapshots(),
       builder: (context, snapshot) {
         return ListView.builder(
           padding: EdgeInsets.zero,
@@ -70,11 +70,11 @@ class _MessengerState extends State<Messenger> {
               onPressed: (){
                 Navigator.push(context, MaterialPageRoute(builder: (context) => ChatPage(
                   roomDocId: snapshot.data!.docs[i].id,
-                  meImg: snapshot.data?.docs[i]["userImg2"],
+                  meImg: snapshot.data?.docs[i]["userImg3"],
                   youImg: snapshot.data?.docs[i]["userImg1"],
                   youName: snapshot.data?.docs[i]["userName1"],
-                  remainMsg: snapshot.data?.docs[i]["remainMsg2"],
-                  meName: snapshot.data?.docs[i]["userName2"],
+                  remainMsg: snapshot.data?.docs[i]["remainMsg3"],
+                  meName: snapshot.data?.docs[i]["userName3"],
                   youUID : snapshot.data?.docs[i]["userUID1"],
                 )));
               },
@@ -113,7 +113,7 @@ class _MessengerState extends State<Messenger> {
                             SizedBox(height: 10,),
                             Text(date, style: bodytextStyle,),
                             SizedBox(height: 5,),
-                            (snapshot.data!.docs[i]["remainMsg2"] != 0) ? Container(
+                            (snapshot.data!.docs[i]["remainMsg3"] != 0) ? Container(
                               width: 18,
                               height: 18,
                               alignment: Alignment.center,
@@ -121,7 +121,7 @@ class _MessengerState extends State<Messenger> {
                                 color: Colors.red,
                                 borderRadius: BorderRadius.circular(7),
                               ),
-                              child: Text(snapshot.data!.docs[i]["remainMsg2"].toString() , style: TextStyle(color: Colors.white, fontSize: 14),),
+                              child: Text(snapshot.data!.docs[i]["remainMsg3"].toString() , style: TextStyle(color: Colors.white, fontSize: 14),),
                             ) : Container(),
                           ],
                       ),

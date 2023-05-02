@@ -16,13 +16,13 @@ final firestore = FirebaseFirestore.instance;
  */
 
 class ChatPage extends StatefulWidget {
-  const ChatPage({Key? key, this.roomDocId, this.meImg, this.youImg, this.youName, this.remainMsg1, this.meName, this.youUID}) : super(key: key);
+  const ChatPage({Key? key, this.roomDocId, this.meImg, this.youImg, this.youName, this.remainMsg, this.meName, this.youUID}) : super(key: key);
 
   final roomDocId;
   final meImg;
   final youImg;
   final youName;
-  final remainMsg1;
+  final remainMsg;
   final meName;
   final youUID;
 
@@ -82,9 +82,9 @@ class _ChatPageState extends State<ChatPage> {
         });
       }
     });
-    if (widget.remainMsg1 > 10) {
+    if (widget.remainMsg > 10) {
       setState(() {
-        chatLimit = widget.remainMsg1;
+        chatLimit = widget.remainMsg;
       });
     }
   }
@@ -98,7 +98,7 @@ class _ChatPageState extends State<ChatPage> {
     DocumentReference chatroom = firestore.collection('Chatroom').doc(widget.roomDocId);
 
     chatroom.update({
-      "remainMsg1" : 0,
+      "remainMsg3" : 0,
     });
 
     return GestureDetector(
@@ -186,7 +186,7 @@ class _ChatPageState extends State<ChatPage> {
                             });
                           }
 
-                          int remainMsg2 = doc["remainMsg2"]; // 현재 쌓인 안 읽음 메시지 로드
+                          int remainMsg1 = doc["remainMsg1"]; // 현재 쌓인 안 읽음 메시지 로드
                           String time = DateTime.now().toString();
                           chat.add({
                             "senderUID" : context.read<UserStore>().userUID,
@@ -198,7 +198,7 @@ class _ChatPageState extends State<ChatPage> {
                           chatroom.update({
                             "lastMsg" : text,
                             "lastDate" : time,
-                            "remainMsg2" : remainMsg2 + 1,
+                            "remainMsg1" : remainMsg1 + 1,
                           });
 
                           // 메시지 알림 보내기
@@ -332,7 +332,7 @@ class _ChatPageState extends State<ChatPage> {
                                 Column(
                                   crossAxisAlignment: (isMe) ? CrossAxisAlignment.end : CrossAxisAlignment.start,
                                   children: [
-                                    Text((isMe) ? '나' : widget.youName, style: bodyBoldtextStyle, textAlign: TextAlign.start,),
+                                    Text((isMe) ? '나' : widget.youName.split(' ')[0], style: bodyBoldtextStyle, textAlign: TextAlign.start,),
                                     Container(height: 5,),
                                     Container(
                                       constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width / 4 * 3 - 50,),

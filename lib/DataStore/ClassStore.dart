@@ -51,6 +51,28 @@ class ClassStore extends ChangeNotifier{
     print(userClassNameList);
   }
 
+  // 학부모 사용자의 UID에 맞는 클래스 정보만 받아와 userClassList에 저장
+  Future<void> parentGetClassFromFirebase(String UID) async{
+    userClassList = [];
+    userClassNameList = [];
+    userClassUIDList = [];
+    var result = await firestore.collection('Class').get();
+    for (var doc in result.docs) {
+      if(doc['parentUID'] == UID) {
+        userClassList.add(doc);
+        userClassNameList.add(doc['classname']);
+        userClassUIDList.add(doc.id.toString());
+      }
+    }
+    if(userClassList.isEmpty) {
+      userClassList.add('NULL');
+      userClassNameList.add('현재 담당하는 수업이 없습니다.');
+    }
+    notifyListeners();
+    print(userClassList);
+    print(userClassNameList);
+  }
+
 
   // 클래스 이름과 똑같은 클래스 문서 ID 반환
   String getClassUID(String classname) {
