@@ -209,7 +209,7 @@ class _ChatPageState extends State<ChatPage> {
                             chatroom.update({
                               "lastMsg" : text,
                               "lastDate" : time,
-                              "remainMsg2" : _remainMsg + 1,
+                              "remainMsg3" : _remainMsg + 1,
                             });
                           }
 
