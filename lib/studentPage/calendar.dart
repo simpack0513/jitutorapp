@@ -1,13 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:jitutorapp/DataStore/ClasschildStore.dart';
 import 'package:jitutorapp/DataStore/ClassStore.dart';
-import 'package:jitutorapp/teacherPage/scheduleChange.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
-
-import '../DataStore/scheduleStore.dart'; // 캘린더 패키지
 
 class Calendar extends StatefulWidget {
   const Calendar({Key? key}) : super(key: key);
@@ -63,42 +58,6 @@ class _CalendarState extends State<Calendar> {
   // 달력 해당 날짜에 이벤트 반환(개수를 취하는듯..)
   List<Event> _getEventsForDay(DateTime day) {
     return context.watch<ClasschildStore>().events[day] ?? [];
-  }
-
-  // 일정 변경 버튼 누르면 실행되는 함수
-  void changeDate(int i) async{
-    String date = context.read<ClasschildStore>().dateClassList[i]['date'];
-    String today = DateTime.now().toString().split(' ')[0];
-    if (date.compareTo(today) <= 0) {
-      Fluttertoast.showToast(
-          msg: '당일 수업 혹은 이미 지나간 수업은 변경이 불가능합니다.',
-          toastLength: Toast.LENGTH_SHORT,
-          timeInSecForIosWeb: 2,
-          backgroundColor: Colors.black87,
-          fontSize: 12,
-      );
-    }
-    else {
-      await context.read<ScheduleStore>().setDoc(context.read<ClasschildStore>().dateClassList[i], context.read<ClasschildStore>().dateClassList[i].id.toString(), i, "dateClassList");
-      Navigator.push(context, MaterialPageRoute(builder: (context) => ScheduleChange()));
-    }
-  }
-  void changeDate2(int i) async{
-    String date = context.read<ClasschildStore>().comingClassList[i]['date'];
-    String today = DateTime.now().toString().split(' ')[0];
-    if (date.compareTo(today) <= 0) {
-      Fluttertoast.showToast(
-        msg: '당일 수업 혹은 이미 지나간 수업은 변경이 불가능합니다.',
-        toastLength: Toast.LENGTH_SHORT,
-        timeInSecForIosWeb: 2,
-        backgroundColor: Colors.black87,
-        fontSize: 12,
-      );
-    }
-    else {
-      await context.read<ScheduleStore>().setDoc(context.read<ClasschildStore>().comingClassList[i], context.read<ClasschildStore>().comingClassList[i]['id'], i, "comingClassList");
-      Navigator.push(context, MaterialPageRoute(builder: (context) => ScheduleChange()));
-    }
   }
 
   //

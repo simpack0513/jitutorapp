@@ -353,12 +353,19 @@ class _ChatPageState extends State<ChatPage> {
                                         borderRadius: BorderRadius.circular(10),
                                         color: Colors.white,
                                       ),
-                                      child: Row(
+                                      child: Column(
                                         children: [
                                           Text(snapshot.data?.docs[i]["text"], style: bodytextStyle, ),
+                                          SizedBox(height: 20,),
                                           ElevatedButton(
-                                              onPressed: (){},
-                                              child: Text('확인하기'),
+                                            style: ElevatedButton.styleFrom(
+                                                padding: EdgeInsets.all(10),
+                                                elevation: 0,
+                                                backgroundColor: Colors.grey.shade200,
+                                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                                            ),
+                                            onPressed: (){},
+                                            child: Container(alignment: Alignment.center, width: MediaQuery.of(context).size.width / 4 * 3 - 50, child: Text('확인하기', style: bodytextStyle,)),
                                           ),
                                         ],
                                       ),

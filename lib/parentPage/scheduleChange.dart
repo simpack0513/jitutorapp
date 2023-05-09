@@ -4,6 +4,7 @@ import 'package:jitutorapp/DataStore/scheduleStore.dart';
 import 'package:provider/provider.dart';
 
 import '../DataStore/ClasschildStore.dart';
+import '../DataStore/UserStore.dart';
 
 class ScheduleChange extends StatefulWidget {
   const ScheduleChange({Key? key}) : super(key: key);
@@ -333,7 +334,7 @@ class _ScheduleChangeState extends State<ScheduleChange> {
                       elevation: 0,
                     ),
                     onPressed: () async{
-                      await context.read<ScheduleStore>().uploadData(checkBoxBool);
+                      await context.read<ScheduleStore>().uploadData(checkBoxBool, context.read<UserStore>().userUID, context.read<UserStore>().type, context.read<UserStore>().name);
                       context.read<ClasschildStore>().refreshClasschild();
                       Navigator.of(context).pop();
                       Navigator.of(homeContext).pop();
