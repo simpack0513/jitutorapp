@@ -147,15 +147,7 @@ class ScheduleStore extends ChangeNotifier {
       }
       String text = "안녕하세요 " + youType+ "\n" + week + " 수업을 변경하고자 연락드립니다.\n아래 버튼을 클릭해 확인해주세요.";
 
-      await chatRef.add({
-        "read" : false,
-        "senderUID" : myUID,
-        "text" : text,
-        "time" : DateTime.now().toString(),
-        "type" : "CHS",
-        "scheduleDocId" : scheduleDoc.id,
-      });
-      DocumentSnapshot chatroomDoc = await chatroomRef.get();
+     DocumentSnapshot chatroomDoc = await chatroomRef.get();
 
      if (chatroomDoc["lastDate"].toString().split(' ')[0] != DateTime.now().toString().split(' ')[0]) {
        String text_date = DateFormat('yyyy년 M월 d일 E요일', 'ko').format(DateTime.now());
@@ -167,6 +159,16 @@ class ScheduleStore extends ChangeNotifier {
          "read" : true,
        });
      }
+
+      await chatRef.add({
+        "read" : false,
+        "senderUID" : myUID,
+        "text" : text,
+        "time" : DateTime.now().toString(),
+        "type" : "CHS",
+        "scheduleUID" : scheduleDoc.id,
+      });
+
       if (myType == "teacher") {
 
         int remainMsg3 = chatroomDoc["remainMsg3"];
@@ -212,8 +214,5 @@ class ScheduleStore extends ChangeNotifier {
       fontSize: 12,
     );
   }
-
-
-
 
 }

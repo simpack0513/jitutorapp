@@ -2,7 +2,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:jitutorapp/DataStore/UserStore.dart';
+import 'package:jitutorapp/DataStore/scheduleConformStore.dart';
 import 'package:jitutorapp/FCMsender.dart';
+import 'package:jitutorapp/ToastService.dart';
+import 'package:jitutorapp/teacherPage/scheduleConform.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import 'dart:ui' as ui;
@@ -354,17 +357,26 @@ class _ChatPageState extends State<ChatPage> {
                                         color: Colors.white,
                                       ),
                                       child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
                                           Text(snapshot.data?.docs[i]["text"], style: bodytextStyle, ),
                                           SizedBox(height: 20,),
-                                          ElevatedButton(
+                                          ElevatedButton( // 확인하기 버튼
                                             style: ElevatedButton.styleFrom(
                                                 padding: EdgeInsets.all(10),
                                                 elevation: 0,
                                                 backgroundColor: Colors.grey.shade200,
                                                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
                                             ),
-                                            onPressed: (){},
+                                            onPressed: (){
+                                              try {
+                                                context.read<ScheduleConformStore>().setDoc(snapshot.data?.docs[i]["scheduleUID"], context);
+                                                Navigator.push(context, MaterialPageRoute(builder: (context) => ScheduleConform()));
+                                              }
+                                              catch (e){
+                                                ToastService.toastMsg('이미 만료된 일정 변경 요청입니다.');
+                                              }
+                                            },
                                             child: Container(alignment: Alignment.center, width: MediaQuery.of(context).size.width / 4 * 3 - 50, child: Text('확인하기', style: bodytextStyle,)),
                                           ),
                                         ],

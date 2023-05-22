@@ -6,6 +6,10 @@ import 'package:jitutorapp/FCMsender.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import 'dart:ui' as ui;
+
+import '../DataStore/scheduleConformStore.dart';
+import '../ToastService.dart';
+// import '../parentPage/scheduleConform.dart';
 final firestore = FirebaseFirestore.instance;
 
 // type 종류
@@ -342,6 +346,7 @@ class _ChatPageState extends State<ChatPage> {
                                         color: Colors.white,
                                       ),
                                       child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
                                           Text(snapshot.data?.docs[i]["text"], style: bodytextStyle, ),
                                           SizedBox(height: 20,),
@@ -352,7 +357,15 @@ class _ChatPageState extends State<ChatPage> {
                                               backgroundColor: Colors.grey.shade200,
                                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
                                             ),
-                                            onPressed: (){},
+                                            onPressed: (){
+                                              try {
+                                                context.read<ScheduleConformStore>().setDoc(snapshot.data?.docs[i]["scheduleUID"], context);
+                                                // Navigator.push(context, MaterialPageRoute(builder: (context) => ScheduleConform()));
+                                              }
+                                              catch (e){
+                                                ToastService.toastMsg('이미 만료된 일정 변경 요청입니다.');
+                                              }
+                                            },
                                             child: Container(alignment: Alignment.center, width: MediaQuery.of(context).size.width / 4 * 3 - 50, child: Text('확인하기', style: bodytextStyle,)),
                                           ),
                                         ],
