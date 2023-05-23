@@ -1,6 +1,7 @@
 // 일정 변경할 때 데이터, 함수 관리
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart';
 import 'package:jitutorapp/ToastService.dart';
 
 final firestore = FirebaseFirestore.instance;
@@ -16,6 +17,7 @@ class ScheduleConformStore extends ChangeNotifier {
   String currentClassDate = "";
   String currentClassStarttime = "";
   String currentClassEndtime = "";
+  int selectedOption = -1;
 
   // 함수시작
   Future<void> setDoc(String docUID, var context) async{
@@ -28,16 +30,19 @@ class ScheduleConformStore extends ChangeNotifier {
       currentClassDate = "";
       currentClassStarttime = "";
       currentClassEndtime = "";
+      selectedOption = -1;
 
       doc = await firestore.collection('Schedule').doc(docUID).get();
       count = doc["listDate"].length;
-      optionClassDate = doc["listDate"];
-      optionClassStarttime = doc["listStartTime"];
-      optionClassEndtime = doc["listEndTime"];
       currentClassName = doc["name"];
-      currentClassDate = doc["currentDate"];
+      currentClassDate = doc["currentDate"] + dateToS(doc["currentDate"]);
       currentClassStarttime = doc["currentStartTime"];
       currentClassEndtime = doc["currentEndTime"];
+      for(int i=0; i<count; i++) {
+        optionClassDate.add(doc["listDate"][i] + dateToS(doc["listDate"][i]));
+        optionClassStarttime.add(doc["listStartTime"][i]);
+        optionClassEndtime.add(doc["listEndTime"][i]);
+      }
 
       notifyListeners();
     }
@@ -46,4 +51,33 @@ class ScheduleConformStore extends ChangeNotifier {
       Navigator.pop(context);
     }
   }
+
+  String dateToS(String currentDate) {
+    DateTime currentDatetime = DateTime.parse(currentDate);
+    int difference = currentDatetime.difference(DateTime.now()).inDays;
+    int todayWeekend = DateTime.now().weekday;
+    DateFormat dateformat = DateFormat.EEEE('ko');
+    String week = "";
+    if (difference + todayWeekend <= 7) {
+      week = " (이번주 ";
+      week += dateformat.format(currentDatetime);
+      week += ")";
+    }
+    else if (difference + todayWeekend <= 14) {
+      week = " (다음주 ";
+      week += dateformat.format(currentDatetime);
+      week += ")";
+    }
+    else {
+      week = "";
+    }
+    return week;
+  }
+
+  // 후보 선택 함수
+  void choiceOption(int num) {
+    selectedOption = num;
+    notifyListeners();
+  }
+
 }
