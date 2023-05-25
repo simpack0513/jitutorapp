@@ -4,11 +4,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import 'package:jitutorapp/ToastService.dart';
 
+import '../teacherPage/scheduleConform.dart';
+
 final firestore = FirebaseFirestore.instance;
 
 class ScheduleConformStore extends ChangeNotifier {
   // 변수
-  late DocumentSnapshot doc; // Classchild 정보임. 일정 변경 현재 상태를 담는 문서 - 초기에 받아옴
+  late DocumentSnapshot doc; // Schedule 정보임. 일정 변경 현재 상태를 담는 문서 - 초기에 받아옴
   int count = 0; // 후보 카운터
   List optionClassDate = [];
   List optionClassStarttime = [];
@@ -18,9 +20,10 @@ class ScheduleConformStore extends ChangeNotifier {
   String currentClassStarttime = "";
   String currentClassEndtime = "";
   int selectedOption = -1;
+  var docContext;
 
   // 함수시작
-  Future<void> setDoc(String docUID, var context) async{
+  Future<void> setDoc(String docUID, var context, bool isMe) async{
     try {
       count = 0; // 후보 카운터
       optionClassDate = [];
@@ -31,6 +34,7 @@ class ScheduleConformStore extends ChangeNotifier {
       currentClassStarttime = "";
       currentClassEndtime = "";
       selectedOption = -1;
+      docContext = context;
 
       doc = await firestore.collection('Schedule').doc(docUID).get();
       count = doc["listDate"].length;
@@ -48,8 +52,13 @@ class ScheduleConformStore extends ChangeNotifier {
     }
     catch (e){
       ToastService.toastMsg('이미 만료된 일정 변경 요청입니다.');
-      Navigator.pop(context);
+      return ;
     }
+    if (isMe) {
+      ToastService.toastMsg('내가 보낸 요청은 확인할 수 없습니다.');
+      return ;
+    }
+    Navigator.push(context, MaterialPageRoute(builder: (context) => ScheduleConform()));
   }
 
   String dateToS(String currentDate) {
@@ -78,6 +87,27 @@ class ScheduleConformStore extends ChangeNotifier {
   void choiceOption(int num) {
     selectedOption = num;
     notifyListeners();
+  }
+
+  // 일정 변경 수락
+  void conformSchedule(String type) async{
+    Navigator.pop(docContext);
+    // 수업 일정 업데이트
+    await firestore.collection('Classchild').doc(doc["classChildUID"]).update({
+      "date" : doc["listDate"][selectedOption],
+      "startTime" : doc["listStartTime"][selectedOption],
+      "endTime" : doc["listEndTime"][selectedOption],
+      "underChange" : false,
+    });
+    // 스케쥴 변경 마감
+    await doc.reference.delete();
+    ToastService.toastMsg('일정 변경 수락이 정상적으로 되었습니다.');
+    if (type == "teacher") {
+
+    }
+    else {
+
+    }
   }
 
 }

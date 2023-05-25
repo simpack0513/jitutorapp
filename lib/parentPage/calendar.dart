@@ -22,6 +22,8 @@ class _CalendarState extends State<Calendar> {
   var calendarHeaderStyle = HeaderStyle(
     formatButtonVisible: false,
     titleCentered: true,
+    leftChevronIcon: Icon(Icons.arrow_left, color: Colors.black,),
+    rightChevronIcon: Icon(Icons.arrow_right, color: Colors.black,),
   );
   var headtextStyle = TextStyle(
     fontFamily: 'LINESeedKR',
@@ -124,9 +126,12 @@ class _CalendarState extends State<Calendar> {
                 calendarStyle: CalendarStyle(
                   markerSize: 10.0,
                   markerDecoration: BoxDecoration(
-                    color: Colors.red,
+                    color: Colors.redAccent,
                     shape: BoxShape.circle,
-                  )
+                  ),
+                  outsideDaysVisible: true,
+                  weekendTextStyle: TextStyle().copyWith(color: Colors.red),
+                  holidayTextStyle: TextStyle().copyWith(color: Colors.blue[800]),
                 ),
                 onDaySelected: (DateTime selectedDay, DateTime focusedDay) { // 날짜 선택시 실행되는 함수
                   setState(() {

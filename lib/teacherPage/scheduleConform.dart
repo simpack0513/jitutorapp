@@ -4,6 +4,7 @@ import 'package:jitutorapp/ToastService.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
 
+import '../DataStore/UserStore.dart';
 import '../DataStore/scheduleConformStore.dart';
 
 class ScheduleConform extends StatefulWidget {
@@ -18,6 +19,8 @@ class _ScheduleConformState extends State<ScheduleConform> {
   var calendarHeaderStyle = HeaderStyle(
     formatButtonVisible: false,
     titleCentered: true,
+    leftChevronIcon: Icon(Icons.arrow_left, color: Colors.black,),
+    rightChevronIcon: Icon(Icons.arrow_right, color: Colors.black,),
   );
   var containerTheme = BoxDecoration(
     color : Colors.white,
@@ -79,11 +82,9 @@ class _ScheduleConformState extends State<ScheduleConform> {
                   locale: 'ko-KR',
                   headerStyle: calendarHeaderStyle,
                   calendarStyle: CalendarStyle(
-                      markerSize: 10.0,
-                      markerDecoration: BoxDecoration(
-                        color: Colors.red,
-                        shape: BoxShape.circle,
-                      )
+                    outsideDaysVisible: true,
+                    weekendTextStyle: TextStyle().copyWith(color: Colors.red),
+                    holidayTextStyle: TextStyle().copyWith(color: Colors.blue[800]),
                   ),
                   onDaySelected: (DateTime selectedDay, DateTime focusedDay) { // 날짜 선택시 실행되는 함수
                   },
@@ -213,7 +214,7 @@ class _ScheduleConformState extends State<ScheduleConform> {
 
   // 예 아니로 다이얼로그 함수
   void OKDialog() {
-    String titleStr = "이 내용으로 일정변경 요청을 하시겠습니까?";
+    String titleStr = "이 내용으로 일정변경 요청을 수락하시겠습니까?";
     showDialog(
         context: context,
         //barrierDismissible - Dialog를 제외한 다른 화면 터치 x
@@ -280,6 +281,8 @@ class _ScheduleConformState extends State<ScheduleConform> {
                       elevation: 0,
                     ),
                     onPressed: () {
+                      Navigator.pop(context);
+                      context.read<ScheduleConformStore>().conformSchedule(context.read<UserStore>().type);
                     },
                     child: Text('네', style: TextStyle(
                       fontFamily: 'LINESeedKR',

@@ -369,13 +369,7 @@ class _ChatPageState extends State<ChatPage> {
                                                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
                                             ),
                                             onPressed: (){
-                                              try {
-                                                context.read<ScheduleConformStore>().setDoc(snapshot.data?.docs[i]["scheduleUID"], context);
-                                                Navigator.push(context, MaterialPageRoute(builder: (context) => ScheduleConform()));
-                                              }
-                                              catch (e){
-                                                ToastService.toastMsg('이미 만료된 일정 변경 요청입니다.');
-                                              }
+                                              context.read<ScheduleConformStore>().setDoc(snapshot.data?.docs[i]["scheduleUID"], context, isMe);
                                             },
                                             child: Container(alignment: Alignment.center, width: MediaQuery.of(context).size.width / 4 * 3 - 50, child: Text('확인하기', style: bodytextStyle,)),
                                           ),
