@@ -47,8 +47,8 @@ class _MessengerState extends State<Messenger> {
           itemBuilder: (context, i) {
             // 학생인지 학부모인지 체크
             bool isUser2;
-            String userUID2 = snapshot.data?.docs[i]["userUID2"];
-            if (userUID2 == "") {
+            String type = snapshot.data?.docs[i]["type"];
+            if (type == "parent") {
               isUser2 = false;
             }
             else {
@@ -83,6 +83,8 @@ class _MessengerState extends State<Messenger> {
                   youImg: (isUser2) ? snapshot.data?.docs[i]["userImg2"] : snapshot.data?.docs[i]["userImg3"],
                   youName: (isUser2) ? snapshot.data?.docs[i]["userName2"] : snapshot.data?.docs[i]["userName3"],
                   remainMsg1: snapshot.data?.docs[i]["remainMsg1"],
+                  meName: snapshot.data?.docs[i]["userName1"],
+                  youUID : (isUser2) ? snapshot.data?.docs[i]["userUID2"] : snapshot.data?.docs[i]["userUID3"],
                 )));
               },
               child: Container(

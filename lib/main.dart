@@ -1,5 +1,6 @@
 import 'dart:convert';
 // 여기는 연동 페이지 import
+import 'package:get/get.dart';
 import 'package:jitutorapp/DataStore/ClassStore.dart';
 import 'package:jitutorapp/DataStore/ClasschildStore.dart';
 import 'package:jitutorapp/DataStore/MarketStore.dart';
@@ -7,7 +8,9 @@ import 'package:jitutorapp/DataStore/OrderStore.dart';
 import 'package:jitutorapp/DataStore/PointStore.dart';
 import 'package:jitutorapp/DataStore/UserStore.dart';
 import 'package:jitutorapp/DataStore/PostStore.dart';
+import 'package:jitutorapp/DataStore/scheduleConformStore.dart';
 import 'package:jitutorapp/mainLodding.dart';
+import 'package:jitutorapp/notification_controller.dart';
 import 'package:jitutorapp/teacherPage/mainPage.dart';
 import 'signUp.dart';
 import 'DataStore/InfoStore.dart';
@@ -39,8 +42,10 @@ void main() async{
           ChangeNotifierProvider(create: (c) => PointStore()),
           ChangeNotifierProvider(create: (c) => MarketStore()),
           ChangeNotifierProvider(create: (c) => OrderStore()),
+          ChangeNotifierProvider(create: (c) => ScheduleConformStore()),
         ],
-        child: MaterialApp(
+        child: GetMaterialApp(
+          initialBinding: BindingsBuilder.put(() => NotificationController(), permanent: true),
           localizationsDelegates: [
             GlobalMaterialLocalizations.delegate,
             GlobalWidgetsLocalizations.delegate,

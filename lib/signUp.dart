@@ -2,6 +2,7 @@ import 'dart:io';
 //여기는 일반 파일 import 하는 곳
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:jitutorapp/login.dart';
+import 'package:jitutorapp/parentPage/mainPage.dart';
 import 'package:jitutorapp/studentPage/mainPage.dart';
 import 'DataStore/InfoStore.dart';
 import './teacherPage/mainPage.dart';
@@ -189,7 +190,7 @@ class _PhoneInfoPageState extends State<PhoneInfoPage> {
     try {
       final user = await FirebaseAuth.instance.currentUser;
       await firestore.collection('Person').doc(user?.uid).
-      set({'name' : context.read<InfoStore>().name, 'type' : context.read<InfoStore>().type, 'point' : 50});
+      set({'name' : context.read<InfoStore>().name, 'type' : context.read<InfoStore>().type, 'point' : 50, 'FCMToken' : ""});
       // 유저스토어에 사용자 정보 저장 = 바로 데이터 꺼내쓸 수 있게
       context.read<UserStore>().setName(context.read<InfoStore>().name);
       context.read<UserStore>().setType(context.read<InfoStore>().type);
@@ -230,6 +231,10 @@ class _PhoneInfoPageState extends State<PhoneInfoPage> {
       else if (context.read<UserStore>().type.compareTo('student') == 0) {
         Navigator.pushAndRemoveUntil(context,
             MaterialPageRoute(builder: (context) => mainPageS()), (route) => false);
+      }
+      else if (context.read<UserStore>().type.compareTo('parent') == 0) {
+        Navigator.pushAndRemoveUntil(context,
+            MaterialPageRoute(builder: (context) => mainPageP()), (route) => false);
       }
 
     } on FirebaseAuthException catch (e) {

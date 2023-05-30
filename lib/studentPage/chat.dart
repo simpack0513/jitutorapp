@@ -2,10 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:jitutorapp/DataStore/UserStore.dart';
-import 'package:jitutorapp/DataStore/scheduleConformStore.dart';
 import 'package:jitutorapp/FCMsender.dart';
-import 'package:jitutorapp/ToastService.dart';
-import 'package:jitutorapp/teacherPage/scheduleConform.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import 'dart:ui' as ui;
@@ -15,17 +12,16 @@ final firestore = FirebaseFirestore.instance;
 /*
   DEF = 일반 메시지
   DAT = 날짜 안내 메시지
-  CHS = 일정 변경 메시지
  */
 
 class ChatPage extends StatefulWidget {
-  const ChatPage({Key? key, this.roomDocId, this.meImg, this.youImg, this.youName, this.remainMsg1, this.meName, this.youUID}) : super(key: key);
+  const ChatPage({Key? key, this.roomDocId, this.meImg, this.youImg, this.youName, this.remainMsg, this.meName, this.youUID}) : super(key: key);
 
   final roomDocId;
   final meImg;
   final youImg;
   final youName;
-  final remainMsg1;
+  final remainMsg;
   final meName;
   final youUID;
 
@@ -85,9 +81,9 @@ class _ChatPageState extends State<ChatPage> {
         });
       }
     });
-    if (widget.remainMsg1 > 10) {
+    if (widget.remainMsg > 10) {
       setState(() {
-        chatLimit = widget.remainMsg1;
+        chatLimit = widget.remainMsg;
       });
     }
   }
@@ -101,7 +97,7 @@ class _ChatPageState extends State<ChatPage> {
     DocumentReference chatroom = firestore.collection('Chatroom').doc(widget.roomDocId);
 
     chatroom.update({
-      "remainMsg1" : 0,
+      "remainMsg2" : 0,
     });
 
     return GestureDetector(
@@ -189,6 +185,7 @@ class _ChatPageState extends State<ChatPage> {
                             });
                           }
 
+                          int remainMsg1 = doc["remainMsg1"]; // 현재 쌓인 안 읽음 메시지 로드
                           String time = DateTime.now().toString();
                           chat.add({
                             "senderUID" : context.read<UserStore>().userUID,
@@ -197,24 +194,11 @@ class _ChatPageState extends State<ChatPage> {
                             "type" : "DEF",
                             "read" : false,
                           });
-
-                          int _remainMsg;
-                          if (doc["type"] == "student") {
-                            _remainMsg = doc["remainMsg2"];
-                            chatroom.update({
-                              "lastMsg" : text,
-                              "lastDate" : time,
-                              "remainMsg2" : _remainMsg + 1,
-                            });
-                          }
-                          else {
-                            _remainMsg = doc["remainMsg3"];
-                            chatroom.update({
-                              "lastMsg" : text,
-                              "lastDate" : time,
-                              "remainMsg3" : _remainMsg + 1,
-                            });
-                          }
+                          chatroom.update({
+                            "lastMsg" : text,
+                            "lastDate" : time,
+                            "remainMsg1" : remainMsg1 + 1,
+                          });
 
                           // 메시지 알림 보내기
                           DocumentSnapshot youDoc = await firestore.collection('Person').doc(widget.youUID).get();
@@ -321,76 +305,6 @@ class _ChatPageState extends State<ChatPage> {
                               borderRadius: BorderRadius.all(Radius.circular(20))
                             ),
                             child: Text(snapshot.data?.docs[i]["text"], style: DAT_TypeTextStyle,),
-                          ),
-                        );
-                      }
-                      else if (snapshot.data?.docs[i]["type"] == "CHS") {
-                        return Container(
-                          padding: EdgeInsets.all(10),
-                          child: IntrinsicHeight(
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              textDirection: (isMe) ? ui.TextDirection.rtl : ui.TextDirection.ltr,
-                              children: [
-                                Container(
-                                  width: 40,
-                                  height: 40,
-                                  alignment: Alignment.topCenter,
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(15),
-                                    child: (isMe) ? Image.network(widget.meImg) : Image.network(widget.youImg),
-                                  ),
-                                ),
-                                Container(
-                                  width: 10,
-                                ),
-                                Column(
-                                  crossAxisAlignment: (isMe) ? CrossAxisAlignment.end : CrossAxisAlignment.start,
-                                  children: [
-                                    Text((isMe) ? '나' : widget.youName, style: bodyBoldtextStyle, textAlign: TextAlign.start,),
-                                    Container(height: 5,),
-                                    Container(
-                                      constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width / 4 * 3 - 50,),
-                                      padding: EdgeInsets.all(10),
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(10),
-                                        color: Colors.white,
-                                      ),
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Text(snapshot.data?.docs[i]["text"], style: bodytextStyle, ),
-                                          SizedBox(height: 20,),
-                                          ElevatedButton( // 확인하기 버튼
-                                            style: ElevatedButton.styleFrom(
-                                                padding: EdgeInsets.all(10),
-                                                elevation: 0,
-                                                backgroundColor: Colors.grey.shade200,
-                                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                                            ),
-                                            onPressed: (){
-                                              context.read<ScheduleConformStore>().setDoc(snapshot.data?.docs[i]["scheduleUID"], context, isMe);
-                                            },
-                                            child: Container(alignment: Alignment.center, width: MediaQuery.of(context).size.width / 4 * 3 - 50, child: Text('확인하기', style: bodytextStyle,)),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Container(
-                                  width: 5,
-                                ),
-                                Column(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  crossAxisAlignment: (isMe) ? CrossAxisAlignment.end : CrossAxisAlignment.start,
-                                  children: [
-                                    (snapshot.data?.docs[i]["read"]) ? SizedBox(width: 0, height: 0,) : Icon(Icons.circle, color: Colors.red, size: 10,),
-                                    Text(chatTime, style: timeTextStyle,),
-                                  ],
-                                ),
-                              ],
-                            ),
                           ),
                         );
                       }

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:jitutorapp/DataStore/ClasschildStore.dart';
 import 'package:jitutorapp/DataStore/ClassStore.dart';
-import 'package:jitutorapp/teacherPage/scheduleChange.dart';
+import 'package:jitutorapp/parentPage/scheduleChange.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';

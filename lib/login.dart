@@ -1,5 +1,6 @@
 // 여기는 연동 페이지
 import 'package:jitutorapp/DataStore/UserStore.dart';
+import 'package:jitutorapp/parentPage/mainPage.dart';
 import 'package:jitutorapp/signUp.dart';
 
 //
@@ -92,6 +93,7 @@ class _LoginState extends State<Login> {
                 context.read<UserStore>().setName(userdoc['name']);
                 context.read<UserStore>().setPoint(userdoc['point']);
                 context.read<UserStore>().setType(userdoc['type']);
+                context.read<UserStore>().setFCMToken(userdoc['FCMToken']);
                 // 휴대폰 내부 저장소에 아이디, 비번 기록
                 final storage = new FlutterSecureStorage();
                 await storage.write(key: 'id', value: useremail);
@@ -105,6 +107,10 @@ class _LoginState extends State<Login> {
                 else if (context.read<UserStore>().type.compareTo('student') == 0) {
                   Navigator.pushAndRemoveUntil(context,
                       MaterialPageRoute(builder: (context) => mainPageS()), (route) => false);
+                }
+                else if (context.read<UserStore>().type.compareTo('parent') == 0) {
+                  Navigator.pushAndRemoveUntil(context,
+                      MaterialPageRoute(builder: (context) => mainPageP()), (route) => false);
                 }
 
 

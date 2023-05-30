@@ -1,15 +1,18 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:jitutorapp/parentPage/mainPage.dart';
 import 'package:jitutorapp/signUp.dart';
 import 'package:jitutorapp/studentPage/mainPage.dart';
 import 'package:jitutorapp/teacherPage/mainPage.dart';
 import 'package:provider/provider.dart';
 
 import 'DataStore/UserStore.dart';
+final firestore = FirebaseFirestore.instance;
 
 class LoadingPage extends StatefulWidget {
   const LoadingPage({Key? key}) : super(key: key);
@@ -48,6 +51,7 @@ class _LoadingPageState extends State<LoadingPage> {
         context.read<UserStore>().setName(userdoc['name']);
         context.read<UserStore>().setPoint(userdoc['point']);
         context.read<UserStore>().setType(userdoc['type']);
+        context.read<UserStore>().setFCMToken(userdoc['FCMToken']);
 
         //메인 페이지로 이동
         if (context.read<UserStore>().type.compareTo('teacher') == 0) {
@@ -57,6 +61,10 @@ class _LoadingPageState extends State<LoadingPage> {
         else if (context.read<UserStore>().type.compareTo('student') == 0) {
           Navigator.pushAndRemoveUntil(context,
               MaterialPageRoute(builder: (context) => mainPageS()), (route) => false);
+        }
+        else if (context.read<UserStore>().type.compareTo('parent') == 0) {
+          Navigator.pushAndRemoveUntil(context,
+              MaterialPageRoute(builder: (context) => mainPageP()), (route) => false);
         }
         else {
           Fluttertoast.showToast(

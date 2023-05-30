@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:jitutorapp/teacherPage/setting.dart';
+import 'package:jitutorapp/parentPage/setting.dart';
 import 'package:provider/provider.dart';
 
 //여기는 파일 import
@@ -14,14 +14,14 @@ import '../DataStore/ClasschildStore.dart';
 
 
 //위젯 시작
-class mainPage extends StatefulWidget {
-  const mainPage({Key? key}) : super(key: key);
+class mainPageP extends StatefulWidget {
+  const mainPageP({Key? key}) : super(key: key);
 
   @override
-  State<mainPage> createState() => _mainPageState();
+  State<mainPageP> createState() => _mainPagePState();
 }
 
-class _mainPageState extends State<mainPage> {
+class _mainPagePState extends State<mainPageP> {
   // 이곳은 변수, 함수
   var tap = 0;
   var bodyList = [Home(), Photo(), Calendar(), Messenger()];
@@ -35,7 +35,7 @@ class _mainPageState extends State<mainPage> {
   }
   // 초기함수 따로 빼둠(async를 써야해서..)
   void init() async{
-    await context.read<ClassStore>().teacherGetClassFromFirebase(context.read<UserStore>().userUID);
+    await context.read<ClassStore>().parentGetClassFromFirebase(context.read<UserStore>().userUID);
     context.read<ClasschildStore>().generateClassChild(context.read<ClassStore>().userClassList);
     context.read<UserStore>().updateDB_FCMToken();
   }
@@ -46,7 +46,7 @@ class _mainPageState extends State<mainPage> {
       theme: mainTheme,
       home: Scaffold(
         appBar: AppBar(
-          title: Text(context.read<UserStore>().name+' 선생님' , style: mainTheme.textTheme.headline1,),
+          title: Text(context.read<UserStore>().name+' 학부모님' , style: mainTheme.textTheme.headline1,),
           actions: [
             IconButton(onPressed: (){
               Navigator.push(context, MaterialPageRoute(builder: (context) => SettingPage()));
