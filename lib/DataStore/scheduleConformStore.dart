@@ -56,11 +56,13 @@ class ScheduleConformStore extends ChangeNotifier {
       ToastService.toastMsg('이미 만료된 일정 변경 요청입니다.');
       return ;
     }
-    /*if (isMe) {
+    if (isMe) {
       ToastService.toastMsg('내가 보낸 요청은 확인할 수 없습니다.');
       return ;
-    } */
-    Navigator.push(context, MaterialPageRoute(builder: (context) => ScheduleConform()));
+    }
+    else {
+      Navigator.push(context, MaterialPageRoute(builder: (context) => ScheduleConform()));
+    }
   }
 
   String dateToS(String currentDate) {
