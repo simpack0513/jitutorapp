@@ -4,6 +4,8 @@ import 'package:jitutorapp/DataStore/ClassStore.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
 
+import '../DataStore/UserStore.dart';
+
 class Calendar extends StatefulWidget {
   const Calendar({Key? key}) : super(key: key);
 
@@ -190,78 +192,6 @@ class _CalendarState extends State<Calendar> {
                 borderRadius: BorderRadius.circular(20),
               ),
             ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-// 특정 날짜 지정 삭제하기 버튼 다이로그 위젯
-class DeleteScheduleWidget extends StatelessWidget {
-  const DeleteScheduleWidget({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      child: Container(
-        margin: EdgeInsets.fromLTRB(10, 10, 10, 40),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            ListTile(
-              title: const Text('변경사항 확인하기'),
-              leading: const Icon(Icons.edit),
-              onTap: (){
-                Navigator.of(context).pop();
-              },
-            ),
-            ListTile(
-              title: const Text('변경 취소하기'),
-              leading: const Icon(Icons.delete),
-              onTap: () async{
-                await context.read<ClasschildStore>().scheduleDelete();
-                context.read<ClasschildStore>().refreshClasschild();
-                Navigator.of(context).pop();
-              },
-            )
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-// 다가오는 일정에서 Schedule 취소 or 확인 위젯
-class DeleteScheduleWidget2 extends StatelessWidget {
-  const DeleteScheduleWidget2({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      child: Container(
-        margin: EdgeInsets.fromLTRB(10, 10, 10, 40),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            ListTile(
-              title: const Text('변경사항 확인하기'),
-              leading: const Icon(Icons.edit),
-              onTap: (){
-                Navigator.of(context).pop();
-              },
-            ),
-            ListTile(
-              title: const Text('변경 취소하기'),
-              leading: const Icon(Icons.delete),
-              onTap: () async{
-                await context.read<ClasschildStore>().scheduleDelete2();
-                context.read<ClasschildStore>().refreshClasschild();
-                Navigator.of(context).pop();
-              },
-            )
           ],
         ),
       ),

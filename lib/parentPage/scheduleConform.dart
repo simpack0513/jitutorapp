@@ -364,6 +364,8 @@ class _ScheduleConformState extends State<ScheduleConform> {
                         elevation: 0,
                       ),
                       onPressed: () {
+                        Navigator.pop(context);
+                        context.read<ScheduleConformStore>().rejectSchedule(context.read<UserStore>().type, context.read<UserStore>().userUID);
                       },
                       child: Text('네', style: TextStyle(
                         fontFamily: 'LINESeedKR',

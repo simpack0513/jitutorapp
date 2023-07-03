@@ -1,3 +1,6 @@
+// 선생님 페이지에서 실제로 작동하여 여기는 필요없는 코드 (scheduleConformStore이 teacher 페이지로 네비게이트함)
+
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:jitutorapp/DataStore/UserStore.dart';

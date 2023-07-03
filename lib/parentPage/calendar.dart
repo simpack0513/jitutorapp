@@ -1,7 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:jitutorapp/DataStore/ClasschildStore.dart';
 import 'package:jitutorapp/DataStore/ClassStore.dart';
+import 'package:jitutorapp/DataStore/UserStore.dart';
 import 'package:jitutorapp/parentPage/scheduleChange.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
@@ -345,9 +347,8 @@ class DeleteScheduleWidget extends StatelessWidget {
               title: const Text('변경 취소하기'),
               leading: const Icon(Icons.delete),
               onTap: () async{
-                await context.read<ClasschildStore>().scheduleDelete();
+                await context.read<ClasschildStore>().scheduleDelete(context.read<UserStore>().userUID, context.read<UserStore>().type, context);
                 context.read<ClasschildStore>().refreshClasschild();
-                Navigator.of(context).pop();
               },
             )
           ],
@@ -381,9 +382,8 @@ class DeleteScheduleWidget2 extends StatelessWidget {
               title: const Text('변경 취소하기'),
               leading: const Icon(Icons.delete),
               onTap: () async{
-                await context.read<ClasschildStore>().scheduleDelete2();
+                await context.read<ClasschildStore>().scheduleDelete2(context.read<UserStore>().userUID, context.read<UserStore>().type, context);
                 context.read<ClasschildStore>().refreshClasschild();
-                Navigator.of(context).pop();
               },
             )
           ],
