@@ -347,7 +347,6 @@ class DeleteScheduleWidget extends StatelessWidget {
               leading: const Icon(Icons.delete),
               onTap: () async{
                 await context.read<ClasschildStore>().scheduleDelete(context.read<UserStore>().userUID, context.read<UserStore>().type, context);
-                context.read<ClasschildStore>().refreshClasschild();
               },
             )
           ],
@@ -382,7 +381,6 @@ class DeleteScheduleWidget2 extends StatelessWidget {
               leading: const Icon(Icons.delete),
               onTap: () async{
                 await context.read<ClasschildStore>().scheduleDelete2(context.read<UserStore>().userUID, context.read<UserStore>().type, context);
-                context.read<ClasschildStore>().refreshClasschild();
               },
             )
           ],

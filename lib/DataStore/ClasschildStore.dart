@@ -175,6 +175,9 @@ class ClasschildStore extends ChangeNotifier{
     dateClassList[idx].reference.update({
       'underChange' : false,
     });
+    //캘린더 수업 업데이트
+    refreshClasschild();
+    notifyListeners();
     String className = dateClassList[idx]["name"];
     // 스케쥴 변경 메시지 작성
     String text = '"' +className + '" 수업의 일정 변경 요청이 취소되었습니다.';
@@ -229,6 +232,9 @@ class ClasschildStore extends ChangeNotifier{
     comingClassListDoc[idx].reference.update({
       'underChange' : false,
     });
+    //캘린더 수업 업데이트
+    refreshClasschild();
+    notifyListeners();
     String className = comingClassListDoc[idx]["name"];
     // 스케쥴 변경 메시지 작성
     String text = '"' +className + '" 수업의 일정 변경 요청이 취소되었습니다.';
