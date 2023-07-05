@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:jitutorapp/DataStore/ClassStore.dart';
 import 'package:jitutorapp/DataStore/ClasschildStore.dart';
+import 'package:jitutorapp/DataStore/MainpageStore.dart';
 import 'package:jitutorapp/DataStore/MarketStore.dart';
 import 'package:jitutorapp/DataStore/OrderStore.dart';
 import 'package:jitutorapp/DataStore/PointStore.dart';
@@ -43,6 +44,7 @@ void main() async{
           ChangeNotifierProvider(create: (c) => MarketStore()),
           ChangeNotifierProvider(create: (c) => OrderStore()),
           ChangeNotifierProvider(create: (c) => ScheduleConformStore()),
+          ChangeNotifierProvider(create: (c) => MainpageStore()),
         ],
         child: GetMaterialApp(
           initialBinding: BindingsBuilder.put(() => NotificationController(), permanent: true),

@@ -206,6 +206,7 @@ class ScheduleStore extends ChangeNotifier {
       'underChange' : true,
     });
 
+
     Fluttertoast.showToast(
       msg: '일정 변경 요청에 성공하였습니다.',
       toastLength: Toast.LENGTH_SHORT,

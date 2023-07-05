@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jitutorapp/DataStore/MainpageStore.dart';
 import 'package:jitutorapp/parentPage/setting.dart';
 import 'package:provider/provider.dart';
 
@@ -23,7 +24,6 @@ class mainPageP extends StatefulWidget {
 
 class _mainPagePState extends State<mainPageP> {
   // 이곳은 변수, 함수
-  var tap = 0;
   var bodyList = [Home(), Photo(), Calendar(), Messenger()];
   // 변수, 함수 끝
 
@@ -54,13 +54,11 @@ class _mainPagePState extends State<mainPageP> {
           ],
         ),
 
-        body: bodyList[tap],
+        body: bodyList[context.watch<MainpageStore>().tap],
         bottomNavigationBar: BottomNavigationBar(
-          currentIndex: tap,
+          currentIndex: context.watch<MainpageStore>().tap,
           onTap: (i){
-            setState(() {
-              tap = i;
-            });
+            context.read<MainpageStore>().setTap(i);
           },
           items: [
             BottomNavigationBarItem(icon: Icon(Icons.home), label: '홈'),
