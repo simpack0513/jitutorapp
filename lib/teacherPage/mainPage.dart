@@ -37,6 +37,7 @@ class _mainPageState extends State<mainPage> {
   void init() async{
     await context.read<ClassStore>().teacherGetClassFromFirebase(context.read<UserStore>().userUID);
     context.read<ClasschildStore>().generateClassChild(context.read<ClassStore>().userClassList);
+    context.read<ClasschildStore>().getComingClassList(context.read<ClassStore>().userClassUIDList);
     context.read<UserStore>().updateDB_FCMToken();
   }
 
