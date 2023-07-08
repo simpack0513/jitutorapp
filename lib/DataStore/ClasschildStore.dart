@@ -39,7 +39,7 @@ class ClasschildStore extends ChangeNotifier{
   } //
 
   // 모든 수업을 받아 날짜 별로 맵 형 자료형으로 바꾸는 함수 (캘린터에 마크 달기)
-  void getEventAllday(List ClassUIDList) async{
+  Future<void> getEventAllday(List ClassUIDList) async{
     events = {};
     String date = "";
     List<Event> list = [];
@@ -289,7 +289,7 @@ class ClasschildStore extends ChangeNotifier{
   // 수업료 계산 함수
   void classPay(List ClassUIDList) async{
     payList = [];
-    for (String ClassUID in classUIDList) {
+    for (String ClassUID in ClassUIDList) {
       bool pay_delay = false;
       String next_paydate = "";
       String persent_string = "";
@@ -318,6 +318,9 @@ class ClasschildStore extends ChangeNotifier{
         pay_delay = true;
         persent = 1;
       }
+      bool payable;
+      if (count >= pay_times) payable = true;
+      else payable = false;
       payList.add({
         "className" : className,
         "persent" : persent,
@@ -326,9 +329,30 @@ class ClasschildStore extends ChangeNotifier{
         "next_paydate" : next_paydate,
         "count" : count,
         "pay_times" : pay_times,
+        "payable" : payable,
       });
     }
     notifyListeners();
+  }
+
+  // 수업료 납부 (납부하기 버튼 누르고)
+  void payTuition(String classUID, int i) {
+    try {
+      DateTime today = DateTime.now();
+
+      DateTime payed_date = DateTime(
+          today.year, int.parse(payList[i]['next_paydate'].split('/')[0]),
+          int.parse(payList[i]['next_paydate'].split('/')[1]));
+      DocumentReference classref = firestore.collection('Class').doc(
+          'classUID');
+      classref.update({
+        'payed_date': payed_date,
+      });
+    }
+    catch (e) {
+      return ;
+    }
+
   }
 
 } // Class 끝

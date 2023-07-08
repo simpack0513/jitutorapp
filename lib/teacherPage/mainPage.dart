@@ -36,9 +36,11 @@ class _mainPageState extends State<mainPage> {
   // 초기함수 따로 빼둠(async를 써야해서..)
   void init() async{
     await context.read<ClassStore>().teacherGetClassFromFirebase(context.read<UserStore>().userUID);
+    context.read<UserStore>().updateDB_FCMToken();
     context.read<ClasschildStore>().generateClassChild(context.read<ClassStore>().userClassList);
     context.read<ClasschildStore>().getComingClassList(context.read<ClassStore>().userClassUIDList);
-    context.read<UserStore>().updateDB_FCMToken();
+    context.read<ClasschildStore>().getEventAllday(context.read<ClassStore>().userClassUIDList);
+    context.read<ClassStore>().makeHomeList();
   }
 
   @override

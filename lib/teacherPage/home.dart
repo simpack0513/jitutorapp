@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jitutorapp/DataStore/ClassStore.dart';
 import 'package:provider/provider.dart';
 
 import '../DataStore/ClasschildStore.dart';
@@ -18,10 +19,21 @@ class _HomeState extends State<Home> {
     fontSize: 20,
     fontWeight: FontWeight.w500,
   );
+  var classtextStyle = TextStyle(
+    fontFamily: 'LINESeedKR',
+    color: Colors.black,
+    fontSize: 16,
+    fontWeight: FontWeight.w500,
+  );
   var bodytextStyle = TextStyle(
     fontFamily: 'LINESeedKR',
     color: Colors.black,
     fontSize: 14,
+  );
+  var smalltextStyle = TextStyle(
+    fontFamily: 'LINESeedKR',
+    color: Colors.black,
+    fontSize: 10,
   );
   var bodyBoldtextStyle = TextStyle(
     fontFamily: 'LINESeedKR',
@@ -105,21 +117,50 @@ class _HomeState extends State<Home> {
                 ],
               )
             ),
-            ListView.builder(
+            (context.watch<ClassStore>().userClassListAtHome.length != 0) ? ListView.builder(
               physics: const NeverScrollableScrollPhysics(),
               shrinkWrap: true,
-              itemCount: 7,
+              itemCount: context.watch<ClassStore>().userClassListAtHome.length,
               itemBuilder: (context, i) {
                 return Container(
                   margin: EdgeInsets.fromLTRB(0, 10, 0, 0),
+                  padding: EdgeInsets.all(10),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(20),
                   ),
-                  height: MediaQuery.of(context).size.height / 8,
+                  child: Column(children: [
+                    Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                      Container(
+                        child: Image.network(context.watch<ClassStore>().userClassListAtHome[i]['image'],
+                        width: MediaQuery.of(context).size.height / 16,
+                        height: MediaQuery.of(context).size.height / 16,
+                        fit: BoxFit.fill),
+                      ),
+                      SizedBox(width: 10,),
+                      Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                        Text(context.watch<ClassStore>().userClassListAtHome[i]['className'], style: classtextStyle,),
+                        Text('수업 시작일 : ' + context.watch<ClassStore>().userClassListAtHome[i]['startDate'], style: smalltextStyle,)
+                      ],),
+                    ],),
+                    SizedBox(height: 0,),
+                    Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, crossAxisAlignment: CrossAxisAlignment.end, children: [
+                      Text(context.watch<ClassStore>().userClassListAtHome[i]['classTime'], style: bodytextStyle,),
+                      ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor: (context.watch<ClasschildStore>().payList.isNotEmpty && context.watch<ClasschildStore>().payList[i]['payable']) ? Color(0xff2998ff) : Color(0xff999999),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                            elevation: 0,
+                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          ),
+                          onPressed: (){},
+                          child: Text('납부하기', style: bodytextStyle,)),
+                    ],)
+
+                  ],),
                 );
               }
-            ),
+            ) : Text('현재 속한 수업이 없습니다.'),
           ],
         ),
       ),
