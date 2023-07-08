@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:jitutorapp/DataStore/ClassStore.dart';
+import 'package:jitutorapp/DataStore/UserStore.dart';
 import 'package:provider/provider.dart';
 
 import '../DataStore/ClasschildStore.dart';
@@ -153,7 +154,11 @@ class _HomeState extends State<Home> {
                             elevation: 0,
                               tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                           ),
-                          onPressed: (){},
+                          onPressed: (){
+                            if (context.read<ClasschildStore>().payList.isNotEmpty && context.read<ClasschildStore>().payList[i]['payable']) {
+                              context.read<ClasschildStore>().payTuition(context.read<ClassStore>().userClassUIDList[i], i, context.read<UserStore>().userUID, context.read<UserStore>().type, context.read<ClassStore>().userClassUIDList);
+                            }
+                          },
                           child: Text('납부하기', style: bodytextStyle,)),
                     ],)
 
