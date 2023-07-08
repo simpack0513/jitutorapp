@@ -39,7 +39,7 @@ class _mainPageState extends State<mainPage> {
     context.read<UserStore>().updateDB_FCMToken();
     context.read<ClasschildStore>().generateClassChild(context.read<ClassStore>().userClassList);
     context.read<ClasschildStore>().getComingClassList(context.read<ClassStore>().userClassUIDList);
-    context.read<ClasschildStore>().getEventAllday(context.read<ClassStore>().userClassUIDList);
+    await context.read<ClasschildStore>().getEventAllday(context.read<ClassStore>().userClassUIDList);
     context.read<ClassStore>().makeHomeList();
   }
 

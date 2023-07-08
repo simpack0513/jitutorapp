@@ -354,9 +354,10 @@ class ClasschildStore extends ChangeNotifier{
       return ;
     }
     ToastService.toastMsg('납부 확인에 성공하였습니다. 감사합니다.');
+    String className = payList[i]['className'];
     getEventAllday(ClassUIDList);
     //톡 메시지 작성
-    String text = '"'+payList[i]['className'] + '" 수업료 납부가 완료되었습니다.';
+    String text = '"'+ className + '" 수업료 납부가 완료되었습니다.';
     // 채팅방 정보 가져오기
     DocumentSnapshot classInfo =  await firestore.collection('Class').doc(classUID).get();
     DocumentSnapshot chatroomInfo = await firestore.collection('Chatroom').doc(classInfo["parentChatroom"]).get();

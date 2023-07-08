@@ -38,10 +38,13 @@ class _mainPageSState extends State<mainPageS> {
   // 초기함수 따로 빼둠(async를 써야해서..)
   void init() async{
     await context.read<ClassStore>().studentGetClassFromFirebase(context.read<UserStore>().userUID);
-    context.read<ClasschildStore>().generateClassChild(context.read<ClassStore>().userClassList);
+    context.read<UserStore>().updateDB_FCMToken();
     context.read<MarketStore>().getMarketItem();
     context.read<OrderStore>().initOrderList(context.read<UserStore>().userUID);
-    context.read<UserStore>().updateDB_FCMToken();
+    context.read<ClasschildStore>().generateClassChild(context.read<ClassStore>().userClassList);
+    context.read<ClasschildStore>().getComingClassList(context.read<ClassStore>().userClassUIDList);
+    await context.read<ClasschildStore>().getEventAllday(context.read<ClassStore>().userClassUIDList);
+    context.read<ClassStore>().makeHomeList();
   }
 
   @override

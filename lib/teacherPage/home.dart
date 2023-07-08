@@ -144,22 +144,9 @@ class _HomeState extends State<Home> {
                         Text('수업 시작일 : ' + context.watch<ClassStore>().userClassListAtHome[i]['startDate'], style: smalltextStyle,)
                       ],),
                     ],),
-                    SizedBox(height: 0,),
+                    SizedBox(height: 10,),
                     Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, crossAxisAlignment: CrossAxisAlignment.end, children: [
                       Text(context.watch<ClassStore>().userClassListAtHome[i]['classTime'], style: bodytextStyle,),
-                      ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                              backgroundColor: (context.watch<ClasschildStore>().payList.isNotEmpty && context.watch<ClasschildStore>().payList[i]['payable']) ? Color(0xff2998ff) : Color(0xff999999),
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-                            elevation: 0,
-                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                          ),
-                          onPressed: (){
-                            if (context.read<ClasschildStore>().payList.isNotEmpty && context.read<ClasschildStore>().payList[i]['payable']) {
-                              context.read<ClasschildStore>().payTuition(context.read<ClassStore>().userClassUIDList[i], i, context.read<UserStore>().userUID, context.read<UserStore>().type, context.read<ClassStore>().userClassUIDList);
-                            }
-                          },
-                          child: Text('납부하기', style: bodytextStyle,)),
                     ],)
 
                   ],),
@@ -171,4 +158,5 @@ class _HomeState extends State<Home> {
       ),
     );
   }
+
 }
