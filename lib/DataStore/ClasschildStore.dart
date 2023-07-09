@@ -1,6 +1,9 @@
 // 캘린더 내 수업 관리
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart';
+import 'package:jitutorapp/ToastService.dart';
+import '../FCMsender.dart';
 final firestore = FirebaseFirestore.instance;
 
 
@@ -10,6 +13,7 @@ class Event{
 }
 
 class ClasschildStore extends ChangeNotifier{
+  FCMController fcmControllersender = new FCMController();
   var dateClassList= []; // 달력에 선택할 날짜에 수업
   List<Map> comingClassList = [];
   var comingClassListDoc = [];
@@ -37,8 +41,9 @@ class ClasschildStore extends ChangeNotifier{
   } //
 
   // 모든 수업을 받아 날짜 별로 맵 형 자료형으로 바꾸는 함수 (캘린터에 마크 달기)
-  void getEventAllday(List ClassUIDList) async{
+  Future<void> getEventAllday(List ClassUIDList) async{
     events = {};
+    payList = [];
     String date = "";
     List<Event> list = [];
     allClasschild = [];
@@ -164,7 +169,8 @@ class ClasschildStore extends ChangeNotifier{
   }
 
   // 일정 변경 한 것 지우는 작업 - date일정 버전
-  Future<void> scheduleDelete() async{
+  Future<void> scheduleDelete(String userUID, String type, var context) async{
+    Navigator.pop(context);
     var result = await firestore.collection('Schedule').where("classChildUID", isEqualTo: dateClassList[idx].id).get();
     for (var doc in result.docs) {
       doc.reference.delete();
@@ -172,9 +178,56 @@ class ClasschildStore extends ChangeNotifier{
     dateClassList[idx].reference.update({
       'underChange' : false,
     });
+    String className = dateClassList[idx]["name"];
+    // 스케쥴 변경 메시지 작성
+    String text = '"' +className + '" 수업의 일정 변경 요청이 취소되었습니다.';
+    // 채팅방 정보 가져오기
+    DocumentSnapshot classInfo =  await firestore.collection('Class').doc(dateClassList[idx]["classUID"]).get();
+    DocumentSnapshot chatroomInfo = await firestore.collection('Chatroom').doc(classInfo["parentChatroom"]).get();
+    CollectionReference chat = firestore.collection('Chatroom').doc(classInfo["parentChatroom"]).collection('Chat');
+    // 메시지 전송
+    String time = DateTime.now().toString();
+    chat.add({
+      "senderUID" : userUID,
+      "text" : text,
+      "time" : time,
+      "type" : "DEF",
+      "read" : false,
+    });
+    // 읽지 않은 메시지 카운트 추가
+    int _remainMsg;
+    String youUID;
+    String meName;
+    if (type == "teacher") {
+      _remainMsg = chatroomInfo["remainMsg3"];
+      chatroomInfo.reference.update({
+        "lastMsg" : text,
+        "lastDate" : time,
+        "remainMsg3" : _remainMsg + 1,
+      });
+      youUID = chatroomInfo["userUID3"];
+      meName = chatroomInfo["userName1"];
+    }
+    else {
+      _remainMsg = chatroomInfo["remainMsg1"];
+      chatroomInfo.reference.update({
+        "lastMsg" : text,
+        "lastDate" : time,
+        "remainMsg1" : _remainMsg + 1,
+      });
+      youUID = chatroomInfo["userUID1"];
+      meName = chatroomInfo["userName3"];
+    }
+    //캘린더 수업 업데이트
+    refreshClasschild();
+    notifyListeners();
+    // 메시지 알림 보내기
+    DocumentSnapshot youDoc = await firestore.collection('Person').doc(youUID).get();
+    await fcmControllersender.sendMessage(userToken: youDoc["FCMToken"], title: meName, body: text);
   }
   // 일정 변경 한 것 지우는 작업 - 다가오는 일정 버전
-  Future<void> scheduleDelete2() async{
+  Future<void> scheduleDelete2(String userUID, String type, var context) async{
+    Navigator.pop(context);
     var result = await firestore.collection('Schedule').where("classChildUID", isEqualTo: comingClassListDoc[idx].id).get();
     for (var doc in result.docs) {
       doc.reference.delete();
@@ -182,6 +235,52 @@ class ClasschildStore extends ChangeNotifier{
     comingClassListDoc[idx].reference.update({
       'underChange' : false,
     });
+    String className = comingClassListDoc[idx]["name"];
+    // 스케쥴 변경 메시지 작성
+    String text = '"' +className + '" 수업의 일정 변경 요청이 취소되었습니다.';
+    // 채팅방 정보 가져오기
+    DocumentSnapshot classInfo =  await firestore.collection('Class').doc(comingClassListDoc[idx]["classUID"]).get();
+    DocumentSnapshot chatroomInfo = await firestore.collection('Chatroom').doc(classInfo["parentChatroom"]).get();
+    CollectionReference chat = firestore.collection('Chatroom').doc(classInfo["parentChatroom"]).collection('Chat');
+    // 메시지 전송
+    String time = DateTime.now().toString();
+    chat.add({
+      "senderUID" : userUID,
+      "text" : text,
+      "time" : time,
+      "type" : "DEF",
+      "read" : false,
+    });
+    // 읽지 않은 메시지 카운트 추가
+    int _remainMsg;
+    String youUID;
+    String meName;
+    if (type == "teacher") {
+      _remainMsg = chatroomInfo["remainMsg3"];
+      chatroomInfo.reference.update({
+        "lastMsg" : text,
+        "lastDate" : time,
+        "remainMsg3" : _remainMsg + 1,
+      });
+      youUID = chatroomInfo["userUID3"];
+      meName = chatroomInfo["userName1"];
+    }
+    else {
+      _remainMsg = chatroomInfo["remainMsg1"];
+      chatroomInfo.reference.update({
+        "lastMsg" : text,
+        "lastDate" : time,
+        "remainMsg1" : _remainMsg + 1,
+      });
+      youUID = chatroomInfo["userUID1"];
+      meName = chatroomInfo["userName3"];
+    }
+    //캘린더 수업 업데이트
+    refreshClasschild();
+    notifyListeners();
+    // 메시지 알림 보내기
+    DocumentSnapshot youDoc = await firestore.collection('Person').doc(youUID).get();
+    await fcmControllersender.sendMessage(userToken: youDoc["FCMToken"], title: meName, body: text);
   }
 
   // idx 변수 지정 함수
@@ -193,7 +292,7 @@ class ClasschildStore extends ChangeNotifier{
   // 수업료 계산 함수
   void classPay(List ClassUIDList) async{
     payList = [];
-    for (String ClassUID in classUIDList) {
+    for (String ClassUID in ClassUIDList) {
       bool pay_delay = false;
       String next_paydate = "";
       String persent_string = "";
@@ -222,6 +321,9 @@ class ClasschildStore extends ChangeNotifier{
         pay_delay = true;
         persent = 1;
       }
+      bool payable;
+      if (count >= pay_times) payable = true;
+      else payable = false;
       payList.add({
         "className" : className,
         "persent" : persent,
@@ -230,9 +332,83 @@ class ClasschildStore extends ChangeNotifier{
         "next_paydate" : next_paydate,
         "count" : count,
         "pay_times" : pay_times,
+        "payable" : payable,
       });
     }
     notifyListeners();
+  }
+
+  // 수업료 납부 (납부하기 버튼 누르고)
+  void payTuition(String classUID, int i, String userUID, String type, var ClassUIDList) async{
+    try {
+      DateTime today = DateTime.now();
+
+      DateTime payed_date = DateTime(today.year, int.parse(payList[i]['next_paydate'].split('/')[0]),int.parse(payList[i]['next_paydate'].split('/')[1]));
+      DocumentReference classref = firestore.collection('Class').doc(classUID);
+      classref.update({
+        'payed_date': payed_date.toString().split(' ')[0],
+      });
+    }
+    catch (e) {
+      ToastService.toastMsg('납부 확인에 실패했습니다.\n다시 시도해주세요.');
+      return ;
+    }
+    ToastService.toastMsg('납부 확인에 성공하였습니다. 감사합니다.');
+    String className = payList[i]['className'];
+    getEventAllday(ClassUIDList);
+    //톡 메시지 작성
+    String text = '"'+ className + '" 수업료 납부가 완료되었습니다.';
+    // 채팅방 정보 가져오기
+    DocumentSnapshot classInfo =  await firestore.collection('Class').doc(classUID).get();
+    DocumentSnapshot chatroomInfo = await firestore.collection('Chatroom').doc(classInfo["parentChatroom"]).get();
+    CollectionReference chat = firestore.collection('Chatroom').doc(classInfo["parentChatroom"]).collection('Chat');
+    // 최근 메시지 전송 일자와 오늘의 날짜가 다르면 날씨 정보 택스트 업로드
+    if (chatroomInfo["lastDate"].toString().split(' ')[0] != DateTime.now().toString().split(' ')[0]) {
+      String text_date = DateFormat('yyyy년 M월 d일 E요일', 'ko').format(DateTime.now());
+      await chat.add({
+        "senderUID" : userUID,
+        "text" : text_date,
+        "time" : DateTime.now().toString(),
+        "type" : "DAT",
+        "read" : true,
+      });
+    }
+    // 메시지 전송
+    String time = DateTime.now().toString();
+    chat.add({
+      "senderUID" : userUID,
+      "text" : text,
+      "time" : time,
+      "type" : "DEF",
+      "read" : false,
+    });
+    // 읽지 않은 메시지 카운트 추가
+    int _remainMsg;
+    String youUID;
+    String meName;
+    if (type == "teacher") {
+      _remainMsg = chatroomInfo["remainMsg3"];
+      chatroomInfo.reference.update({
+        "lastMsg" : text,
+        "lastDate" : time,
+        "remainMsg3" : _remainMsg + 1,
+      });
+      youUID = chatroomInfo["userUID3"];
+      meName = chatroomInfo["userName1"];
+    }
+    else {
+      _remainMsg = chatroomInfo["remainMsg1"];
+      chatroomInfo.reference.update({
+        "lastMsg" : text,
+        "lastDate" : time,
+        "remainMsg1" : _remainMsg + 1,
+      });
+      youUID = chatroomInfo["userUID1"];
+      meName = chatroomInfo["userName3"];
+    }
+    // 메시지 알림 보내기
+    DocumentSnapshot youDoc = await firestore.collection('Person').doc(youUID).get();
+    await fcmControllersender.sendMessage(userToken: youDoc["FCMToken"], title: meName, body: text);
   }
 
 } // Class 끝

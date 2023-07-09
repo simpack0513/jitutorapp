@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 
+import '../DataStore/UserStore.dart';
 import '../DataStore/scheduleStore.dart'; // 캘린더 패키지
 
 class Calendar extends StatefulWidget {
@@ -345,9 +346,7 @@ class DeleteScheduleWidget extends StatelessWidget {
               title: const Text('변경 취소하기'),
               leading: const Icon(Icons.delete),
               onTap: () async{
-                await context.read<ClasschildStore>().scheduleDelete();
-                context.read<ClasschildStore>().refreshClasschild();
-                Navigator.of(context).pop();
+                await context.read<ClasschildStore>().scheduleDelete(context.read<UserStore>().userUID, context.read<UserStore>().type, context);
               },
             )
           ],
@@ -381,9 +380,7 @@ class DeleteScheduleWidget2 extends StatelessWidget {
               title: const Text('변경 취소하기'),
               leading: const Icon(Icons.delete),
               onTap: () async{
-                await context.read<ClasschildStore>().scheduleDelete2();
-                context.read<ClasschildStore>().refreshClasschild();
-                Navigator.of(context).pop();
+                await context.read<ClasschildStore>().scheduleDelete2(context.read<UserStore>().userUID, context.read<UserStore>().type, context);
               },
             )
           ],

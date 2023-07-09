@@ -56,11 +56,13 @@ class ScheduleConformStore extends ChangeNotifier {
       ToastService.toastMsg('이미 만료된 일정 변경 요청입니다.');
       return ;
     }
-    /*if (isMe) {
+    if (isMe) {
       ToastService.toastMsg('내가 보낸 요청은 확인할 수 없습니다.');
       return ;
-    } */
-    Navigator.push(context, MaterialPageRoute(builder: (context) => ScheduleConform()));
+    }
+    else {
+      Navigator.push(context, MaterialPageRoute(builder: (context) => ScheduleConform()));
+    }
   }
 
   String dateToS(String currentDate) {
@@ -160,6 +162,69 @@ class ScheduleConformStore extends ChangeNotifier {
     // 메시지 알림 보내기
     DocumentSnapshot youDoc = await firestore.collection('Person').doc(youUID).get();
     await fcmControllersender.sendMessage(userToken: youDoc["FCMToken"], title: meName, body: text);
+  }
+
+  //일정 변경 거절
+  void rejectSchedule(String type, String userUID) async{
+    Navigator.pop(docContext);
+    try {
+      // 일정 변경 건 삭제
+      await doc.reference.delete();
+      // classChild underChange 변수 true -> false 로
+      DocumentReference classChildRef = firestore.collection('Classchild').doc(doc['classChildUID']);
+      classChildRef.update({
+        "underChange" : false
+      });
+    }
+    catch (e) {
+      ToastService.toastMsg('오류로 인해 처리가 되지 않았습니다. 다시 시도하세요');
+      return ;
+    }
+    ToastService.toastMsg('요청 거절이 완료되었습니다.\n다시 일정 변경을 요청하세요.');
+
+    // 채팅방 보낼 메시지
+    String text = '"' +currentClassName + '" 수업이 맞는 일정이 없어 거절되었습니다.';
+    // 채팅방 정보 가져오기
+    DocumentSnapshot classInfo =  await firestore.collection('Class').doc(doc["classUID"]).get();
+    DocumentSnapshot chatroomInfo = await firestore.collection('Chatroom').doc(classInfo["parentChatroom"]).get();
+    CollectionReference chat = firestore.collection('Chatroom').doc(classInfo["parentChatroom"]).collection('Chat');
+    // 메시지 전송
+    String time = DateTime.now().toString();
+    chat.add({
+      "senderUID" : userUID,
+      "text" : text,
+      "time" : time,
+      "type" : "DEF",
+      "read" : false,
+    });
+    // 읽지 않은 메시지 카운트 추가
+    int _remainMsg;
+    String youUID;
+    String meName;
+    if (type == "teacher") {
+      _remainMsg = chatroomInfo["remainMsg3"];
+      chatroomInfo.reference.update({
+        "lastMsg" : text,
+        "lastDate" : time,
+        "remainMsg3" : _remainMsg + 1,
+      });
+      youUID = chatroomInfo["userUID3"];
+      meName = chatroomInfo["userName1"];
+    }
+    else {
+      _remainMsg = chatroomInfo["remainMsg1"];
+      chatroomInfo.reference.update({
+        "lastMsg" : text,
+        "lastDate" : time,
+        "remainMsg1" : _remainMsg + 1,
+      });
+      youUID = chatroomInfo["userUID1"];
+      meName = chatroomInfo["userName3"];
+    }
+    // 메시지 알림 보내기
+    DocumentSnapshot youDoc = await firestore.collection('Person').doc(youUID).get();
+    await fcmControllersender.sendMessage(userToken: youDoc["FCMToken"], title: meName, body: text);
+
   }
 
 }

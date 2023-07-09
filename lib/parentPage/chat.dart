@@ -9,7 +9,6 @@ import 'dart:ui' as ui;
 
 import '../DataStore/scheduleConformStore.dart';
 import '../ToastService.dart';
-// import '../parentPage/scheduleConform.dart';
 final firestore = FirebaseFirestore.instance;
 
 // type 종류

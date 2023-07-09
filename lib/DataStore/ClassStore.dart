@@ -7,6 +7,7 @@ class ClassStore extends ChangeNotifier{
   var userClassList = [];
   var userClassNameList = [];
   var userClassUIDList = [];
+  var userClassListAtHome = []; // 홈화면 출력용
 
   // 선생님 사용자의 UID에 맞는 클래스 정보만 받아와 userClassList에 저장
   Future<void> teacherGetClassFromFirebase(String UID) async{
@@ -71,6 +72,41 @@ class ClassStore extends ChangeNotifier{
     notifyListeners();
     print(userClassList);
     print(userClassNameList);
+  }
+
+  // 클래스 리스트를 가공하여 홈화면에 제공
+  void makeHomeList() {
+    userClassListAtHome = [];
+    for (int i = 0; i < userClassList.length; i++) {
+      String imageSrc = "";
+      if (userClassNameList[i].toString().split(' ')[1].compareTo('수학') == 0) {
+        imageSrc = "https://firebasestorage.googleapis.com/v0/b/jitutor.appspot.com/o/asset%2Fmath.png?alt=media&token=2e38d495-7ce3-40d5-8492-32f37dbd461d";
+      }
+      else if (userClassNameList[i].toString().split(' ')[1].compareTo('영어') == 0) {
+        imageSrc = "https://firebasestorage.googleapis.com/v0/b/jitutor.appspot.com/o/asset%2Fenglish.png?alt=media&token=aaaf61d9-a692-4ddc-abab-2d9787cb93c0";
+      }
+      String className = "";
+      className = userClassNameList[i].toString().split(' ')[0] + ' 학생 -' + userClassNameList[i].toString().split('-')[1];
+
+      String startDate = "";
+      startDate = userClassList[i]['startdate'].toString().split('-')[0]+'년 '+userClassList[i]['startdate'].toString().split('-')[1] + '월 '+userClassList[i]['startdate'].toString().split('-')[2] +'일';
+
+      String classTime = "";
+      for (int j=0; j < userClassList[i]['time'].length; j++) {
+        if (j != 0) {
+          classTime += '\n';
+        }
+        classTime += "매주 " + userClassList[i]['weeks'][j].toString() + " " + userClassList[i]['time'][j].toString();
+      }
+
+      userClassListAtHome.add({
+        'image' : imageSrc,
+        'className' : className,
+        'startDate' : startDate,
+        'classTime' : classTime,
+      });
+    }
+    notifyListeners();
   }
 
 

@@ -1,3 +1,6 @@
+// 선생님 페이지에서 실제로 작동하여 여기는 필요없는 코드 (scheduleConformStore이 teacher 페이지로 네비게이트함)
+
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:jitutorapp/DataStore/UserStore.dart';
@@ -335,10 +338,9 @@ class _ScheduleChangeState extends State<ScheduleChange> {
                       elevation: 0,
                     ),
                     onPressed: () async{
-                      await context.read<ScheduleStore>().uploadData(checkBoxBool, context.read<UserStore>().userUID, context.read<UserStore>().type, context.read<UserStore>().name);
-                      context.read<ClasschildStore>().refreshClasschild();
                       Navigator.of(context).pop();
                       Navigator.of(homeContext).pop();
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => WaitAndRefresh(checkBoxBool: checkBoxBool,)));
                     },
                     child: Text('네', style: TextStyle(
                       fontFamily: 'LINESeedKR',
@@ -350,6 +352,44 @@ class _ScheduleChangeState extends State<ScheduleChange> {
             ),
           );
         });
+  }
+}
+
+class WaitAndRefresh extends StatefulWidget {
+  const WaitAndRefresh({
+    Key? key,
+    required this.checkBoxBool,
+  }) : super(key: key);
+
+  final bool checkBoxBool;
+
+  @override
+  State<WaitAndRefresh> createState() => _WaitAndRefreshState();
+}
+class _WaitAndRefreshState extends State<WaitAndRefresh> {
+  void waitAndRefreshData() async{
+    await context.read<ScheduleStore>().uploadData(widget.checkBoxBool, context.read<UserStore>().userUID, context.read<UserStore>().type, context.read<UserStore>().name);
+    context.read<ClasschildStore>().refreshClasschild();
+    Navigator.pop(context);
+  }
+  @override
+  void initState() {
+    waitAndRefreshData();
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+
+    return Scaffold(
+      body: Center(
+        child: SizedBox(
+          width: 50,
+          height: 50,
+          child: CircularProgressIndicator(),
+        ),
+      ),
+    );
   }
 }
 
