@@ -13,6 +13,7 @@ import 'package:jitutorapp/DataStore/scheduleConformStore.dart';
 import 'package:jitutorapp/mainLodding.dart';
 import 'package:jitutorapp/notification_controller.dart';
 import 'package:jitutorapp/teacherPage/mainPage.dart';
+import 'DataStore/ADStore.dart';
 import 'signUp.dart';
 import 'DataStore/InfoStore.dart';
 import 'DataStore/scheduleStore.dart';
@@ -45,6 +46,7 @@ void main() async{
           ChangeNotifierProvider(create: (c) => OrderStore()),
           ChangeNotifierProvider(create: (c) => ScheduleConformStore()),
           ChangeNotifierProvider(create: (c) => MainpageStore()),
+          ChangeNotifierProvider(create: (c) => ADStore()),
         ],
         child: GetMaterialApp(
           initialBinding: BindingsBuilder.put(() => NotificationController(), permanent: true),

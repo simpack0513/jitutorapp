@@ -1,8 +1,11 @@
+import 'package:carousel_slider/carousel_options.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:jitutorapp/DataStore/ClassStore.dart';
 import 'package:jitutorapp/DataStore/UserStore.dart';
 import 'package:provider/provider.dart';
 
+import '../DataStore/ADStore.dart';
 import '../DataStore/ClasschildStore.dart';
 
 class Home extends StatefulWidget {
@@ -55,15 +58,29 @@ class _HomeState extends State<Home> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             //  1. top 배너
-            Container(
-              margin: EdgeInsets.fromLTRB(0, 20, 0, 0),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(20),
+            (context.watch<ADStore>().mainBanner.isNotEmpty) ? CarouselSlider(
+              options: CarouselOptions(
+                height: MediaQuery.of(context).size.height / 8,
+                autoPlay: true,
+                viewportFraction: 1,
+                autoPlayInterval: const Duration(seconds: 5),
               ),
-              height: MediaQuery.of(context).size.height / 8,
-            ),
-
+              items: context.watch<ADStore>().mainBanner.map((imageSrc) {
+                return Builder(
+                    builder: (BuildContext context) {
+                      return Container(
+                          margin: EdgeInsets.fromLTRB(0, 20, 0, 0),
+                          height: MediaQuery.of(context).size.height / 8,
+                          width: double.infinity,
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(15),
+                            child: Image.network(imageSrc, fit: BoxFit.cover,),
+                          )
+                      );
+                    }
+                );
+              }).toList(),
+            ) : Container(height: MediaQuery.of(context).size.height / 8,),
             //  2. 다가오는 수업 메인
             (context.watch<ClasschildStore>().comingClassList.isNotEmpty) ? Container(
                 padding: EdgeInsets.fromLTRB(5, 30, 0, 0),

@@ -4,6 +4,7 @@ import 'package:jitutorapp/parentPage/setting.dart';
 import 'package:provider/provider.dart';
 
 //여기는 파일 import
+import '../DataStore/ADStore.dart';
 import '../DataStore/UserStore.dart';
 import 'home.dart';
 import 'calendar.dart';
@@ -37,6 +38,7 @@ class _mainPagePState extends State<mainPageP> {
   void init() async{
     await context.read<ClassStore>().parentGetClassFromFirebase(context.read<UserStore>().userUID);
     context.read<UserStore>().updateDB_FCMToken();
+    context.read<ADStore>().getMainBanner();
     context.read<ClasschildStore>().generateClassChild(context.read<ClassStore>().userClassList);
     context.read<ClasschildStore>().getComingClassList(context.read<ClassStore>().userClassUIDList);
     await context.read<ClasschildStore>().getEventAllday(context.read<ClassStore>().userClassUIDList);
