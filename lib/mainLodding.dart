@@ -102,10 +102,8 @@ class _LoadingPageState extends State<LoadingPage> {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: MediaQuery.of(context).size.width,
-      height: MediaQuery.of(context).size.height,
-      child: Image.asset('assets/loading.jpg', fit: BoxFit.fill,),
+    return Scaffold(
+      backgroundColor: Color(0xffD6E8F3),
     );
   }
 }

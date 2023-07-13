@@ -34,10 +34,6 @@ var InfoPagetheme = ThemeData(
 //회원가입 메인 페이지
 class signUp extends StatelessWidget {
   signUp({Key? key}) : super(key: key);
-  var mainTextStyle = TextStyle(
-    fontFamily: 'LINESeedKR',
-    fontSize: 30,
-  );
 
   void nextPage(context) {
     Navigator.push(context,
@@ -46,28 +42,86 @@ class signUp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var mainTextStyle = TextStyle(
+      fontFamily: 'LINESeedKR',
+      fontSize: MediaQuery.of(context).size.height * 0.055,
+    );
+    var mainUnderTextStyle = TextStyle(
+      fontFamily: 'LINESeedKR',
+      fontSize: MediaQuery.of(context).size.height * 0.022,
+    );
+    var bottomTextStyle = TextStyle(
+      fontFamily: 'LINESeedKR',
+      fontSize: MediaQuery.of(context).size.height * 0.018,
+      color: Colors.black
+    );
+
     return ChangeNotifierProvider(
       create: (c) => InfoStore(),
       child: Scaffold(
-        body: Container(
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text('지튜터에 오신 것을 환영합니다', style: mainTextStyle,),
-                Text('아래 버튼을 눌러 회원가입을 진행하십시오.', style: TextStyle(fontSize: 15, fontFamily: 'LINESeedKR')),
-                Container(height: 50,),
-                Row(children: [
-                  Flexible(child: TextButton(onPressed: (){context.read<InfoStore>().changeType('student'); nextPage(context);}, child: Image.asset('assets/studentButtonIcon.png', fit: BoxFit.fitHeight,) ), flex: 1, ),
-                  Flexible(child: TextButton(onPressed: (){context.read<InfoStore>().changeType('parent'); nextPage(context); }, child: Image.asset('assets/parentButtonIcon.png', fit: BoxFit.fill,)), flex: 1, ),
-
-                ],),
-                TextButton(onPressed: (){context.read<InfoStore>().changeType('teacher'); nextPage(context); }, child: Image.asset('assets/teacherButtonIcon.png')),
-                TextButton(onPressed: (){Navigator.push(context, MaterialPageRoute(builder: (c) => Login()));}, child: Text('회원가입을 하셨나요? 이 곳을 클릭해 로그인하세요', style: TextStyle(fontSize: 15, color: Colors.black),)),
-
-              ],
+        backgroundColor: Color(0xffD6E8F3),
+        body: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(height: MediaQuery.of(context).size.height * 0.13,),
+            Text('지튜터', style: mainTextStyle,),
+            Text('과외 일정 관리 앱', style: mainUnderTextStyle),
+            Container(height: MediaQuery.of(context).size.height * 0.01,),
+            Container(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.width,
+              child: Image.asset('assets/mainImage.png', fit: BoxFit.fitWidth, opacity: const AlwaysStoppedAnimation(.85)),
             ),
-          ),
+            Container(height: MediaQuery.of(context).size.height * 0.05,),
+            ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                    elevation: 4,
+                    backgroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20))
+                ),
+                onPressed: (){
+                  Navigator.push(context, MaterialPageRoute(builder: (c) => Login()));
+                },
+                child: SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.06,
+                  width: MediaQuery.of(context).size.width * 0.72,
+                  child: Row(
+                    children: [
+                      Icon(Icons.mail_outline_rounded, color: Colors.black, size: MediaQuery.of(context).size.height * 0.03,),
+                      SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.72 - MediaQuery.of(context).size.height * 0.05,
+                          child: Text('이메일로 로그인하기', style: bottomTextStyle, textAlign: TextAlign.center,)
+                      ),
+                    ],
+                  ),
+                )
+            ),
+            Container(height: MediaQuery.of(context).size.height * 0.015,),
+            ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                    elevation: 4,
+                    backgroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20))
+                ),
+                onPressed: (){
+
+                },
+                child: SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.06,
+                  width: MediaQuery.of(context).size.width * 0.72,
+                  child: Row(
+                    children: [
+                      Icon(Icons.fiber_new_outlined, color: Colors.black, size: MediaQuery.of(context).size.height * 0.03,),
+                      SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.72 - MediaQuery.of(context).size.height * 0.05,
+                          child: Text('회원가입 하기', style: bottomTextStyle, textAlign: TextAlign.center,)
+                      ),
+                    ],
+                  ),
+                )
+            ),
+
+          ],
         ),
 
       ),
