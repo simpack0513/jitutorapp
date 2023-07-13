@@ -104,7 +104,7 @@ class signUp extends StatelessWidget {
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20))
                 ),
                 onPressed: (){
-
+                  Dialog(context);
                 },
                 child: SizedBox(
                   height: MediaQuery.of(context).size.height * 0.06,
@@ -127,6 +127,44 @@ class signUp extends StatelessWidget {
       ),
     );
   }
+
+  // 회원 가입 유형 선택하는 다이얼로그
+  void Dialog(var context) {
+    var mainTextStyle = TextStyle(
+      fontFamily: 'LINESeedKR',
+      fontSize: MediaQuery.of(context).size.height * 0.022,
+    );
+    showDialog(
+        context: context,
+        //barrierDismissible - Dialog를 제외한 다른 화면 터치 x
+        barrierDismissible: true,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            // RoundedRectangleBorder - Dialog 화면 모서리 둥글게 조절
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20.0)),
+            contentPadding: EdgeInsets.zero,
+            titlePadding: EdgeInsets.all(10),
+            title: Center(
+                child: Text('가입 유형을 골라주세요', style: mainTextStyle)),
+            content: Container(
+              width: MediaQuery.of(context).size.width * 0.8,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Row(children: [
+                    Flexible(child: TextButton(onPressed: (){context.read<InfoStore>().changeType('student'); nextPage(context);}, child: Image.asset('assets/studentButtonIcon.png', fit: BoxFit.fitHeight,) ), flex: 1, ),
+                    Flexible(child: TextButton(onPressed: (){context.read<InfoStore>().changeType('parent'); nextPage(context); }, child: Image.asset('assets/parentButtonIcon.png', fit: BoxFit.fill,)), flex: 1, ),
+                  ],),
+                  TextButton(onPressed: (){context.read<InfoStore>().changeType('teacher'); nextPage(context); }, child: Image.asset('assets/teacherButtonIcon.png')),
+                ],
+              ),
+            )
+          );
+        });
+  }
+
+
 }
 
 // 이름 기입 페이지
