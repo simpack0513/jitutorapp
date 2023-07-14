@@ -14,6 +14,9 @@ import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import 'ToastService.dart';
+import 'mainLodding.dart';
+
 //전역변수 - phone credential 이유 : 이메일과 연동하고 싶어서
 var authCredential;
 final firestore = FirebaseFirestore.instance;
@@ -254,7 +257,16 @@ class _PhoneInfoPageState extends State<PhoneInfoPage> {
         },
         verificationFailed: (verificationFailed) async {
           print("코드발송실패\n");
-          print(verificationFailed);
+          print(verificationFailed.code);
+          if (verificationFailed.code == 'invalid-phone-number') {
+            ToastService.toastMsg('올바른 전화번호를 입력하세요.');
+          }
+          else if (verificationFailed.code == 'network-request-failed') {
+            ToastService.toastMsg('인터넷 연결을 확인하세요.');
+          }
+          else {
+            ToastService.toastMsg(verificationFailed.code);
+          }
           setState(() {
             IsClickButton = false;
           });
@@ -277,84 +289,7 @@ class _PhoneInfoPageState extends State<PhoneInfoPage> {
       }
     );
   }
-  // 파이어베이스에 이름, type 등 저장
-  Future<dynamic> StoreAtFireStore() async{
-    try {
-      final user = await FirebaseAuth.instance.currentUser;
-      await firestore.collection('Person').doc(user?.uid).
-      set({'name' : context.read<InfoStore>().name, 'type' : context.read<InfoStore>().type, 'point' : 50, 'FCMToken' : ""});
-      // 유저스토어에 사용자 정보 저장 = 바로 데이터 꺼내쓸 수 있게
-      context.read<UserStore>().setName(context.read<InfoStore>().name);
-      context.read<UserStore>().setType(context.read<InfoStore>().type);
-      context.read<UserStore>().setUserUID(user!.uid);
-      context.read<UserStore>().setPoint(50);
 
-    } catch (e) {
-      print(e);
-    }
-
-  }
-
-  // 이메일과 휴대폰 계정 연결
-  Future<dynamic> signWithPhoneLinkEmail(PhoneAuthCredential phoneAuthCredential) async{
-    try {
-      final userCredential = await FirebaseAuth.instance.currentUser
-          ?.linkWithCredential(phoneAuthCredential);
-      Fluttertoast.showToast(
-          msg: '회원가입이 정상적으로 완료되었습니다',
-          toastLength: Toast.LENGTH_SHORT,
-          timeInSecForIosWeb: 2,
-          backgroundColor: Colors.green,
-          fontSize: 12
-      );
-      //파이어스토어에 사용자 정보 등록
-      await StoreAtFireStore();
-
-      // 자동 로그인을 위한 사용자 계정 휴대폰 내부에 암호화 저장
-      final storage = new FlutterSecureStorage();
-      await storage.write(key: 'id', value: context.read<InfoStore>().email);
-      await storage.write(key: 'password', value: context.read<InfoStore>().password);
-
-      //메인 페이지로 이동
-      if (context.read<UserStore>().type.compareTo('teacher') == 0) {
-        Navigator.pushAndRemoveUntil(context,
-            MaterialPageRoute(builder: (context) => mainPage()), (route) => false);
-      }
-      else if (context.read<UserStore>().type.compareTo('student') == 0) {
-        Navigator.pushAndRemoveUntil(context,
-            MaterialPageRoute(builder: (context) => mainPageS()), (route) => false);
-      }
-      else if (context.read<UserStore>().type.compareTo('parent') == 0) {
-        Navigator.pushAndRemoveUntil(context,
-            MaterialPageRoute(builder: (context) => mainPageP()), (route) => false);
-      }
-
-    } on FirebaseAuthException catch (e) {
-      setState(() {
-        context.read<InfoStore>().popSmsCode();
-      });
-      print(e);
-      if(e.code == 'invalid-verification-code') {
-        Fluttertoast.showToast(
-            msg: '인증번호가 올바르지 않습니다',
-            toastLength: Toast.LENGTH_SHORT,
-            timeInSecForIosWeb: 2,
-            backgroundColor: Colors.red,
-            fontSize: 12
-        );
-      } else {
-        Fluttertoast.showToast(
-            msg: e.code,
-            toastLength: Toast.LENGTH_SHORT,
-            timeInSecForIosWeb: 2,
-            backgroundColor: Colors.red,
-            fontSize: 12
-        );
-      }
-
-    }
-
-}
 //변수, 함수 끝
   @override
   Widget build(BuildContext context) {
@@ -431,8 +366,8 @@ class _PhoneInfoPageState extends State<PhoneInfoPage> {
                   PhoneAuthCredential phoneAuthCredential =
                   PhoneAuthProvider.credential(
                       verificationId: verificationId, smsCode: context.read<InfoStore>().smsCode);
-                  await signWithPhoneLinkEmail(phoneAuthCredential); //폰으로 회원가입과 동시에 이메일과 연결
-
+                  //폰으로 회원가입과 동시에 이메일과 연결
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => WaitAndRefresh2(phoneAuthCredential: phoneAuthCredential,)));
 
                 },
               ),
@@ -505,24 +440,8 @@ class _EmailInfoPageState extends State<EmailInfoPage> {
                 backgroundColor: Colors.blue,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15))
             ),
-            onPressed: () async{
-              try {
-                final credential = await auth.createUserWithEmailAndPassword(
-                email: context.read<InfoStore>().email, password: context.read<InfoStore>().password);
-                print(credential.user);
-
-                Navigator.push(context, MaterialPageRoute(builder: (context)=>PhoneInfoPage()));
-
-              } on FirebaseAuthException catch(e) {
-                Fluttertoast.showToast(
-                    msg: e.code,
-                    toastLength: Toast.LENGTH_SHORT,
-                    timeInSecForIosWeb: 2,
-                    backgroundColor: Colors.red,
-                    fontSize: 12
-                );
-              }
-
+            onPressed: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) => WaitAndRefresh()));
             },
             child: Text('다음으로', style: TextStyle(
               fontFamily: 'LINESeedKR',
@@ -538,4 +457,201 @@ class _EmailInfoPageState extends State<EmailInfoPage> {
   }
 }
 
+// 이메일 회원가입 로딩 페이지
+class WaitAndRefresh extends StatefulWidget {
+  const WaitAndRefresh({
+    Key? key,
+  }) : super(key: key);
 
+  @override
+  State<WaitAndRefresh> createState() => _WaitAndRefreshState();
+}
+class _WaitAndRefreshState extends State<WaitAndRefresh> {
+  void registerUserWithEmailAndWait() async{
+    try {
+      final credential = await auth.createUserWithEmailAndPassword(
+          email: context.read<InfoStore>().email, password: context.read<InfoStore>().password);
+      print(credential.user);
+
+      Navigator.pop(context);
+      Navigator.push(context, MaterialPageRoute(builder: (context)=>PhoneInfoPage()));
+
+    } on FirebaseAuthException catch(e) {
+      if (context.read<InfoStore>().email == '') {
+        ToastService.toastMsg('아이디를 입력해주세요.');
+      }
+      else if (context.read<InfoStore>().password == '') {
+        ToastService.toastMsg('비밀번호를 입력해주세요.');
+      }
+      else if (e.code == 'invalid-email') {
+        ToastService.toastMsg('아이디를 올바른 이메일 양식으로 입력해주세요.');
+      }
+      else if (e.code == 'network-request-failed') {
+        ToastService.toastMsg('인터넷 연결을 확인하세요.');
+      }
+      else if (e.code == 'weak-password') {
+        ToastService.toastMsg('비밀번호가 너무 단순합니다.');
+      }
+      else if (e.code == 'email-already-in-use') {
+        context.read<InfoStore>().popEmail();
+        context.read<InfoStore>().popPassword();
+        context.read<InfoStore>().popName();
+        context.read<InfoStore>().popType();
+        ToastService.toastMsg('이미 존재하는 회원입니다. 로그인을 진행하세요.');
+        Navigator.pushAndRemoveUntil(context,
+            MaterialPageRoute(builder: (context) => signUp()), (route) => false);
+        return ;
+      }
+      else {
+        Fluttertoast.showToast(
+            msg: e.code,
+            toastLength: Toast.LENGTH_SHORT,
+            timeInSecForIosWeb: 2,
+            backgroundColor: Colors.red,
+            fontSize: 12
+        );
+      }
+      Navigator.pop(context);
+    }
+  }
+  @override
+  void initState() {
+    registerUserWithEmailAndWait();
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+
+    return Scaffold(
+      body: Center(
+        child: SizedBox(
+          width: 50,
+          height: 50,
+          child: CircularProgressIndicator(),
+        ),
+      ),
+    );
+  }
+}
+
+// 휴대폰 인증 로딩페이지
+class WaitAndRefresh2 extends StatefulWidget {
+  const WaitAndRefresh2({
+    Key? key,
+    required this.phoneAuthCredential,
+  }) : super(key: key);
+
+  final phoneAuthCredential;
+
+  @override
+  State<WaitAndRefresh2> createState() => _WaitAndRefresh2State();
+}
+class _WaitAndRefresh2State extends State<WaitAndRefresh2> {
+  // 파이어베이스에 이름, type 등 저장
+  Future<dynamic> StoreAtFireStore() async{
+    try {
+      final user = await FirebaseAuth.instance.currentUser;
+      await firestore.collection('Person').doc(user?.uid).
+      set({'name' : context.read<InfoStore>().name, 'type' : context.read<InfoStore>().type, 'point' : 50, 'FCMToken' : ""});
+      // 유저스토어에 사용자 정보 저장 = 바로 데이터 꺼내쓸 수 있게
+      context.read<UserStore>().setName(context.read<InfoStore>().name);
+      context.read<UserStore>().setType(context.read<InfoStore>().type);
+      context.read<UserStore>().setUserUID(user!.uid);
+      context.read<UserStore>().setPoint(50);
+
+    } catch (e) {
+      print(e);
+    }
+
+  }
+
+  void registerUserWithPhoneAndWait() async{
+    try {
+      final userCredential = await FirebaseAuth.instance.currentUser
+          ?.linkWithCredential(widget.phoneAuthCredential);
+      Fluttertoast.showToast(
+          msg: '회원가입이 정상적으로 완료되었습니다',
+          toastLength: Toast.LENGTH_SHORT,
+          timeInSecForIosWeb: 2,
+          backgroundColor: Colors.green,
+          fontSize: 12
+      );
+      //파이어스토어에 사용자 정보 등록
+      await StoreAtFireStore();
+
+      // 자동 로그인을 위한 사용자 계정 휴대폰 내부에 암호화 저장
+      final storage = new FlutterSecureStorage();
+      await storage.write(key: 'id', value: context.read<InfoStore>().email);
+      await storage.write(key: 'password', value: context.read<InfoStore>().password);
+
+      //메인 페이지로 이동
+      if (context.read<UserStore>().type.compareTo('teacher') == 0) {
+        Navigator.pushAndRemoveUntil(context,
+            MaterialPageRoute(builder: (context) => mainPage()), (route) => false);
+      }
+      else if (context.read<UserStore>().type.compareTo('student') == 0) {
+        Navigator.pushAndRemoveUntil(context,
+            MaterialPageRoute(builder: (context) => mainPageS()), (route) => false);
+      }
+      else if (context.read<UserStore>().type.compareTo('parent') == 0) {
+        Navigator.pushAndRemoveUntil(context,
+            MaterialPageRoute(builder: (context) => mainPageP()), (route) => false);
+      }
+      return ;
+
+    } on FirebaseAuthException catch (e) {
+      setState(() {
+        context.read<InfoStore>().popSmsCode();
+      });
+      print(e);
+      if(e.code == 'invalid-verification-code') {
+        Fluttertoast.showToast(
+            msg: '인증번호가 올바르지 않습니다',
+            toastLength: Toast.LENGTH_SHORT,
+            timeInSecForIosWeb: 2,
+            backgroundColor: Colors.red,
+            fontSize: 12
+        );
+      }
+      else if (e.code == 'network-request-failed') {
+        ToastService.toastMsg('인터넷 연결을 확인하세요.');
+      }
+      else if (e.code == 'credential-already-in-use') {
+        ToastService.toastMsg('이미 가입된 전화번호 입니다.');
+        Navigator.pushAndRemoveUntil(context,
+            MaterialPageRoute(builder: (context) => signUp()), (route) => false);
+        return ;
+      }
+      else {
+        Fluttertoast.showToast(
+            msg: e.code,
+            toastLength: Toast.LENGTH_SHORT,
+            timeInSecForIosWeb: 2,
+            backgroundColor: Colors.red,
+            fontSize: 12
+        );
+      }
+      Navigator.pop(context);
+    }
+  }
+  @override
+  void initState() {
+    registerUserWithPhoneAndWait();
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+
+    return Scaffold(
+      body: Center(
+        child: SizedBox(
+          width: 50,
+          height: 50,
+          child: CircularProgressIndicator(),
+        ),
+      ),
+    );
+  }
+}
