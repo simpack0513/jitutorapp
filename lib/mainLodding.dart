@@ -12,6 +12,7 @@ import 'package:jitutorapp/teacherPage/mainPage.dart';
 import 'package:provider/provider.dart';
 
 import 'DataStore/UserStore.dart';
+import 'ToastService.dart';
 final firestore = FirebaseFirestore.instance;
 
 class LoadingPage extends StatefulWidget {
@@ -41,6 +42,14 @@ class _LoadingPageState extends State<LoadingPage> {
         final credential = await auth.signInWithEmailAndPassword(
             email: idValue, password: passwordValue);
         print(credential.user);
+        // 만약 휴대폰 인증 전이라면 인증화면으로 이동
+        if (credential.user?.phoneNumber == null) {
+          ToastService.toastMsg('아직 휴대폰인증 전입니다. 인증페이지로 이동합니다.');
+          Navigator.pop(context);
+          Navigator.push(context, MaterialPageRoute(builder: (context) => PhoneInfoPage()));
+          return ;
+        }
+
         // 로그인 하는 유저 정보 받아서 로컬 변수에 저장하기
         var result = await firestore.collection('Person').get();
         var userdoc;
@@ -102,10 +111,8 @@ class _LoadingPageState extends State<LoadingPage> {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: MediaQuery.of(context).size.width,
-      height: MediaQuery.of(context).size.height,
-      child: Image.asset('assets/loading.jpg', fit: BoxFit.fill,),
+    return Scaffold(
+      backgroundColor: Color(0xffD6E8F3),
     );
   }
 }
