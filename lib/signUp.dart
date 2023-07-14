@@ -1,4 +1,3 @@
-import 'dart:io';
 //여기는 일반 파일 import 하는 곳
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:jitutorapp/login.dart';
@@ -15,7 +14,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'ToastService.dart';
-import 'mainLodding.dart';
 
 //전역변수 - phone credential 이유 : 이메일과 연동하고 싶어서
 var authCredential;
@@ -467,11 +465,30 @@ class WaitAndRefresh extends StatefulWidget {
   State<WaitAndRefresh> createState() => _WaitAndRefreshState();
 }
 class _WaitAndRefreshState extends State<WaitAndRefresh> {
+  // 파이어베이스에 이름, type 등 저장
+  Future<dynamic> StoreAtFireStore() async{
+    try {
+      final user = await FirebaseAuth.instance.currentUser;
+      await firestore.collection('Person').doc(user?.uid).
+      set({'name' : context.read<InfoStore>().name, 'type' : context.read<InfoStore>().type, 'point' : 50, 'FCMToken' : ""});
+      // 유저스토어에 사용자 정보 저장 = 바로 데이터 꺼내쓸 수 있게
+      context.read<UserStore>().setName(context.read<InfoStore>().name);
+      context.read<UserStore>().setType(context.read<InfoStore>().type);
+      context.read<UserStore>().setUserUID(user!.uid);
+      context.read<UserStore>().setPoint(50);
+
+    } catch (e) {
+      print(e);
+    }
+
+  }
+
   void registerUserWithEmailAndWait() async{
     try {
       final credential = await auth.createUserWithEmailAndPassword(
           email: context.read<InfoStore>().email, password: context.read<InfoStore>().password);
       print(credential.user);
+      await StoreAtFireStore();
 
       Navigator.pop(context);
       Navigator.push(context, MaterialPageRoute(builder: (context)=>PhoneInfoPage()));
@@ -548,24 +565,6 @@ class WaitAndRefresh2 extends StatefulWidget {
   State<WaitAndRefresh2> createState() => _WaitAndRefresh2State();
 }
 class _WaitAndRefresh2State extends State<WaitAndRefresh2> {
-  // 파이어베이스에 이름, type 등 저장
-  Future<dynamic> StoreAtFireStore() async{
-    try {
-      final user = await FirebaseAuth.instance.currentUser;
-      await firestore.collection('Person').doc(user?.uid).
-      set({'name' : context.read<InfoStore>().name, 'type' : context.read<InfoStore>().type, 'point' : 50, 'FCMToken' : ""});
-      // 유저스토어에 사용자 정보 저장 = 바로 데이터 꺼내쓸 수 있게
-      context.read<UserStore>().setName(context.read<InfoStore>().name);
-      context.read<UserStore>().setType(context.read<InfoStore>().type);
-      context.read<UserStore>().setUserUID(user!.uid);
-      context.read<UserStore>().setPoint(50);
-
-    } catch (e) {
-      print(e);
-    }
-
-  }
-
   void registerUserWithPhoneAndWait() async{
     try {
       final userCredential = await FirebaseAuth.instance.currentUser
@@ -577,24 +576,30 @@ class _WaitAndRefresh2State extends State<WaitAndRefresh2> {
           backgroundColor: Colors.green,
           fontSize: 12
       );
-      //파이어스토어에 사용자 정보 등록
-      await StoreAtFireStore();
 
       // 자동 로그인을 위한 사용자 계정 휴대폰 내부에 암호화 저장
       final storage = new FlutterSecureStorage();
       await storage.write(key: 'id', value: context.read<InfoStore>().email);
       await storage.write(key: 'password', value: context.read<InfoStore>().password);
 
+      DocumentSnapshot doc = await firestore.collection('Person').doc(userCredential?.user?.uid.toString()).get();
+      String userType = doc['type'];
+      context.read<UserStore>().setUserUID(userCredential!.user!.uid.toString());
+      context.read<UserStore>().setName(doc['name']);
+      context.read<UserStore>().setPoint(doc['point']);
+      context.read<UserStore>().setType(doc['type']);
+      context.read<UserStore>().setFCMToken(doc['FCMToken']);
+
       //메인 페이지로 이동
-      if (context.read<UserStore>().type.compareTo('teacher') == 0) {
+      if (userType.compareTo('teacher') == 0) {
         Navigator.pushAndRemoveUntil(context,
             MaterialPageRoute(builder: (context) => mainPage()), (route) => false);
       }
-      else if (context.read<UserStore>().type.compareTo('student') == 0) {
+      else if (userType.compareTo('student') == 0) {
         Navigator.pushAndRemoveUntil(context,
             MaterialPageRoute(builder: (context) => mainPageS()), (route) => false);
       }
-      else if (context.read<UserStore>().type.compareTo('parent') == 0) {
+      else if (userType.compareTo('parent') == 0) {
         Navigator.pushAndRemoveUntil(context,
             MaterialPageRoute(builder: (context) => mainPageP()), (route) => false);
       }
