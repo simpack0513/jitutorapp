@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:jitutorapp/studentPage/viewpoint.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../DataStore/InfoStore.dart';
 import '../signUp.dart';
@@ -99,6 +102,32 @@ class _SettingPageState extends State<SettingPage> {
               child: Column(crossAxisAlignment : CrossAxisAlignment.start, mainAxisAlignment : MainAxisAlignment.center, children: [
                 Expanded(flex: 1, child: Text('보관함', style: headtextStyle,)),
                 Expanded(flex: 1, child: Text('구매한 기프티콘을 확인할 수 있습니다.', style: bodytextStyle,))
+              ],),
+            ),
+          ),
+          Container(
+            color: Colors.grey,
+            height: 0.5,
+            width: double.infinity,
+          ),
+          Container( // 6
+            color: Colors.amber,
+            width: double.infinity,
+            height: MediaQuery.of(context).size.height/8,
+            child: ElevatedButton(
+              onPressed: () async{
+                String url = "https://important-ceiling-52a.notion.site/f9f23a9c90434a7b931deaef55a07e4b?pvs=4";
+                if (await canLaunch(url)) {
+                  await launch(url);
+                } else {
+                  Get.snackbar('연결 실패', '오류',
+                      duration: Duration(seconds: 10), backgroundColor: Colors.white);
+                }
+              },
+              style: elevatedButtonStyle,
+              child: Column(crossAxisAlignment : CrossAxisAlignment.start, mainAxisAlignment : MainAxisAlignment.center, children: [
+                Expanded(flex: 1, child: Text('개인정보처리방침', style: headtextStyle,)),
+                Expanded(flex: 1, child: Text('개인정보처리방침을 확인합니다.', style: bodytextStyle,))
               ],),
             ),
           ),
