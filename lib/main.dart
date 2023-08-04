@@ -7,6 +7,7 @@ import 'package:jitutorapp/DataStore/MainpageStore.dart';
 import 'package:jitutorapp/DataStore/MarketStore.dart';
 import 'package:jitutorapp/DataStore/OrderStore.dart';
 import 'package:jitutorapp/DataStore/PointStore.dart';
+import 'package:jitutorapp/DataStore/RegisterClassStore.dart';
 import 'package:jitutorapp/DataStore/UserStore.dart';
 import 'package:jitutorapp/DataStore/PostStore.dart';
 import 'package:jitutorapp/DataStore/scheduleConformStore.dart';
@@ -47,6 +48,7 @@ void main() async{
           ChangeNotifierProvider(create: (c) => ScheduleConformStore()),
           ChangeNotifierProvider(create: (c) => MainpageStore()),
           ChangeNotifierProvider(create: (c) => ADStore()),
+          ChangeNotifierProvider(create: (c) => RegisterClassStore()),
         ],
         child: GetMaterialApp(
           initialBinding: BindingsBuilder.put(() => NotificationController(), permanent: true),

@@ -2,6 +2,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:jitutorapp/DataStore/ADStore.dart';
 import 'package:jitutorapp/DataStore/ClassStore.dart';
+import 'package:jitutorapp/teacherPage/registerClass.dart';
 import 'package:provider/provider.dart';
 
 import '../DataStore/ClasschildStore.dart';
@@ -168,6 +169,28 @@ class _HomeState extends State<Home> {
                 );
               }
             ) : Text('현재 속한 수업이 없습니다.'),
+            // 4. 수업 등록
+            Container(
+              margin: EdgeInsets.fromLTRB(0, 30, 0, 0),
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.white,
+                  padding: EdgeInsets.all(15),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.add, size: MediaQuery.of(context).size.height / 30, color: Colors.black,),
+                    SizedBox(width: MediaQuery.of(context).size.height / 80),
+                    Text("새 수업 등록", style: headtextStyle,)
+                  ],
+                ),
+                onPressed: (){
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => RegisterClass()));
+                },
+              ),
+            ),
           ],
         ),
       ),
